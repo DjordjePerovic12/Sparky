@@ -84,13 +84,6 @@ android {
             versionNameSuffix = "-test"
             buildConfigField("String", "BASE_URL", "\"https://sparky.pl-coding.com:8081/\"")
         }
-
-        create("apiProd") {
-            dimension = "version"
-            applicationIdSuffix = ".prod"
-            versionNameSuffix = "-prod"
-            buildConfigField("String", "BASE_URL", "\"https://sparky.pl-coding.com:8081/\"")
-        }
     }
 
 
@@ -103,6 +96,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
