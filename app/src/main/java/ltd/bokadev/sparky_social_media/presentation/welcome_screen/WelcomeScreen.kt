@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +23,9 @@ import ltd.bokadev.sparky_social_media.core.components.PrimaryButton
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(
+    viewModel: WelcomeScreenViewModel
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -51,8 +53,7 @@ fun WelcomeScreen() {
                 .background(SparkyTheme.colors.primaryColor)
                 .fillMaxSize()
                 .padding(
-                    horizontal = 20.dp,
-                    vertical = 100.dp
+                    horizontal = 20.dp, vertical = 100.dp
                 ),
         ) {
             Text(
@@ -73,29 +74,27 @@ fun WelcomeScreen() {
             Spacer(modifier = Modifier.height(40.dp))
 
             PrimaryButton(
-                modifier = Modifier
-                    .height(50.dp),
+                modifier = Modifier.height(50.dp),
                 text = stringResource(R.string.sign_in),
                 color = SparkyTheme.colors.primaryColor,
                 borderColor = SparkyTheme.colors.white,
                 textColor = SparkyTheme.colors.white,
                 textStyle = SparkyTheme.typography.poppinsMedium16
             ) {
-
+                viewModel.onEvent(WelcomeScreenEvent.OnSignInClick)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             PrimaryButton(
-                modifier = Modifier
-                    .height(50.dp),
+                modifier = Modifier.height(50.dp),
                 text = stringResource(R.string.sign_up),
                 color = SparkyTheme.colors.yellow,
                 borderColor = SparkyTheme.colors.yellow,
                 textColor = SparkyTheme.colors.primaryColor,
                 textStyle = SparkyTheme.typography.poppinsMedium16
             ) {
-
+                viewModel.onEvent(WelcomeScreenEvent.OnSignUpClick)
             }
 
         }
