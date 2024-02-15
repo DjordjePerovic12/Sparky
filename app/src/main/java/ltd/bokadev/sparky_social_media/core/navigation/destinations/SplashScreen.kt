@@ -1,6 +1,5 @@
 package ltd.bokadev.sparky_social_media.core.navigation.destinations
 
-import android.view.FrameMetrics.ANIMATION_DURATION
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -11,6 +10,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import ltd.bokadev.sparky_social_media.core.navigation.Routes
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
+import ltd.bokadev.sparky_social_media.core.utils.Constants.ANIMATION_DURATION
 import ltd.bokadev.sparky_social_media.presentation.splash_screen.SplashScreen
 import ltd.bokadev.sparky_social_media.presentation.splash_screen.SplashScreenViewModel
 
