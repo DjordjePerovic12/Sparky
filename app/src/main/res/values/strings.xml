@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">SparkySocialMedia</string>
     <string name="sparky">Sparky</string>
+    <string name="welcome_to_our_sparky_social_media_app">Welcome to Our Sparky Social Media App</string>
+    <string name="ignite_your_conversations_and_illuminate_your_world">Ignite your conversations and illuminate your world.</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
