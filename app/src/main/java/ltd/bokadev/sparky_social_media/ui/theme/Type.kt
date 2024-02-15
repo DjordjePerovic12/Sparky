@@ -11,7 +11,8 @@ data class SparkyTypography(
     val poppinsRegular20: TextStyle,
     val poppinsMedium16: TextStyle,
     val poppinsMedium24: TextStyle,
-    val poppinsMedium32: TextStyle
+    val poppinsMedium32: TextStyle,
+    val poppinsSemiBold24: TextStyle
 )
 
 val LocalSparkyTypography = staticCompositionLocalOf {
@@ -20,7 +21,8 @@ val LocalSparkyTypography = staticCompositionLocalOf {
         poppinsRegular20 = TextStyle.Default,
         poppinsMedium16 = TextStyle.Default,
         poppinsMedium24 = TextStyle.Default,
-        poppinsMedium32 = TextStyle.Default
+        poppinsMedium32 = TextStyle.Default,
+        poppinsSemiBold24 = TextStyle.Default
     )
 }
 
@@ -35,5 +37,9 @@ val sparkyTypography = SparkyTypography(
         fontSize = 24.sp, lineHeight = 32.sp
     ), poppinsMedium32 = TextStyle(
         fontSize = 32.sp, lineHeight = 40.sp
+    ),
+    poppinsSemiBold24 = TextStyle(
+        fontSize = 24.sp,
+        lineHeight = 32.sp
     )
 )
