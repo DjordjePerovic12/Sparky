@@ -8,10 +8,14 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
-import ltd.bokadev.sparky_social_media.core.validation.PasswordValidationResult
+import ltd.bokadev.sparky_social_media.core.navigation.Screen
+import ltd.bokadev.sparky_social_media.core.utils.isValidEmail
+import ltd.bokadev.sparky_social_media.core.utils.isValidPassword
+import ltd.bokadev.sparky_social_media.core.utils.isValidUsername
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import ltd.bokadev.sparky_social_media.domain.use_case.EmailUseCase
 import ltd.bokadev.sparky_social_media.domain.use_case.PasswordUseCase
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,15 +33,23 @@ class RegisterViewModel @Inject constructor(
         when (event) {
             is RegisterEvent.UsernameChanged -> {
                 state = state.copy(username = event.username.trim())
+                isUserDataValid()
             }
 
             is RegisterEvent.EmailChanged -> {
                 state = state.copy(email = event.email.trim())
+                validateEmail()
+                isUserDataValid()
             }
 
             is RegisterEvent.PasswordChanged -> {
                 state = state.copy(password = event.password)
                 validatePassword()
+                isUserDataValid()
+            }
+
+            is RegisterEvent.OnLoginClick -> {
+                navigateToLogin()
             }
         }
     }
@@ -49,27 +61,33 @@ class RegisterViewModel @Inject constructor(
         if (emailHasError) {
             state = state.copy(emailError = emailResult.errorMessage ?: "")
             return
-        }
+        } else state = state.copy(emailError = "")
     }
 
     private fun validatePassword() {
         val passwordResult = passwordUseCase.invoke(state.password)
-        val passwordProperties = PasswordValidationResult::class.java.declaredFields
-        val passwordHasError = passwordProperties.any {
-            it.isAccessible = true
-            it.get(passwordResult) == false
-        }
+        state = state.copy(
+            containsNineCharacters = passwordResult.hasNineCharacters,
+            containsUppercase = passwordResult.containsUppercase,
+            containsLowercase = passwordResult.containsLowercase,
+            containsDigit = passwordResult.containsDigit
+        )
+    }
 
-        if (passwordHasError) {
-            state = state.copy(
-                containsNineCharacters = passwordResult.hasNineCharacters,
-                containsUppercase = passwordResult.containsUppercase,
-                containsLowercase = passwordResult.containsLowercase,
-                containsDigit = passwordResult.containsDigit
-            )
-            return
-        }
+    private fun isUserDataValid() {
+        state =
+            if (state.username.isValidUsername() && state.email.isValidEmail() && isValidPassword())
+                state.copy(shouldEnableButton = true) else state.copy(shouldEnableButton = false)
+    }
 
+    private fun isValidPassword(): Boolean {
+        return state.containsNineCharacters && state.containsLowercase && state.containsUppercase && state.containsDigit
+    }
+
+    private fun navigateToLogin() {
+        viewModelScope.launch {
+            navigator.navigateTo(Screen.LoginScreen.route)
+        }
     }
 
 }
@@ -82,7 +100,8 @@ data class RegisterState(
     val containsNineCharacters: Boolean = false,
     val containsDigit: Boolean = false,
     val containsUppercase: Boolean = false,
-    val containsLowercase: Boolean = false
+    val containsLowercase: Boolean = false,
+    val shouldEnableButton: Boolean = false
 )
 
 sealed class RegisterEvent {
@@ -90,6 +109,7 @@ sealed class RegisterEvent {
 //        val userName: String, val email: String, val password: String
 //    ) : RegisterEvent()
 
+    data object OnLoginClick : RegisterEvent()
     data class UsernameChanged(val username: String) : RegisterEvent()
     data class EmailChanged(val email: String) : RegisterEvent()
     data class PasswordChanged(val password: String) : RegisterEvent()

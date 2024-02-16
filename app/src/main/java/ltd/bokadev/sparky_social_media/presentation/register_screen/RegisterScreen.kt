@@ -13,12 +13,16 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,6 +56,7 @@ fun RegisterScreen(
     val scope = rememberCoroutineScope()
     val state = viewModel.state
 
+
     Scaffold(topBar = { SparkyTopBar() }, bottomBar = {
         Row(
             modifier = Modifier
@@ -62,10 +67,10 @@ fun RegisterScreen(
         ) {
             PrimaryButton(
                 text = stringResource(R.string.register),
-                //TODO: Handle colors when button is disabled
-                color = SparkyTheme.colors.yellow,
-                borderColor = SparkyTheme.colors.yellow,
-                textColor = SparkyTheme.colors.primaryColor,
+                enabled = state.shouldEnableButton,
+                color = if (state.shouldEnableButton) SparkyTheme.colors.yellow else SparkyTheme.colors.primaryColor,
+                borderColor = if (state.shouldEnableButton) SparkyTheme.colors.yellow else SparkyTheme.colors.primaryColor,
+                textColor = if (state.shouldEnableButton) SparkyTheme.colors.primaryColor else SparkyTheme.colors.white,
                 textStyle = SparkyTheme.typography.poppinsMedium16,
                 modifier = Modifier.height(50.dp)
             ) {
@@ -89,14 +94,14 @@ fun RegisterScreen(
                         style = SparkyTheme.typography.poppinsSemiBold24
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = buildAnnotatedString {
+                    ClickableText(text = buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(
                                 color = SparkyTheme.colors.textLightGray,
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.poppins_regular))
-                            )
+                            ),
                         ) {
                             append(stringResource(R.string.have_an_account))
                         }
@@ -106,16 +111,20 @@ fun RegisterScreen(
                                 color = SparkyTheme.colors.yellow,
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.poppins_semi_bold))
+                                fontFamily = FontFamily(Font(R.font.poppins_semi_bold)),
                             )
                         ) {
                             append(stringResource(id = R.string.login))
                         }
-                    })
+                    },
+                        onClick = { offset ->
+                            viewModel.onEvent(RegisterEvent.OnLoginClick)
+                        })
                     Spacer(modifier = Modifier.height(30.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = stringResource(R.string.username),
@@ -138,7 +147,8 @@ fun RegisterScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = stringResource(R.string.email),

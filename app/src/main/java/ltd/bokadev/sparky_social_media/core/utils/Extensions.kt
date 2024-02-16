@@ -1,7 +1,10 @@
 package ltd.bokadev.sparky_social_media.core.utils
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -13,6 +16,7 @@ import ltd.bokadev.sparky_social_media.BuildConfig.BASE_URL
 import ltd.bokadev.sparky_social_media.core.utils.Constants.NO_INFO
 import ltd.bokadev.sparky_social_media.core.validation.PasswordValidationResult
 import okhttp3.Request
+import timber.log.Timber
 
 fun String?.toNonNull() = if (this.isNullOrEmpty()) NO_INFO else this
 
@@ -45,6 +49,21 @@ inline fun <reified T> Flow<T>.observeWithLifecycle(
     }
 }
 
+private val LocalContextStringProvider = staticCompositionLocalOf<String?> { null }
+
+@Composable
+fun Int.getStringLength(): Int {
+    val context = LocalContext.current
+    // Retrieve the string value from the resource ID
+    val stringValue = context.getString(this)
+    // Provide the string value via CompositionLocal
+    CompositionLocalProvider(LocalContextStringProvider provides stringValue) {
+        // Return the length of the string
+        stringValue.length
+    }
+    return stringValue.length
+}
+
 
 fun String.isValidEmail(): Boolean {
     val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\$")
@@ -53,13 +72,24 @@ fun String.isValidEmail(): Boolean {
 
 fun String.isValidPassword(): PasswordValidationResult {
     val hasNineCharacters = this.length >= 9
+    Timber.e("PASSWORD HAS9 $hasNineCharacters")
     val containsLowerCase = any { it.isLowerCase() }
+    Timber.e("PASSWORD LOW $containsLowerCase")
     val containsUpperCase = any { it.isUpperCase() }
+    Timber.e("PASSWORD upp $containsUpperCase")
     val containsDigit = any { it.isDigit() }
+    Timber.e("PASSWORD dig $containsDigit")
+
+
     return PasswordValidationResult(
         hasNineCharacters = hasNineCharacters,
         containsDigit = containsDigit,
         containsLowercase = containsLowerCase,
         containsUppercase = containsUpperCase
     )
+}
+
+
+fun String.isValidUsername(): Boolean {
+    return length in 3..20
 }
