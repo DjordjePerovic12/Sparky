@@ -28,7 +28,7 @@ object AppModule {
     ): OkHttpClient {
         val okHttpClient =
             OkHttpClient.Builder().retryOnConnectionFailure(false).addInterceptor(interceptor)
-        if (BuildConfig.DEBUG) okHttpClient.addInterceptor(HttpLoggingInterceptor().apply {
+        okHttpClient.addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
         Timber.e("Created okhttp instance $okHttpClient")
@@ -41,11 +41,8 @@ object AppModule {
     fun provideSparkyService(
         okHttpClient: OkHttpClient
     ): SparkyService {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(okHttpClient)
-            .build()
+        return Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create()).client(okHttpClient).build()
             .create(SparkyService::class.java)
     }
 

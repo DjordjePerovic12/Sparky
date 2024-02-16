@@ -44,17 +44,23 @@ import ltd.bokadev.sparky_social_media.core.utils.Constants.INVALID_PASSWORD_LEN
 import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_LOWERCASE
 import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_NUMBER
 import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_UPPERCASE
+import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.presentation.login_screen.LoginBottomBar
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RegisterScreen(
-    viewModel: RegisterViewModel
+    viewModel: RegisterViewModel,
+    showSnackBar: (message: String) -> Unit
 ) {
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
     val state = viewModel.state
+
+    viewModel.snackBarChannel.observeWithLifecycle { message ->
+        showSnackBar(message)
+    }
 
 
     Scaffold(topBar = { SparkyTopBar() }, bottomBar = {
@@ -74,7 +80,7 @@ fun RegisterScreen(
                 textStyle = SparkyTheme.typography.poppinsMedium16,
                 modifier = Modifier.height(50.dp)
             ) {
-
+                viewModel.onEvent(RegisterEvent.OnRegisterClick)
             }
         }
     }) { innerPadding ->

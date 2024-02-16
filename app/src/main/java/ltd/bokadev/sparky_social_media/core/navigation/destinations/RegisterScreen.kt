@@ -26,6 +26,6 @@ fun NavGraphBuilder.registerScreenComposable(
             navController.getBackStackEntry(Routes.AUTH)
         }
         val registerViewModel = hiltViewModel<RegisterViewModel>()
-        RegisterScreen(viewModel = registerViewModel)
+        RegisterScreen(viewModel = registerViewModel, showSnackBar = showSnackBar)
     }
 }

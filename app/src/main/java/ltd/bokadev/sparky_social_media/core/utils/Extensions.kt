@@ -11,7 +11,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import ltd.bokadev.sparky_social_media.BuildConfig.API_KEY
 import ltd.bokadev.sparky_social_media.BuildConfig.BASE_URL
 import ltd.bokadev.sparky_social_media.core.utils.Constants.NO_INFO
 import ltd.bokadev.sparky_social_media.core.validation.PasswordValidationResult
@@ -25,10 +27,10 @@ fun Int?.toNonNull() = this ?: -1
 fun Double?.toNonNull() = this ?: 0.0
 
 infix fun Request.signWithToken(accessToken: String?): Request {
-    val builder = newBuilder().header("Accept", "application/json")
+    val builder = newBuilder().header("Content-Type", "application/json").header("Accept", "application/json").header("x-api-key", API_KEY)
     if (this.url.toString()
             .contains(BASE_URL) && !accessToken.isNullOrEmpty() && !this.url.encodedPath.contains(
-            "login"
+            "register"
         )
     ) {
         builder.header("Authorization", "Bearer $accessToken")
@@ -92,4 +94,17 @@ fun String.isValidPassword(): PasswordValidationResult {
 
 fun String.isValidUsername(): Boolean {
     return length in 3..20
+}
+
+suspend inline fun <T> Flow<Resource<T>>.collectLatestNoAuthCheck(
+    crossinline onSuccess: suspend (Resource<T>) -> Unit,
+    crossinline onError: suspend (Resource<T>) -> Unit,
+) {
+    collectLatest {
+        when (it) {
+            is Resource.Success -> onSuccess(it)
+            is Resource.Error -> onError(it)
+            else -> Unit
+        }
+    }
 }
