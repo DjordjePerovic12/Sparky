@@ -63,7 +63,9 @@ fun LoginScreen() {
                 bringIntoViewRequester = bringIntoViewRequester,
                 scope = scope,
                 placeholderText = "Email",
-                leadingIconId = R.drawable.ic_email
+                leadingIconId = R.drawable.ic_email,
+                onValueChange = {},
+                value = "state.username"
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
@@ -77,7 +79,9 @@ fun LoginScreen() {
                 scope = scope,
                 placeholderText = "Password",
                 leadingIconId = R.drawable.ic_lock,
-                trailingIconId = R.drawable.ic_show_password
+                trailingIconId = R.drawable.ic_show_password,
+                onValueChange = {},
+                value = "state.username"
             )
             Spacer(modifier = Modifier.height(50.dp))
             PrimaryButton(

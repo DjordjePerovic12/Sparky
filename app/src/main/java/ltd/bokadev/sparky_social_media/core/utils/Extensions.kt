@@ -52,11 +52,12 @@ fun String.isValidEmail(): Boolean {
 }
 
 fun String.isValidPassword(): PasswordValidationResult {
+    val hasNineCharacters = this.length >= 9
     val containsLowerCase = any { it.isLowerCase() }
     val containsUpperCase = any { it.isUpperCase() }
     val containsDigit = any { it.isDigit() }
     return PasswordValidationResult(
-        hasNineCharacters = this.length < 9,
+        hasNineCharacters = hasNineCharacters,
         containsDigit = containsDigit,
         containsLowercase = containsLowerCase,
         containsUppercase = containsUpperCase

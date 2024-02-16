@@ -7,10 +7,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ltd.bokadev.sparky_social_media.BuildConfig.BASE_URL
 import ltd.bokadev.sparky_social_media.data.AuthorizationInterceptor
 import ltd.bokadev.sparky_social_media.data.remote.dto.ApiErrorDto
+import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
 import javax.inject.Singleton
 
@@ -30,6 +34,19 @@ object AppModule {
         Timber.e("Created okhttp instance $okHttpClient")
 
         return okHttpClient.build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSparkyService(
+        okHttpClient: OkHttpClient
+    ): SparkyService {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(SparkyService::class.java)
     }
 
     @Singleton

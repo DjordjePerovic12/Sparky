@@ -25,10 +25,12 @@ fun UserDataTextField(
     scope: CoroutineScope,
     placeholderText: String,
     leadingIconId: Int,
-    trailingIconId: Int? = null
+    value: String,
+    trailingIconId: Int? = null,
+    onValueChange: (String) -> Unit
 ) {
-    OutlinedTextField(value = "",
-        onValueChange = {},
+    OutlinedTextField(value = value,
+        onValueChange = { onValueChange(it) },
         shape = RoundedCornerShape(16.dp),
         keyboardActions = CustomModifiers.keyboardActions(),
         keyboardOptions = CustomModifiers.emailKeyboard(),
