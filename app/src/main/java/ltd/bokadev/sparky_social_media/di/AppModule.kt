@@ -8,7 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ltd.bokadev.sparky_social_media.data.AuthorizationInterceptor
-import ltd.bokadev.sparky_social_media.data.remote.ApiErrorDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.ApiErrorDto
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber

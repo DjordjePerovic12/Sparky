@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.BuildConfig.BASE_URL
 import ltd.bokadev.sparky_social_media.core.utils.Constants.NO_INFO
+import ltd.bokadev.sparky_social_media.core.validation.PasswordValidationResult
 import okhttp3.Request
 
 fun String?.toNonNull() = if (this.isNullOrEmpty()) NO_INFO else this
@@ -42,4 +43,22 @@ inline fun <reified T> Flow<T>.observeWithLifecycle(
             flowWithLifecycle(lifecycleOwner.lifecycle, minActiveState).collect(action)
         }
     }
+}
+
+
+fun String.isValidEmail(): Boolean {
+    val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\$")
+    return matches(emailRegex)
+}
+
+fun String.isValidPassword(): PasswordValidationResult {
+    val containsLowerCase = any { it.isLowerCase() }
+    val containsUpperCase = any { it.isUpperCase() }
+    val containsDigit = any { it.isDigit() }
+    return PasswordValidationResult(
+        hasNineCharacters = this.length < 9,
+        containsDigit = containsDigit,
+        containsLowercase = containsLowerCase,
+        containsUppercase = containsUpperCase
+    )
 }
