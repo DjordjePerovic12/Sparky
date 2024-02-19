@@ -5,4 +5,17 @@
     <string name="ignite_your_conversations_and_illuminate_your_world">Ignite your conversations and illuminate your world.</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
+    <string name="register">Register</string>
+    <string name="don_t_have_an_account">"Don't have an account? "</string>
+    <string name="hi_there">Hi There! 👋</string>
+    <string name="experience_the_world_at_your_fingertips_with_our_social_mobile_app">Experience the world at your fingertips with our social mobile app!</string>
+    <string name="email">Email</string>
+    <string name="example_gmail_com">Example@gmail.com</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="create_account">Create account</string>
+    <string name="have_an_account">"Have an account? "</string>
+    <string name="username">Username</string>
+    <string name="from_3_and_20_characters">From 3 and 20 characters</string>
+    <string name="must_be_a_valid_email">Must be a valid email</string>
 </resources>

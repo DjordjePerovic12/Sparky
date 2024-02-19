@@ -1,8 +1,8 @@
 package ltd.bokadev.sparky_social_media.core.navigation.destinations
 
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -18,9 +18,7 @@ fun NavGraphBuilder.loginScreenComposable(
     composable(route = Screen.LoginScreen.route,
         enterTransition = { fadeIn(animationSpec = tween(ANIMATION_DURATION)) },
         exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Down
-            )
+            fadeOut(animationSpec = tween(ANIMATION_DURATION))
         }) { navBackStackEntry ->
         val parentEntry = remember(navBackStackEntry) {
             navController.getBackStackEntry(Routes.AUTH)
