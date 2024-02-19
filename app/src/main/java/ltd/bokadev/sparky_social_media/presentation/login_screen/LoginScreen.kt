@@ -21,6 +21,7 @@ import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.components.PrimaryButton
 import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
 import ltd.bokadev.sparky_social_media.core.components.UserDataTextField
+import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -63,7 +64,10 @@ fun LoginScreen() {
                 bringIntoViewRequester = bringIntoViewRequester,
                 scope = scope,
                 placeholderText = "Email",
-                leadingIconId = R.drawable.ic_email
+                leadingIconId = R.drawable.ic_email,
+                onValueChange = {},
+                value = "state.username".toString(),
+                keyboardOptions = CustomModifiers.emailKeyboard(),
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
@@ -77,7 +81,10 @@ fun LoginScreen() {
                 scope = scope,
                 placeholderText = "Password",
                 leadingIconId = R.drawable.ic_lock,
-                trailingIconId = R.drawable.ic_show_password
+                trailingIconId = R.drawable.ic_show_password,
+                onValueChange = {},
+                value = "state.username",
+                keyboardOptions = CustomModifiers.passwordKeyboardDone(),
             )
             Spacer(modifier = Modifier.height(50.dp))
             PrimaryButton(
