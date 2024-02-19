@@ -108,13 +108,13 @@ fun LoginScreen(
                 text = stringResource(R.string.login),
                 //TODO: Handle colors when button is disabled
                 enabled = state.shouldEnableLogin,
-                color = if(state.shouldEnableLogin) SparkyTheme.colors.yellow else SparkyTheme.colors.primaryColor,
-                borderColor = if(state.shouldEnableLogin) SparkyTheme.colors.yellow else SparkyTheme.colors.primaryColor,
-                textColor = if(state.shouldEnableLogin) SparkyTheme.colors.primaryColor else SparkyTheme.colors.white,
+                color = if (state.shouldEnableLogin) SparkyTheme.colors.yellow else SparkyTheme.colors.primaryColor,
+                borderColor = if (state.shouldEnableLogin) SparkyTheme.colors.yellow else SparkyTheme.colors.primaryColor,
+                textColor = if (state.shouldEnableLogin) SparkyTheme.colors.primaryColor else SparkyTheme.colors.white,
                 textStyle = SparkyTheme.typography.poppinsMedium16,
                 modifier = Modifier.height(50.dp)
             ) {
-
+                viewModel.onEvent(LoginEvent.OnLoginClick)
             }
         }
     }

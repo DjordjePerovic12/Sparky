@@ -77,6 +77,8 @@ fun String.isValidEmail(): Boolean {
     return matches(emailRegex)
 }
 
+fun String.isToken() = this != NO_INFO
+
 fun String.isValidPassword(): PasswordValidationResult {
     val hasNineCharacters = this.length >= 9
     Timber.e("PASSWORD HAS9 $hasNineCharacters")

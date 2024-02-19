@@ -5,8 +5,11 @@ import kotlinx.coroutines.flow.Flow
 import ltd.bokadev.sparky_social_media.core.base.BaseDataSource
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.data.remote.dto.ApiErrorDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
+import ltd.bokadev.sparky_social_media.data.remote.mapper.toUserData
 import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
+import ltd.bokadev.sparky_social_media.domain.model.UserData
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,6 +21,10 @@ class SparkyRepositoryImpl @Inject constructor(
     override suspend fun register(registrationRequestDto: RegistrationRequestDto) = retrieveFlow {
         sparkyService.register(registrationRequestDto)
     }
+
+    override suspend fun login(loginRequestDto: LoginRequestDto) = retrieveFlow {
+        sparkyService.login(loginRequestDto)
+    }.mapResponse { toUserData() }
 }
 
 
