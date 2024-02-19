@@ -11,7 +11,7 @@ import ltd.bokadev.sparky_social_media.core.utils.Constants.NETWORK_PROBLEM
 import ltd.bokadev.sparky_social_media.core.utils.Constants.UNAUTHORIZED
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.core.utils.toNonNull
-import ltd.bokadev.sparky_social_media.data.remote.ApiErrorDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.ApiErrorDto
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException

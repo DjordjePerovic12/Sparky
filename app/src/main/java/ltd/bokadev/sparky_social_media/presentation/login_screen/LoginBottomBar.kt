@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,9 @@ import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
-fun LoginBottomBar() {
+fun LoginBottomBar(
+    onRegisterClick: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -31,7 +34,7 @@ fun LoginBottomBar() {
             .padding(vertical = 15.dp)
             .navigationBarsPadding()
     ) {
-        Text(text = buildAnnotatedString {
+        ClickableText(text = buildAnnotatedString {
             withStyle(
                 style = SpanStyle(
                     color = SparkyTheme.colors.textLightGray,
@@ -53,6 +56,7 @@ fun LoginBottomBar() {
             ) {
                 append(stringResource(R.string.register))
             }
-        })
+        },
+            onClick = { onRegisterClick() })
     }
 }

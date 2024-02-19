@@ -1,4 +1,5 @@
 import java.io.IOException
+import java.util.Properties
 
 plugins {
     `version-catalog`
@@ -39,7 +40,6 @@ fun generateVersionCode(): Int? {
     if (result.isEmpty()) result = "1"
     return result.toIntOrNull()
 }
-
 android {
     namespace = "ltd.bokadev.sparky_social_media"
     compileSdk = 34
@@ -82,7 +82,12 @@ android {
             dimension = "version"
             applicationIdSuffix = ".test"
             versionNameSuffix = "-test"
+            val properties = Properties()
+            properties.load(project.rootProject.file("local.properties").inputStream())
+
+            val apiKey = properties.getProperty("API_KEY")
             buildConfigField("String", "BASE_URL", "\"https://sparky.pl-coding.com:8081/\"")
+            buildConfigField("String", "API_KEY", apiKey)
         }
     }
 
