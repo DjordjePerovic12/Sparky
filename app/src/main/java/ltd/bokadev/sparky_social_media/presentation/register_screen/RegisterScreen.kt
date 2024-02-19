@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -18,11 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +29,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,8 +42,9 @@ import ltd.bokadev.sparky_social_media.core.utils.Constants.INVALID_PASSWORD_LEN
 import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_LOWERCASE
 import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_NUMBER
 import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_UPPERCASE
+import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
+import ltd.bokadev.sparky_social_media.core.utils.isValidUsername
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
-import ltd.bokadev.sparky_social_media.presentation.login_screen.LoginBottomBar
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -144,12 +143,15 @@ fun RegisterScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    UserDataTextField(bringIntoViewRequester = bringIntoViewRequester,
+                    UserDataTextField(
+                        bringIntoViewRequester = bringIntoViewRequester,
                         scope = scope,
                         placeholderText = "Username",
                         value = state.username,
                         leadingIconId = R.drawable.ic_person,
-                        onValueChange = { viewModel.onEvent(RegisterEvent.UsernameChanged(it)) })
+                        trailingIconId = if (state.username.isNotEmpty() && state.username.isValidUsername()) R.drawable.ic_check else null,
+                        keyboardOptions = CustomModifiers.emailKeyboard()
+                    ) { viewModel.onEvent(RegisterEvent.UsernameChanged(it)) }
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -168,12 +170,15 @@ fun RegisterScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    UserDataTextField(bringIntoViewRequester = bringIntoViewRequester,
+                    UserDataTextField(
+                        bringIntoViewRequester = bringIntoViewRequester,
                         scope = scope,
                         placeholderText = "Email",
                         value = state.email,
+                        trailingIconId = if (state.email.isNotEmpty() && state.emailError.isNotEmpty()) R.drawable.ic_check else null,
                         leadingIconId = R.drawable.ic_email,
-                        onValueChange = { viewModel.onEvent(RegisterEvent.EmailChanged(it)) })
+                        keyboardOptions = CustomModifiers.emailKeyboard()
+                    ) { viewModel.onEvent(RegisterEvent.EmailChanged(it)) }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = stringResource(R.string.password),
@@ -182,13 +187,17 @@ fun RegisterScreen(
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
-                    UserDataTextField(bringIntoViewRequester = bringIntoViewRequester,
+                    UserDataTextField(
+                        bringIntoViewRequester = bringIntoViewRequester,
                         scope = scope,
                         placeholderText = "Password",
                         leadingIconId = R.drawable.ic_lock,
                         trailingIconId = R.drawable.ic_show_password,
+                        onShowPasswordClick = { viewModel.onEvent(RegisterEvent.TogglePasswordVisibility) },
+                        visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         value = state.password,
-                        onValueChange = { viewModel.onEvent(RegisterEvent.PasswordChanged(it)) })
+                        keyboardOptions = CustomModifiers.passwordKeyboardDone()
+                    ) { viewModel.onEvent(RegisterEvent.PasswordChanged(it)) }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

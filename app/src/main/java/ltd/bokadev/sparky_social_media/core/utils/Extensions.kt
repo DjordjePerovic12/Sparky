@@ -1,9 +1,14 @@
 package ltd.bokadev.sparky_social_media.core.utils
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
@@ -106,5 +111,11 @@ suspend inline fun <T> Flow<Resource<T>>.collectLatestNoAuthCheck(
             is Resource.Error -> onError(it)
             else -> Unit
         }
+    }
+}
+
+inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
+    clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
+        onClick()
     }
 }

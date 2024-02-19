@@ -63,6 +63,10 @@ class RegisterViewModel @Inject constructor(
             is RegisterEvent.OnRegisterClick -> {
                 executeRegister()
             }
+
+            is RegisterEvent.TogglePasswordVisibility -> {
+                state = state.copy(isPasswordVisible = !state.isPasswordVisible)
+            }
         }
     }
 
@@ -132,7 +136,8 @@ data class RegisterState(
     val containsDigit: Boolean = false,
     val containsUppercase: Boolean = false,
     val containsLowercase: Boolean = false,
-    val shouldEnableButton: Boolean = false
+    val shouldEnableButton: Boolean = false,
+    val isPasswordVisible: Boolean = false
 )
 
 sealed class RegisterEvent {
@@ -141,5 +146,6 @@ sealed class RegisterEvent {
     data class UsernameChanged(val username: String) : RegisterEvent()
     data class EmailChanged(val email: String) : RegisterEvent()
     data class PasswordChanged(val password: String) : RegisterEvent()
+    data object TogglePasswordVisibility : RegisterEvent()
 }
 
