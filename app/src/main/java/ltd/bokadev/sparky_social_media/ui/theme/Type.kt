@@ -7,6 +7,7 @@ import javax.annotation.concurrent.Immutable
 
 @Immutable
 data class SparkyTypography(
+    val poppinsRegular12: TextStyle,
     val poppinsRegular14: TextStyle,
     val poppinsRegular20: TextStyle,
     val poppinsMedium16: TextStyle,
@@ -17,6 +18,7 @@ data class SparkyTypography(
 
 val LocalSparkyTypography = staticCompositionLocalOf {
     SparkyTypography(
+        poppinsRegular12 = TextStyle.Default,
         poppinsRegular14 = TextStyle.Default,
         poppinsRegular20 = TextStyle.Default,
         poppinsMedium16 = TextStyle.Default,
@@ -27,6 +29,9 @@ val LocalSparkyTypography = staticCompositionLocalOf {
 }
 
 val sparkyTypography = SparkyTypography(
+    poppinsRegular12 = TextStyle(
+        fontSize = 12.sp, lineHeight = 16.sp
+    ),
     poppinsRegular14 = TextStyle(
         fontSize = 14.sp, lineHeight = 20.sp
     ), poppinsRegular20 = TextStyle(
