@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -126,6 +125,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }) { innerPadding ->
                     SparkyNavigation(navController = appState.navController,
+                        modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
                         navigator = navigator,
                         showSnackBar = { message ->
                             appState.showSnackBar(message)

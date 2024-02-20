@@ -1,6 +1,7 @@
 package ltd.bokadev.sparky_social_media.core.navigation.graphs
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import ltd.bokadev.sparky_social_media.core.navigation.NavType
@@ -13,7 +14,8 @@ import timber.log.Timber
 
 @Composable
 fun SparkyNavigation(
-    navController: NavHostController, navigator: Navigator, showSnackBar: (message: String) -> Unit
+    navController: NavHostController, navigator: Navigator, showSnackBar: (message: String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     navigator.navigationFlow.observeWithLifecycle { navType ->
         Timber.e("navType $navType")
@@ -22,7 +24,8 @@ fun SparkyNavigation(
         )
     }
     NavHost(
-        navController = navController, route = ROOT, startDestination = SPLASH
+        navController = navController, route = ROOT, startDestination = SPLASH,
+        modifier = modifier
     ) {
         splashNavGraph(navController = navController, showSnackBar = showSnackBar)
         authNavGraph(navController = navController, showSnackBar = showSnackBar)

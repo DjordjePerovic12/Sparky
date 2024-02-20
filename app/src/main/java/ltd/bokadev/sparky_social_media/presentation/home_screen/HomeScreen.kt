@@ -1,20 +1,39 @@
 package ltd.bokadev.sparky_social_media.presentation.home_screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
 
 @Composable
 fun HomeScreen() {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(text = "HOME SCREEN")
+    Scaffold(topBar = {
+        SparkyTopBar("Home")
+    }) { innerPadding ->
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(15.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = innerPadding.calculateTopPadding())
+                .padding(top = 15.dp)
+                .padding(horizontal = 20.dp)
+        ) {
+            items(5) {
+                SparkyPostItem(
+                    userFullName = "Petar Gajevic",
+                    createdAt = "3:45 - April 1, 2024",
+                    postContent = "This is where your description lives. It’s limited to 160 characters including.",
+                    likes = 434,
+                    comments = 2342
+                )
+            }
+        }
     }
 }

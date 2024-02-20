@@ -121,3 +121,9 @@ inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier
         onClick()
     }
 }
+
+fun String.getInitials(): String {
+    return this.split(' ')
+        .mapNotNull { it.firstOrNull()?.toString() }
+        .reduce { acc, s -> acc + s }
+}
