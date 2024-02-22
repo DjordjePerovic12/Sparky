@@ -9,8 +9,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
+import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
 
 @Composable
 fun HomeScreen() {
@@ -24,6 +26,7 @@ fun HomeScreen() {
             verticalArrangement = Arrangement.spacedBy(15.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .hideKeyboard(LocalFocusManager.current)
                 .padding(top = innerPadding.calculateTopPadding())
                 .fillMaxSize()
                 .padding(horizontal = 20.dp)

@@ -23,8 +23,6 @@ class HomeScreenViewModel @Inject constructor(
 
     //TODO: Implement home screen viewModel
 
-    var a: String = ""
-
     var state by mutableStateOf(HomeScreenState())
         private set
 

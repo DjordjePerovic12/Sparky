@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -27,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -46,8 +49,11 @@ import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.navigation.graphs.SparkyNavigation
 import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
+import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
 import ltd.bokadev.sparky_social_media.core.utils.rememberAppState
 import ltd.bokadev.sparky_social_media.data.BottomNavItem
+import ltd.bokadev.sparky_social_media.presentation.MainEvent
+import ltd.bokadev.sparky_social_media.presentation.MainViewModel
 import ltd.bokadev.sparky_social_media.presentation.home_screen.CreatePostBottomSheet
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyAppTheme
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
@@ -55,6 +61,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
 
     @Inject
     internal lateinit var navigator: Navigator
@@ -93,13 +101,32 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                LaunchedEffect(key1 = viewModel.state.shouldCloseBottomSheet) {
+                    if (viewModel.state.shouldCloseBottomSheet) {
+                        scope.launch {
+                            bottomSheetState.hide()
+                        }
+                        viewModel.resetShouldCloseBottomSheet()
+                    }
+                }
 
                 ModalBottomSheetLayout(
+                    modifier = Modifier.hideKeyboard(LocalFocusManager.current),
                     sheetContent = {
-                        CreatePostBottomSheet()
-                    }, sheetState = bottomSheetState, sheetShape = RoundedCornerShape(
+                        CreatePostBottomSheet(viewModel = viewModel, onCloseClick = {
+                            viewModel.resetMessage()
+                            scope.launch {
+                                bottomSheetState.hide()
+                            }
+                        }) {
+                            viewModel.onEvent(MainEvent.OnCreatePostClick)
+                        }
+                    },
+                    sheetState = bottomSheetState,
+                    sheetShape = RoundedCornerShape(
                         topStart = 20.dp, topEnd = 20.dp
-                    ), scrimColor = SparkyTheme.colors.primaryColor.copy(alpha = .5f),
+                    ),
+                    scrimColor = SparkyTheme.colors.primaryColor.copy(alpha = .5f),
                     sheetBackgroundColor = SparkyTheme.colors.primaryColor
                 ) {
                     Scaffold(snackbarHost = CustomModifiers.snackBarHost, floatingActionButton = {
@@ -111,7 +138,7 @@ class MainActivity : ComponentActivity() {
                             },
                             modifier = Modifier
                                 .size(50.dp)
-                                .offset(y = 95.dp)
+                                .offset(y = 80.dp)
                                 .clip(CircleShape),
                             containerColor = SparkyTheme.colors.yellow
                         ) {
@@ -144,6 +171,7 @@ class MainActivity : ComponentActivity() {
                             },
                             bottomBarState = bottomBarState,
                             modifier = Modifier
+                                .hideKeyboard(LocalFocusManager.current)
                                 .navigationBarsPadding()
                                 .height(80.dp)
                                 .clip(RoundedCornerShape(topEnd = 24.dp, topStart = 24.dp))

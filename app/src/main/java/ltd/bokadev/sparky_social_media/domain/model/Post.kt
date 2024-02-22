@@ -1,7 +1,7 @@
 package ltd.bokadev.sparky_social_media.domain.model
 
 data class Post(
-    val id: Int,
+    val id: String,
     val content: String,
     val createdAt: String,
     val commentCount: Long,
