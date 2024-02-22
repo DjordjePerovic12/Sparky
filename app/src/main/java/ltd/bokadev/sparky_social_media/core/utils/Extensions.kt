@@ -153,11 +153,11 @@ suspend inline fun <T> Flow<Resource<T>>.collectLatestWithAuthCheck(
                     onError(it)
                     if (it.isUnauthorized == true) handleUnauthorized(navigator)
                     if (it.statusCode == 422) {
-//                        navigator.popUpTo(
-//                            route = Screen.ConnectedDriverScreen.route,
-//                            staticRoute = ROOT,
-//                            inclusive = true
-//                        )
+                        navigator.popUpTo(
+                            route = Screen.LoginScreen.route,
+                            staticRoute = Routes.AUTH,
+                            inclusive = true
+                        )
                     }
                 }
 
@@ -172,6 +172,7 @@ suspend fun handleUnauthorized(navigator: Navigator) {
         route = Screen.LoginScreen.route, staticRoute = Routes.AUTH, inclusive = true
     )
 }
+
 
 fun Modifier.hideKeyboard(focusManager: FocusManager): Modifier = composed {
     pointerInput(Unit) {

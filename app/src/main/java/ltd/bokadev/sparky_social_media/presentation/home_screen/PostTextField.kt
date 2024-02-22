@@ -43,7 +43,6 @@ fun PostTextField(
                 style = SparkyTheme.typography.poppinsRegular14
             )
         })
-        //static string for now, until I implement functionalities
         Text(
             text = "${viewModel.state.message.length}/$MAX_POST_LENGTH",
             textAlign = TextAlign.End,
