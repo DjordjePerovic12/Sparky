@@ -21,6 +21,8 @@ class HomeScreenViewModel @Inject constructor(
     private val navigator: Navigator
 ) : ViewModel() {
 
+    //TODO: Implement home screen viewModel
+
     var state by mutableStateOf(HomeScreenState())
         private set
 
@@ -36,11 +38,6 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun executeCreatePost(){
-        viewModelScope.launch {
-            repository.createPost(PostRequest(content = state.postContent))
-        }
-    }
 
 }
 
