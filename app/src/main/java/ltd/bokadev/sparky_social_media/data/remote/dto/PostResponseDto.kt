@@ -6,7 +6,7 @@ import ltd.bokadev.sparky_social_media.domain.model.UserData
 
 @JsonClass(generateAdapter = true)
 data class PostResponseDto(
-    @Json(name = "id") val id: Int? = null,
+    @Json(name = "id") val id: String? = null,
     @Json(name = "content") val content: String? = null,
     @Json(name = "createdAt") val createdAt: String? = null,
     @Json(name = "commentCount") val commentCount: Long? = null,

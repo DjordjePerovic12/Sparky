@@ -18,16 +18,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.components.PrimaryButton
+import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
+import ltd.bokadev.sparky_social_media.core.utils.noRippleClickable
+import ltd.bokadev.sparky_social_media.presentation.MainEvent
+import ltd.bokadev.sparky_social_media.presentation.MainViewModel
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
-fun CreatePostBottomSheet() {
+fun CreatePostBottomSheet(
+    viewModel: MainViewModel,
+    onCloseClick: () -> Unit,
+    onCreatePostClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .height(410.dp)
@@ -74,14 +83,18 @@ fun CreatePostBottomSheet() {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(end = 20.dp)
             ) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .size(40.dp)
-                        .background(SparkyTheme.colors.white.copy(alpha = 0.1f)),
+                        .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
+                        .noRippleClickable {
+                            onCloseClick()
+                        },
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Icon(
@@ -94,7 +107,6 @@ fun CreatePostBottomSheet() {
             }
 
         }
-//        Spacer(modifier = Modifier.height(10.dp))
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,7 +114,6 @@ fun CreatePostBottomSheet() {
                 .background(SparkyTheme.colors.lightGray)
                 .height(1.dp)
         )
-//        Spacer(modifier = Modifier.height(10.dp))
 
         Text(
             text = stringResource(R.string.message),
@@ -113,6 +124,10 @@ fun CreatePostBottomSheet() {
         Spacer(modifier = Modifier.height(10.dp))
 
         PostTextField(
+            viewModel = viewModel,
+            onValueChange = {
+                viewModel.onEvent(MainEvent.OnMessageChange(it))
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
@@ -131,13 +146,17 @@ fun CreatePostBottomSheet() {
         ) {
             PrimaryButton(
                 text = stringResource(R.string.create_post),
-                color = SparkyTheme.colors.yellow,
-                borderColor = SparkyTheme.colors.yellow,
-                textColor = SparkyTheme.colors.primaryColor,
+                enabled = viewModel.state.shouldEnableCreateButton,
+                color = if (viewModel.state.shouldEnableCreateButton) SparkyTheme.colors.yellow else SparkyTheme.colors.primaryColor,
+                borderColor = if (viewModel.state.shouldEnableCreateButton) SparkyTheme.colors.yellow else SparkyTheme.colors.white.copy(
+                    0.1f
+                ),
+                textColor = if (viewModel.state.shouldEnableCreateButton) SparkyTheme.colors.primaryColor else SparkyTheme.colors.white,
                 textStyle = SparkyTheme.typography.poppinsMedium16,
-                modifier = Modifier.height(50.dp)
+                modifier = Modifier.height(50.dp),
+                shouldShowCircularProgressIndicator = viewModel.state.shouldShowCircularProgressIndicator
             ) {
-
+                onCreatePostClick()
             }
         }
 

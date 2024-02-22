@@ -13,16 +13,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
+import ltd.bokadev.sparky_social_media.core.utils.Constants.MAX_POST_LENGTH
+import ltd.bokadev.sparky_social_media.presentation.MainViewModel
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
-fun PostTextField(modifier: Modifier = Modifier) {
+fun PostTextField(
+    viewModel: MainViewModel, onValueChange: (String) -> Unit, modifier: Modifier = Modifier
+) {
 
     Box(
         modifier = modifier, contentAlignment = Alignment.BottomEnd
     ) {
-        OutlinedTextField(value = "", onValueChange = {
-
+        OutlinedTextField(value = viewModel.state.message, onValueChange = {
+            onValueChange(it)
         }, colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = SparkyTheme.colors.white.copy(0.1f),
             unfocusedContainerColor = SparkyTheme.colors.white.copy(0.1f),
@@ -39,9 +43,8 @@ fun PostTextField(modifier: Modifier = Modifier) {
                 style = SparkyTheme.typography.poppinsRegular14
             )
         })
-        //static string for now, until I implement functionalities
         Text(
-            text = "1/280",
+            text = "${viewModel.state.message.length}/$MAX_POST_LENGTH",
             textAlign = TextAlign.End,
             color = SparkyTheme.colors.white,
             style = SparkyTheme.typography.poppinsRegular12,
