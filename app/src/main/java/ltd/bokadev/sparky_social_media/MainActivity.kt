@@ -17,6 +17,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -26,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,12 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.navigation.graphs.SparkyNavigation
 import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
 import ltd.bokadev.sparky_social_media.core.utils.rememberAppState
 import ltd.bokadev.sparky_social_media.data.BottomNavItem
+import ltd.bokadev.sparky_social_media.presentation.home_screen.CreatePostBottomSheet
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyAppTheme
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 import javax.inject.Inject
@@ -52,6 +59,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     internal lateinit var navigator: Navigator
 
+    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
@@ -68,6 +76,12 @@ class MainActivity : ComponentActivity() {
                 val appState = rememberAppState()
                 var bottomBarState by remember { (mutableStateOf(false)) }
                 val navBackStackEntry by appState.navController.currentBackStackEntryAsState()
+                val scope = rememberCoroutineScope()
+
+                //I know you pointed out my naming for these, here I use bottomSheetState because of the valu wrapper ModalBottomSheetValue
+                val bottomSheetState = rememberModalBottomSheetState(
+                    initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true
+                )
 
                 when (navBackStackEntry?.destination?.route) {
                     Screen.HomeScreen.route -> {
@@ -80,56 +94,68 @@ class MainActivity : ComponentActivity() {
                 }
 
 
-                Scaffold(snackbarHost = CustomModifiers.snackBarHost, floatingActionButton = {
-                    if (bottomBarState) FloatingActionButton(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .size(50.dp)
-                            .offset(y = 95.dp)
-                            .clip(CircleShape),
-                        containerColor = SparkyTheme.colors.yellow
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_add),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                    }
-                }, floatingActionButtonPosition = FabPosition.Center, bottomBar = {
-                    BottomNavigationBar(
-                        items = listOf(
-                            BottomNavItem(
-                                name = "Posts",
-                                route = Screen.HomeScreen.route,
-                                icon = R.drawable.ic_home
-                            ), BottomNavItem(
-                                name = "Profile",
-                                route = Screen.LoginScreen.route,
-                                icon = R.drawable.ic_person
-                            )
-                        ),
-                        navController = appState.navController,
-                        onItemClick = {
-                            appState.navController.navigate(it.route) {
-                                popUpTo(Screen.HomeScreen.route) {
-                                    inclusive = it.route == Screen.HomeScreen.route
+                ModalBottomSheetLayout(
+                    sheetContent = {
+                        CreatePostBottomSheet()
+                    }, sheetState = bottomSheetState, sheetShape = RoundedCornerShape(
+                        topStart = 20.dp, topEnd = 20.dp
+                    ), scrimColor = SparkyTheme.colors.primaryColor.copy(alpha = .5f),
+                    sheetBackgroundColor = SparkyTheme.colors.primaryColor
+                ) {
+                    Scaffold(snackbarHost = CustomModifiers.snackBarHost, floatingActionButton = {
+                        if (bottomBarState) FloatingActionButton(
+                            onClick = {
+                                scope.launch {
+                                    bottomSheetState.show()
                                 }
-                            }
-                        },
-                        bottomBarState = bottomBarState,
-                        modifier = Modifier
-                            .navigationBarsPadding()
-                            .padding(top = 20.dp)
-                            .height(80.dp)
-                            .clip(RoundedCornerShape(topEnd = 24.dp, topStart = 24.dp))
-                    )
-                }) { innerPadding ->
-                    SparkyNavigation(navController = appState.navController,
-                        modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
-                        navigator = navigator,
-                        showSnackBar = { message ->
-                            appState.showSnackBar(message)
-                        })
+                            },
+                            modifier = Modifier
+                                .size(50.dp)
+                                .offset(y = 95.dp)
+                                .clip(CircleShape),
+                            containerColor = SparkyTheme.colors.yellow
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_add),
+                                contentDescription = null,
+                                tint = Color.Unspecified
+                            )
+                        }
+                    }, floatingActionButtonPosition = FabPosition.Center, bottomBar = {
+                        BottomNavigationBar(
+                            items = listOf(
+                                BottomNavItem(
+                                    name = "Posts",
+                                    route = Screen.HomeScreen.route,
+                                    icon = R.drawable.ic_home
+                                ), BottomNavItem(
+                                    name = "Profile",
+                                    route = Screen.LoginScreen.route,
+                                    icon = R.drawable.ic_person
+                                )
+                            ),
+                            navController = appState.navController,
+                            onItemClick = {
+                                appState.navController.navigate(it.route) {
+                                    popUpTo(Screen.HomeScreen.route) {
+                                        inclusive = it.route == Screen.HomeScreen.route
+                                    }
+                                }
+                            },
+                            bottomBarState = bottomBarState,
+                            modifier = Modifier
+                                .navigationBarsPadding()
+                                .height(80.dp)
+                                .clip(RoundedCornerShape(topEnd = 24.dp, topStart = 24.dp))
+                        )
+                    }) { innerPadding ->
+                        SparkyNavigation(navController = appState.navController,
+                            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
+                            navigator = navigator,
+                            showSnackBar = { message ->
+                                appState.showSnackBar(message)
+                            })
+                    }
                 }
             }
         }

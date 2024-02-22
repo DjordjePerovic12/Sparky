@@ -1,7 +1,9 @@
 package ltd.bokadev.sparky_social_media.data.remote.services
 
+import ltd.bokadev.sparky_social_media.data.remote.dto.CreatePostRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginResponseDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.PostResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
 import retrofit2.Response
 import retrofit2.http.Body
@@ -13,4 +15,8 @@ interface SparkyService {
 
     @POST("login")
     suspend fun login(@Body loginRequestDto: LoginRequestDto) : Response<LoginResponseDto>
+
+
+    @POST("post")
+    suspend fun createPost(@Body createPostRequestDto: CreatePostRequestDto): Response<PostResponseDto>
 }

@@ -18,4 +18,8 @@
     <string name="username">Username</string>
     <string name="from_3_and_20_characters">From 3 and 20 characters</string>
     <string name="must_be_a_valid_email">Must be a valid email</string>
+    <string name="create_new_post">Create new post</string>
+    <string name="message">Message</string>
+    <string name="enter_your_message_here">Enter your message here</string>
+    <string name="create_post">Create post</string>
 </resources>

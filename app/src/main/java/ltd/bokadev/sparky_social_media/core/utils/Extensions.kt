@@ -29,6 +29,8 @@ fun String?.toNonNull() = if (this.isNullOrEmpty()) NO_INFO else this
 
 fun Int?.toNonNull() = this ?: -1
 
+fun Long?.toNonNull() = this ?: -1
+
 fun Double?.toNonNull() = this ?: 0.0
 
 infix fun Request.signWithToken(accessToken: String?): Request {
