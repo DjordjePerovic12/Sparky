@@ -48,7 +48,7 @@ class SearchViewModel @Inject constructor(
     }
 
 
-    fun searchDebounce(searchQuery: String) {
+    private fun searchDebounce(searchQuery: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             delay(500)
@@ -56,7 +56,6 @@ class SearchViewModel @Inject constructor(
                 val result = repository.searchProfiles(
                     searchQuery = searchQuery, pageCount = 20
                 )
-
                 result.collectLatest {
                     _users.value = it
                 }

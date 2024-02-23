@@ -11,5 +11,6 @@ data class UserDto(
     @Json(name = "registeredAt") val registeredAt: String? = null,
     @Json(name = "postCount") val postCount: Long? = null,
     @Json(name = "followerCount") val followerCount: Long? = null,
-    @Json(name = "followingCount") val followingCount: Long? = null
+    @Json(name = "followingCount") val followingCount: Long? = null,
+    @Json(name = "isFollowing") val isFollowing: Boolean? = null
 )

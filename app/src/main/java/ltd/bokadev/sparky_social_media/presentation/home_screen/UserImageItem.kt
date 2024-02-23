@@ -16,8 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import ltd.bokadev.sparky_social_media.core.utils.getInitials
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
@@ -33,8 +35,7 @@ fun UserImageItem(
         frameSize.toPx()
     }
     val stroke = Stroke(
-        width = 0f,
-        pathEffect = PathEffect.dashPathEffect(
+        width = 0f, pathEffect = PathEffect.dashPathEffect(
             floatArrayOf(
                 8.75f, 17.5f, 8.75f, 17.5f
             ), path
@@ -85,7 +86,9 @@ fun UserImageItem(
                         color = SparkyTheme.colors.primaryColor
                     )
                 }
-            }
+            } else AsyncImage(
+                model = imageUrl, contentDescription = null, contentScale = ContentScale.Crop
+            )
         }
     }
 
