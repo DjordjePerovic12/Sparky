@@ -3,6 +3,7 @@ package ltd.bokadev.sparky_social_media.core.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,10 +17,8 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,8 +33,7 @@ import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
 import ltd.bokadev.sparky_social_media.core.utils.TopBarStyle
-import ltd.bokadev.sparky_social_media.core.utils.noRippleClickable
-import ltd.bokadev.sparky_social_media.presentation.search_screen.CustomSearchBar
+import ltd.bokadev.sparky_social_media.presentation.search_screen.SparkySearchBar
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -87,17 +85,19 @@ fun SparkyTopBar(
                                 .clip(RoundedCornerShape(10.dp))
                                 .size(40.dp)
                                 .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
+                                .clickable {
+                                    if (onSearchClick != null) {
+                                        onSearchClick()
+                                    }
+                                }
                         ) {
-                            Icon(painter = painterResource(id = R.drawable.ic_search),
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_search),
                                 contentDescription = null,
                                 tint = Color.Unspecified,
                                 modifier = Modifier
                                     .align(Alignment.Center)
-                                    .noRippleClickable {
-                                        if (onSearchClick != null) {
-                                            onSearchClick()
-                                        }
-                                    })
+                            )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
 
@@ -186,7 +186,7 @@ fun SparkyTopBar(
         Spacer(
             modifier = Modifier.height(24.dp)
         )
-        CustomSearchBar(
+        SparkySearchBar(
             searchQuery = searchQuery ?: "",
             placeholder = stringResource(R.string.search),
             focusRequester = FocusRequester(),

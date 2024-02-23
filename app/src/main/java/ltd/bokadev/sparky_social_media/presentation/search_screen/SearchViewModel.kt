@@ -17,8 +17,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
+import ltd.bokadev.sparky_social_media.domain.model.RegistrationTime
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,6 +46,12 @@ class SearchViewModel @Inject constructor(
                 state = state.copy(searchQuery = event.searchQuery)
                 searchDebounce(event.searchQuery)
             }
+
+            is SearchEvent.OnFetchingUsersError -> {
+                viewModelScope.launch {
+                    _snackBarChannel.send("Error fetching more users")
+                }
+            }
         }
     }
 
@@ -59,7 +67,6 @@ class SearchViewModel @Inject constructor(
                 result.collectLatest {
                     _users.value = it
                 }
-
             }
 
         }
@@ -68,8 +75,9 @@ class SearchViewModel @Inject constructor(
 
 sealed class SearchEvent {
     data class OnSearchQueryChange(val searchQuery: String) : SearchEvent()
+    data object OnFetchingUsersError : SearchEvent()
 }
 
 data class SearchState(
-    val searchQuery: String = String()
+    val searchQuery: String = String(), val users: List<UserDetails> = emptyList()
 )

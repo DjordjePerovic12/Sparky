@@ -22,7 +22,7 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 @Composable
 fun ButtonUnfollow(onClick: () -> Unit) {
     Button(
-        modifier = Modifier.size(width = 65.dp, height = 35.dp),
+        modifier = Modifier.size(width = 75.dp, height = 35.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = SparkyTheme.colors.white
         ),

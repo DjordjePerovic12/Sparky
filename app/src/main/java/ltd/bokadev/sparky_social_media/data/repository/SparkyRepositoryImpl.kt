@@ -50,7 +50,7 @@ class SparkyRepositoryImpl @Inject constructor(
         Pager(
             PagingConfig(
                 pageSize = pageCount,
-                prefetchDistance = 10,
+                prefetchDistance = 1,
                 enablePlaceholders = false
             )
         ) {

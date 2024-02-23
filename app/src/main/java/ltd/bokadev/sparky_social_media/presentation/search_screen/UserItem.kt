@@ -31,7 +31,7 @@ fun UserItem(
             UserImageItem(userFullName = user.username, imageUrl = user.profilePictureUrl)
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.End
+                horizontalAlignment = Alignment.Start
             ) {
                 Text(
                     text = user.username,
@@ -45,10 +45,10 @@ fun UserItem(
                 )
             }
         }
-        if (user.isFollowing) ButtonFollow {
+        if (user.isFollowing) ButtonUnfollow {
 
         }
-        else ButtonUnfollow {
+        else ButtonFollow {
 
         }
     }

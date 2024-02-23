@@ -36,7 +36,7 @@ class UsersPagingSource(
             LoadResult.Page(
                 data = users?.toUsers() ?: emptyList(),
                 prevKey = if (currentPage == 0) null else currentPage - 1,
-                nextKey = if (users?.isEmpty() == true) null else if (users?.size!! <= 20) null else currentPage + 1
+                nextKey = if (users.isNullOrEmpty()) null else currentPage + 1
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

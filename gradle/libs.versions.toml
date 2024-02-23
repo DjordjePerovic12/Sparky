@@ -1,6 +1,6 @@
 [versions]
 
-minSdk = "24"
+minSdk = "26"
 navigationSafeArgsGradlePlugin = "2.7.4"
 signalr = "8.0.0-preview.7.23375.9"
 targetSdk = "34"
