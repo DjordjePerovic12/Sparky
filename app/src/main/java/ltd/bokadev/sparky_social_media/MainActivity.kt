@@ -96,6 +96,10 @@ class MainActivity : ComponentActivity() {
                         bottomBarState = true
                     }
 
+                    Screen.SearchScreen.route -> {
+                        bottomBarState = true
+                    }
+
                     else -> {
                         bottomBarState = false
                     }

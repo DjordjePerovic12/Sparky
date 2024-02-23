@@ -15,10 +15,17 @@ import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
 import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeScreenViewModel
+) {
     Scaffold(
         topBar = {
-            SparkyTopBar("Home")
+            SparkyTopBar(
+                style = "Home",
+                onSearchClick = {
+                    viewModel.onEvent(HomeScreenEvent.OnSearchClick)
+                }
+            )
         },
     ) { innerPadding ->
         LazyColumn(
