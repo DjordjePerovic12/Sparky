@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
+import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import ltd.bokadev.sparky_social_media.presentation.login_screen.LoginState
@@ -17,8 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val repository: SparkyRepository,
-    private val navigator: Navigator
+    private val repository: SparkyRepository, private val navigator: Navigator
 ) : ViewModel() {
 
     //TODO: Implement home screen viewModel
@@ -35,15 +35,25 @@ class HomeScreenViewModel @Inject constructor(
             is HomeScreenEvent.OnCreatePostClick -> {
 
             }
+
+            is HomeScreenEvent.OnSearchClick -> {
+                navigateToSearchScreen()
+            }
         }
     }
 
+    private fun navigateToSearchScreen() {
+        viewModelScope.launch {
+            navigator.navigateTo(Screen.SearchScreen.route)
+        }
+    }
 
 }
 
 
 sealed class HomeScreenEvent {
     data class OnCreatePostClick(val content: String) : HomeScreenEvent()
+    data object OnSearchClick : HomeScreenEvent()
 }
 
 data class HomeScreenState(

@@ -11,15 +11,15 @@ import androidx.navigation.compose.composable
 import ltd.bokadev.sparky_social_media.core.navigation.Routes
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.Constants
-import ltd.bokadev.sparky_social_media.presentation.home_screen.HomeScreen
-import ltd.bokadev.sparky_social_media.presentation.home_screen.HomeScreenViewModel
 import ltd.bokadev.sparky_social_media.presentation.register_screen.RegisterScreen
 import ltd.bokadev.sparky_social_media.presentation.register_screen.RegisterViewModel
+import ltd.bokadev.sparky_social_media.presentation.search_screen.SearchScreen
+import ltd.bokadev.sparky_social_media.presentation.search_screen.SearchViewModel
 
-fun NavGraphBuilder.homeScreenComposable(
+fun NavGraphBuilder.searchScreenComposable(
     navController: NavController, showSnackBar: (message: String) -> Unit
 ) {
-    composable(route = Screen.HomeScreen.route,
+    composable(route = Screen.SearchScreen.route,
         enterTransition = { fadeIn(animationSpec = tween(Constants.ANIMATION_DURATION)) },
         exitTransition = {
             fadeOut(animationSpec = tween(Constants.ANIMATION_DURATION))
@@ -27,7 +27,7 @@ fun NavGraphBuilder.homeScreenComposable(
         val parentEntry = remember(navBackStackEntry) {
             navController.getBackStackEntry(Routes.ROOT)
         }
-        val homeViewModel = hiltViewModel<HomeScreenViewModel>()
-        HomeScreen(viewModel = homeViewModel)
+        val searchViewModel = hiltViewModel<SearchViewModel>()
+        SearchScreen(viewModel = searchViewModel)
     }
 }
