@@ -34,6 +34,8 @@ fun UserImageItem(
     val path = with(LocalDensity.current) {
         frameSize.toPx()
     }
+
+    //Will handle better after finishing the functionalities of the app
     val stroke = Stroke(
         width = 0f, pathEffect = PathEffect.dashPathEffect(
             floatArrayOf(

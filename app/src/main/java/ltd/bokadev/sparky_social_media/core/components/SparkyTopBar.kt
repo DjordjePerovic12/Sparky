@@ -41,6 +41,7 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 fun SparkyTopBar(
     style: String = "Default",
     searchQuery: String? = null,
+    onCrossClick: (() -> Unit)? = null,
     onSearchChange: ((String) -> Unit)? = null,
     onSearchClick: (() -> Unit)? = null
 ) {
@@ -80,23 +81,20 @@ fun SparkyTopBar(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier.padding(top = 15.dp)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(10.dp))
-                                .size(40.dp)
-                                .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
-                                .clickable {
-                                    if (onSearchClick != null) {
-                                        onSearchClick()
-                                    }
+                        Box(modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .size(40.dp)
+                            .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
+                            .clickable {
+                                if (onSearchClick != null) {
+                                    onSearchClick()
                                 }
-                        ) {
+                            }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_search),
                                 contentDescription = null,
                                 tint = Color.Unspecified,
-                                modifier = Modifier
-                                    .align(Alignment.Center)
+                                modifier = Modifier.align(Alignment.Center)
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
@@ -190,6 +188,11 @@ fun SparkyTopBar(
             searchQuery = searchQuery ?: "",
             placeholder = stringResource(R.string.search),
             focusRequester = FocusRequester(),
+            onCrossClick = {
+                if (onCrossClick != null) {
+                    onCrossClick()
+                }
+            },
             onSearchChanged = {
                 if (onSearchChange != null) {
                     onSearchChange(it)

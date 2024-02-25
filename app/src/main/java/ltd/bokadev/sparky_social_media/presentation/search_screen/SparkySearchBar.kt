@@ -1,6 +1,7 @@
 package ltd.bokadev.sparky_social_media.presentation.search_screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.relocation.BringIntoViewRequester
@@ -30,6 +31,7 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 fun SparkySearchBar(
     searchQuery: String,
     keyboardOptions: KeyboardOptions,
+    onCrossClick: () -> Unit,
     bringIntoViewRequester: BringIntoViewRequester,
     visualTransformation: VisualTransformation,
     placeholder: String,
@@ -65,7 +67,11 @@ fun SparkySearchBar(
                 painter = painterResource(id = R.drawable.ic_cross),
                 contentDescription = null,
                 tint = SparkyTheme.colors.white,
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier
+                    .size(12.dp)
+                    .clickable {
+                        onCrossClick()
+                    }
             )
         }, modifier = Modifier
             .fillMaxWidth()
