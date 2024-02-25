@@ -17,7 +17,8 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun UserItem(
-    user: UserDetails
+    user: UserDetails,
+    onFollowClick: ((UserDetails) -> Unit)? = null
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -49,7 +50,9 @@ fun UserItem(
 
         }
         else ButtonFollow {
-
+            if (onFollowClick != null) {
+                onFollowClick(user)
+            }
         }
     }
 }

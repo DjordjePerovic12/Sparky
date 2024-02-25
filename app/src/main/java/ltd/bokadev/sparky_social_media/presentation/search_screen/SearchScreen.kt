@@ -56,7 +56,12 @@ fun SearchScreen(
                     items(users.itemCount) { index ->
                         val user = users[index]
                         if (user != null) {
-                            UserItem(user = user)
+                            UserItem(
+                                user = user,
+                                onFollowClick = {
+                                    viewModel.onEvent(SearchEvent.OnFollowClick(it))
+                                }
+                            )
                         }
                     }
                 } else item {

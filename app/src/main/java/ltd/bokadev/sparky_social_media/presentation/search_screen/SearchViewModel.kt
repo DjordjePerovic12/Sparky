@@ -17,8 +17,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
+import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.RegistrationTime
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
+import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import timber.log.Timber
 import java.time.ZonedDateTime
@@ -60,8 +62,16 @@ class SearchViewModel @Inject constructor(
             }
 
             is SearchEvent.TriggerLoader -> {
-                if (state.searchQuery.isNotEmpty()) state = state.copy(isLoading = true) else
-                    state = state.copy(isLoading = false)
+                state =
+                    if (state.searchQuery.isNotEmpty()) state.copy(isLoading = true) else state.copy(
+                        isLoading = false
+                    )
+            }
+
+            is SearchEvent.OnFollowClick -> {
+                viewModelScope.launch {
+                    executeFollowUser(event.user)
+                }
             }
         }
     }
@@ -90,6 +100,17 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
+    private fun executeFollowUser(user: UserDetails) {
+        viewModelScope.launch {
+            repository.followUser(UserIdRequest(user.id))
+                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+                    _snackBarChannel.send("Successfully followed ${user.username} ")
+                }, onError = {
+                    _snackBarChannel.send("Error following user")
+                })
+        }
+    }
 }
 
 sealed class SearchEvent {
@@ -97,6 +118,7 @@ sealed class SearchEvent {
     data object OnFetchingUsersError : SearchEvent()
     data object OnCrossClick : SearchEvent()
     data object TriggerLoader : SearchEvent()
+    data class OnFollowClick(val user: UserDetails) : SearchEvent()
 }
 
 data class SearchState(

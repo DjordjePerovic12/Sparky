@@ -18,7 +18,3 @@ fun PostResponseDto.toPost(): Post {
         author = this.author?.toUserData() ?: mockUser
     )
 }
-
-fun PostRequest.toDto(): CreatePostRequestDto {
-    return CreatePostRequestDto(content = this.content.toNonNull())
-}

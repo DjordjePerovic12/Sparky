@@ -9,10 +9,12 @@ import ltd.bokadev.sparky_social_media.data.UsersPagingSource
 import ltd.bokadev.sparky_social_media.data.remote.dto.CreatePostRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.UserIdRequestDto
 import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
 import ltd.bokadev.sparky_social_media.domain.model.UserData
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
+import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 
 interface SparkyRepository {
     suspend fun register(registrationRequestDto: RegistrationRequestDto): Flow<Resource<Unit>>
@@ -22,4 +24,6 @@ interface SparkyRepository {
         searchQuery: String,
         pageCount: Int
     ): Flow<PagingData<UserDetails>>
+
+    suspend fun followUser(userIdRequest: UserIdRequest): Flow<Resource<Unit>>
 }
