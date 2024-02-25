@@ -5,9 +5,10 @@ import com.squareup.moshi.JsonClass
 data class UserDetails(
     val id: String,
     val username: String,
-    val profilePictureUrl: String,
+    val profilePictureUrl: String? = null,
     val registeredAt: String,
     val postCount: Long,
     val followerCount: Long,
-    val followingCount: Long
+    val followingCount: Long,
+    val isFollowing: Boolean
 )

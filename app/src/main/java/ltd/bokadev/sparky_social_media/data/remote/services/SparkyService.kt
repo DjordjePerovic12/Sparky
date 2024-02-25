@@ -6,6 +6,7 @@ import ltd.bokadev.sparky_social_media.data.remote.dto.LoginResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.PostResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.UserResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -28,5 +29,5 @@ interface SparkyService {
         @Query("query") searchQuery: String,
         @Query("page") page: Int,
         @Query("pageCount") pageCount: Int
-    ) : Response<List<UserDto>>
+    ) : Response<List<UserResponseDto>>
 }

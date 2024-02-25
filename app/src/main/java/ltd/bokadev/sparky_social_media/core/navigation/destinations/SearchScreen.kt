@@ -28,6 +28,6 @@ fun NavGraphBuilder.searchScreenComposable(
             navController.getBackStackEntry(Routes.ROOT)
         }
         val searchViewModel = hiltViewModel<SearchViewModel>()
-        SearchScreen(viewModel = searchViewModel)
+        SearchScreen(viewModel = searchViewModel, showSnackBar = showSnackBar)
     }
 }
