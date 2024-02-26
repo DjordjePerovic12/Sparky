@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
 import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
 
@@ -18,14 +19,14 @@ import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
 fun HomeScreen(
     viewModel: HomeScreenViewModel
 ) {
+    val state = viewModel.state
+    val posts = viewModel.posts.collectAsLazyPagingItems()
+
     Scaffold(
         topBar = {
-            SparkyTopBar(
-                style = "Home",
-                onSearchClick = {
-                    viewModel.onEvent(HomeScreenEvent.OnSearchClick)
-                }
-            )
+            SparkyTopBar(style = "Home", onSearchClick = {
+                viewModel.onEvent(HomeScreenEvent.OnSearchClick)
+            })
         },
     ) { innerPadding ->
         LazyColumn(
@@ -38,14 +39,14 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(horizontal = 20.dp)
         ) {
-            items(5) {
-                SparkyPostItem(
-                    userFullName = "Petar Gajevic",
-                    createdAt = "3:45 - April 1, 2024",
-                    postContent = "This is where your description lives. It’s limited to 160 characters including.",
-                    likes = 434,
-                    comments = 2342
-                )
+            items(posts.itemCount) { index ->
+                val post = posts[index]
+                if (post != null) {
+                    //Will update the post item to match design after all functionalities are implemented
+                    SparkyPostItem(
+                        post = post
+                    )
+                }
             }
         }
     }

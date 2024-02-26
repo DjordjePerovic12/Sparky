@@ -12,5 +12,5 @@ data class PostResponseDto(
     @Json(name = "commentCount") val commentCount: Long? = null,
     @Json(name = "likeCount") val likeCount: Long? = null,
     @Json(name = "isLiked") val isLiked: Boolean? = null,
-    @Json(name = "author") val author: LoginResponseDto? = null
+    @Json(name = "author") val author: UserDto? = null
 )

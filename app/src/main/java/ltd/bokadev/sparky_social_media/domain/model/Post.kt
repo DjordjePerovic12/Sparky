@@ -7,5 +7,5 @@ data class Post(
     val commentCount: Long,
     val likeCount: Long,
     val isLiked: Boolean,
-    val author: UserData
+    val author: UserDetails
 )
