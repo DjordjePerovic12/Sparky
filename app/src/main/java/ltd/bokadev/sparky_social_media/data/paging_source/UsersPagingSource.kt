@@ -1,12 +1,10 @@
-package ltd.bokadev.sparky_social_media.data
+package ltd.bokadev.sparky_social_media.data.paging_source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import kotlinx.coroutines.runBlocking
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toUsers
 import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
 import ltd.bokadev.sparky_social_media.domain.model.User
-import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import timber.log.Timber
 
 class UsersPagingSource(

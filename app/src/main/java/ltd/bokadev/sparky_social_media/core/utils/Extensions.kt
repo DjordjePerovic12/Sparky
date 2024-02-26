@@ -14,6 +14,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
@@ -32,6 +33,9 @@ import ltd.bokadev.sparky_social_media.core.utils.Constants.NO_INFO
 import ltd.bokadev.sparky_social_media.core.validation.PasswordValidationResult
 import okhttp3.Request
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 fun String?.toNonNull() = if (this.isNullOrEmpty()) NO_INFO else this
 
@@ -135,9 +139,28 @@ inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier
 }
 
 fun String.getInitials(): String {
-    return this.split(' ')
-        .mapNotNull { it.firstOrNull()?.toString() }
-        .reduce { acc, s -> acc + s }
+    val nameParts = this.split(' ')
+    return when {
+        nameParts.size == 1 -> {
+            // If the username doesn't contain anything but a first name or a nickname
+            //we want to take the first two chars as initials
+            if (length >= 2) substring(0, 2) else this
+        }
+
+        // If the username contains both first and last name
+        //we want to take the first char of both first and last name as initials
+        nameParts.size >= 2 -> {
+            // If there are multiple middle names, return the first letter of the first name
+            // and the first letter of the last name
+            val firstInitial = nameParts.firstOrNull()?.firstOrNull()?.toString() ?: ""
+            val lastInitial = nameParts.lastOrNull()?.firstOrNull()?.toString() ?: ""
+            firstInitial + lastInitial
+        }
+
+        else -> {
+            ""
+        }
+    }
 }
 
 suspend inline fun <T> Flow<Resource<T>>.collectLatestWithAuthCheck(
@@ -179,5 +202,23 @@ fun Modifier.hideKeyboard(focusManager: FocusManager): Modifier = composed {
         detectTapGestures(onTap = {
             focusManager.clearFocus()
         })
+    }
+}
+
+fun String.formatToTwelveHourMonthNameDateTime(): String {
+    return try {
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault())
+        val parsedDate = formatter.parse(this) ?: return ""
+        val calendar = Calendar.getInstance().apply {
+            time = parsedDate
+        }
+        val formattedDate =
+            SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(calendar.time)
+        val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(calendar.time)
+        "${formattedTime.uppercase()} - $formattedDate"
+    } catch (e: Exception) {
+        // Handle parsing exception
+        e.printStackTrace()
+        ""
     }
 }

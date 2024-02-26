@@ -38,4 +38,9 @@ interface SparkyService {
 
     @POST("unfollow")
     suspend fun unfollowUser(@Body userRequestDto: UserIdRequestDto): Response<Unit>
+
+    @GET("feedPosts")
+    suspend fun getFeedPosts(
+        @Query("page") page: Int, @Query("pageCount") pageCount: Int
+    ): Response<List<PostResponseDto>>
 }

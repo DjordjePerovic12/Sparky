@@ -23,11 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
+import ltd.bokadev.sparky_social_media.core.utils.formatToTwelveHourMonthNameDateTime
+import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun SparkyPostItem(
-    userFullName: String, createdAt: String, postContent: String, likes: Int, comments: Int
+    post: Post
 ) {
     Card(
         shape = RoundedCornerShape(30.dp), colors = CardColors(
@@ -58,23 +60,26 @@ fun SparkyPostItem(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
-                    UserImageItem(userFullName = "Petar Gajevic")
+                    UserImageItem(
+                        userFullName = post.author.username,
+                        imageUrl = post.author.profilePictureUrl
+                    )
 
                     Text(
-                        text = userFullName,
+                        text = post.author.username,
                         color = SparkyTheme.colors.white,
                         style = SparkyTheme.typography.poppinsRegular16
                     )
                 }
                 Text(
-                    text = createdAt,
+                    text = post.createdAt.formatToTwelveHourMonthNameDateTime(),
                     color = SparkyTheme.colors.white,
                     style = SparkyTheme.typography.poppinsRegular12
                 )
             }
             Spacer(modifier = Modifier.height(15.dp))
             Text(
-                text = postContent,
+                text = post.content,
                 color = SparkyTheme.colors.white,
                 style = SparkyTheme.typography.poppinsRegular16
             )
@@ -126,7 +131,7 @@ fun SparkyPostItem(
                         )
 
                         Text(
-                            text = likes.toString() + "k",
+                            text = post.likeCount.toString(),
                             style = SparkyTheme.typography.poppinsMedium12,
                             color = SparkyTheme.colors.white
                         )
@@ -163,7 +168,7 @@ fun SparkyPostItem(
                         )
 
                         Text(
-                            text = comments.toString() + "k",
+                            text = post.commentCount.toString(),
                             style = SparkyTheme.typography.poppinsMedium12,
                             color = SparkyTheme.colors.white
                         )
