@@ -9,6 +9,5 @@ data class UserDetails(
     val registeredAt: String,
     val postCount: Long,
     val followerCount: Long,
-    val followingCount: Long,
-    val isFollowing: Boolean
+    val followingCount: Long
 )

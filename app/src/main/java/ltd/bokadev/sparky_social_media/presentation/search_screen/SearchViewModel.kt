@@ -18,12 +18,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
-import ltd.bokadev.sparky_social_media.domain.model.RegistrationTime
+import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import timber.log.Timber
-import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,8 +38,8 @@ class SearchViewModel @Inject constructor(
     private val _snackBarChannel = Channel<String>()
     val snackBarChannel = _snackBarChannel.receiveAsFlow()
 
-    private val _users = MutableStateFlow<PagingData<UserDetails>>(PagingData.empty())
-    val users: StateFlow<PagingData<UserDetails>> = _users.asStateFlow()
+    private val _users = MutableStateFlow<PagingData<User>>(PagingData.empty())
+    val users: StateFlow<PagingData<User>> = _users.asStateFlow()
 
 
     fun onEvent(event: SearchEvent) {
@@ -68,9 +67,10 @@ class SearchViewModel @Inject constructor(
                     )
             }
 
-            is SearchEvent.OnFollowClick -> {
+            is SearchEvent.OnFollowUnfollowClick -> {
                 viewModelScope.launch {
-                    executeFollowUser(event.user)
+                    if (event.user.isFollowing) executeUnfollowUser(event.user)
+                    else executeFollowUser(event.user)
                 }
             }
         }
@@ -101,13 +101,24 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun executeFollowUser(user: UserDetails) {
+    private fun executeFollowUser(user: User) {
         viewModelScope.launch {
-            repository.followUser(UserIdRequest(user.id))
+            repository.followUser(UserIdRequest(user.user.id))
                 .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
-                    _snackBarChannel.send("Successfully followed ${user.username} ")
+                    _snackBarChannel.send("Successfully followed ${user.user.username} ")
                 }, onError = {
                     _snackBarChannel.send("Error following user")
+                })
+        }
+    }
+
+    private fun executeUnfollowUser(user: User) {
+        viewModelScope.launch {
+            repository.unfollowUser(UserIdRequest(user.user.id))
+                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+                    _snackBarChannel.send("Successfully unfollowed ${user.user.username}")
+                }, onError = {
+                    _snackBarChannel.send("Error unfollowing user")
                 })
         }
     }
@@ -118,11 +129,11 @@ sealed class SearchEvent {
     data object OnFetchingUsersError : SearchEvent()
     data object OnCrossClick : SearchEvent()
     data object TriggerLoader : SearchEvent()
-    data class OnFollowClick(val user: UserDetails) : SearchEvent()
+    data class OnFollowUnfollowClick(val user: User) : SearchEvent()
 }
 
 data class SearchState(
     val searchQuery: String = String(),
-    val users: List<UserDetails> = emptyList(),
+    val users: List<User> = emptyList(),
     val isLoading: Boolean = false
 )

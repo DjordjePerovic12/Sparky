@@ -3,7 +3,6 @@ package ltd.bokadev.sparky_social_media.presentation.search_screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
@@ -14,12 +13,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
-import timber.log.Timber
 
 @Composable
 fun SearchScreen(
@@ -59,7 +56,7 @@ fun SearchScreen(
                             UserItem(
                                 user = user,
                                 onFollowClick = {
-                                    viewModel.onEvent(SearchEvent.OnFollowClick(it))
+                                    viewModel.onEvent(SearchEvent.OnFollowUnfollowClick(it))
                                 }
                             )
                         }

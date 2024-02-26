@@ -34,4 +34,8 @@ interface SparkyService {
 
     @POST("follow")
     suspend fun followUser(@Body userRequestDto: UserIdRequestDto): Response<Unit>
+
+
+    @POST("unfollow")
+    suspend fun unfollowUser(@Body userRequestDto: UserIdRequestDto): Response<Unit>
 }
