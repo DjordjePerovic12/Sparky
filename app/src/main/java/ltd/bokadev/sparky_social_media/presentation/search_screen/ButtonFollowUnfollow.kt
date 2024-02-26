@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,29 +24,36 @@ import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
-fun ButtonFollow(onClick: () -> Unit) {
+fun ButtonFollowUnfollow(isFollowing: Boolean, onClick: () -> Unit) {
+    val width = if (isFollowing) 75.dp else 65.dp
+    val buttonLabel =
+        if (isFollowing) stringResource(id = R.string.unfollow) else stringResource(id = R.string.follow)
+    val buttonColor = if (isFollowing) SparkyTheme.colors.white else SparkyTheme.colors.yellow
+    val buttonBorderColor = if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.yellow
+    val buttonLabelColor =
+        if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.primaryColor
     Button(
-        modifier = Modifier.size(width = 65.dp, height = 35.dp),
+        modifier = Modifier.size(width = width, height = 35.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = SparkyTheme.colors.yellow
+            containerColor = buttonColor
         ),
         enabled = true,
         contentPadding = PaddingValues(),
         shape = RoundedCornerShape(11.dp),
-        border = BorderStroke(1.dp, SparkyTheme.colors.yellow),
+        border = BorderStroke(1.dp, buttonBorderColor),
         onClick = onClick
     ) {
         Box(
             modifier = Modifier
-                .background(SparkyTheme.colors.yellow)
+                .background(buttonColor)
                 .padding(vertical = 8.dp, horizontal = 12.dp)
                 .fillMaxSize()
         ) {
             Text(
-                text = stringResource(R.string.follow),
+                text = buttonLabel,
                 modifier = Modifier.align(Alignment.Center),
                 style = SparkyTheme.typography.poppinsRegular12,
-                color = SparkyTheme.colors.primaryColor
+                color = buttonLabelColor,
             )
 
         }

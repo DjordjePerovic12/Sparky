@@ -4,7 +4,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class UserResponseDto(
-    @Json(name = "user") val user: UserDto? = null,
-    @Json(name = "isFollowing") val isFollowing: Boolean? = null
+data class UserIdRequestDto(
+    @Json(name = "userId") val userId: String? = null
 )

@@ -1,11 +1,9 @@
 package ltd.bokadev.sparky_social_media.data.remote.mapper
 
-import ltd.bokadev.sparky_social_media.core.utils.Mocks.mockUser
+import ltd.bokadev.sparky_social_media.core.utils.Mocks.mockUserData
 import ltd.bokadev.sparky_social_media.core.utils.toNonNull
-import ltd.bokadev.sparky_social_media.data.remote.dto.CreatePostRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.PostResponseDto
 import ltd.bokadev.sparky_social_media.domain.model.Post
-import ltd.bokadev.sparky_social_media.domain.model.PostRequest
 
 fun PostResponseDto.toPost(): Post {
     return Post(
@@ -15,10 +13,6 @@ fun PostResponseDto.toPost(): Post {
         likeCount = this.likeCount.toNonNull(),
         commentCount = this.commentCount.toNonNull(),
         isLiked = this.isLiked ?: false,
-        author = this.author?.toUserData() ?: mockUser
+        author = this.author?.toUserData() ?: mockUserData
     )
-}
-
-fun PostRequest.toDto(): CreatePostRequestDto {
-    return CreatePostRequestDto(content = this.content.toNonNull())
 }

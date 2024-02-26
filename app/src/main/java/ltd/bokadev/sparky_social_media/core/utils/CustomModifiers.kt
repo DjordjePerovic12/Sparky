@@ -45,7 +45,7 @@ object CustomModifiers {
         SnackbarHost(hostState = SnackbarHostState()) { snackBarData ->
             Snackbar(
                 snackbarData = snackBarData,
-                containerColor = SparkyTheme.colors.black,
+                containerColor = SparkyTheme.colors.yellow,
                 contentColor = SparkyTheme.colors.white,
                 actionColor = SparkyTheme.colors.white
             )
