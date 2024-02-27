@@ -21,6 +21,7 @@ import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
 import ltd.bokadev.sparky_social_media.domain.model.Comment
 import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
 import ltd.bokadev.sparky_social_media.domain.model.Post
+import ltd.bokadev.sparky_social_media.domain.model.PostIdRequest
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
@@ -84,6 +85,16 @@ class SparkyRepositoryImpl @Inject constructor(
     override suspend fun addComment(commentRequest: CommentRequest) = retrieveFlow {
         val commentRequestDto = commentRequest.toDto()
         sparkyService.addComment(commentRequestDto)
+    }
+
+    override suspend fun likePost(postIdRequest: PostIdRequest) = retrieveFlow {
+        val postIdRequestDto = postIdRequest.toDto()
+        sparkyService.likePost(postIdRequestDto = postIdRequestDto)
+    }
+
+    override suspend fun unlikePost(postIdRequest: PostIdRequest) = retrieveFlow {
+        val postIdRequestDto = postIdRequest.toDto()
+        sparkyService.unlikePost(postIdRequestDto = postIdRequestDto)
     }
 }
 

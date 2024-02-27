@@ -47,7 +47,7 @@ fun HomeScreen(
                 isRefreshing = state.isRefreshing,
                 comment = state.comment,
                 onAddCommentClick = {
-                    viewModel.onEvent(HomeScreenEvent.OnAddCommentClicked)
+                    viewModel.onEvent(HomeScreenEvent.OnAddCommentClick)
                 },
                 onCommentChange = {
                     viewModel.onEvent(HomeScreenEvent.OnCommentChanged(it))
@@ -78,11 +78,13 @@ fun HomeScreen(
                     val post = posts[index]
                     if (post != null) {
                         //Will update the post item to match design after all functionalities are implemented
-                        SparkyPostItem(post = post, onCommentsClick = {
+                        SparkyPostItem(post = post, onLikeClick = {
+                            viewModel.onEvent(HomeScreenEvent.OnLikeClick(it))
+                        }, onCommentsClick = {
                             scope.launch {
                                 bottomSheetState.show()
                             }
-                            viewModel.onEvent(HomeScreenEvent.OnCommentsClicked(post.id))
+                            viewModel.onEvent(HomeScreenEvent.OnCommentsClick(post.id))
                         })
                     }
                 }
