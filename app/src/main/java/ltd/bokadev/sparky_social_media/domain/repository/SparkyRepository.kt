@@ -6,6 +6,8 @@ import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.data.remote.dto.CommentRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
+import ltd.bokadev.sparky_social_media.domain.model.AccessToken
+import ltd.bokadev.sparky_social_media.domain.model.AccessTokenRequest
 import ltd.bokadev.sparky_social_media.domain.model.Comment
 import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
 import ltd.bokadev.sparky_social_media.domain.model.Post
