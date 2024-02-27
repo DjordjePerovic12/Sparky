@@ -1,5 +1,7 @@
 package ltd.bokadev.sparky_social_media.data.remote.services
 
+import ltd.bokadev.sparky_social_media.data.remote.dto.CommentRequestDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.CommentResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.CreatePostRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginResponseDto
@@ -8,6 +10,7 @@ import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserIdRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserResponseDto
+import ltd.bokadev.sparky_social_media.domain.model.Comment
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -43,4 +46,12 @@ interface SparkyService {
     suspend fun getFeedPosts(
         @Query("page") page: Int, @Query("pageCount") pageCount: Int
     ): Response<List<PostResponseDto>>
+
+    @GET("comments")
+    suspend fun getPostComments(
+        @Query("postId") postId: String
+    ): Response<List<CommentResponseDto>>
+
+    @POST("comment")
+    suspend fun addComment(@Body commentRequestDto: CommentRequestDto): Response<Any>
 }

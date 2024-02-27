@@ -26,4 +26,7 @@
     <string name="member_since">Member since %1$s</string>
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
+    <string name="comments">Comments</string>
+    <string name="add_comment">Add comment...</string>
+    <string name="there_are_no_comments_yet_write_the_first_one">There are no comments yet. Write the first one!</string>
 </resources>
