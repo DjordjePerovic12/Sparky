@@ -23,7 +23,6 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 fun UserItem(
     user: User, onFollowClick: (User) -> Unit = { }
 ) {
-    var isFollowing by remember { mutableStateOf(user.isFollowing) }
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -50,8 +49,7 @@ fun UserItem(
                 )
             }
         }
-        ButtonFollowUnfollow(isFollowing = isFollowing) {
-            isFollowing = !user.isFollowing
+        ButtonFollowUnfollow(isFollowing = user.isFollowing) {
             onFollowClick(user)
         }
     }

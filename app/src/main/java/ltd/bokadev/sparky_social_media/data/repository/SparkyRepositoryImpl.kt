@@ -6,15 +6,20 @@ import androidx.paging.PagingData
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.flow.Flow
 import ltd.bokadev.sparky_social_media.core.base.BaseDataSource
+import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.data.paging_source.PostsPagingSource
 import ltd.bokadev.sparky_social_media.data.paging_source.UsersPagingSource
 import ltd.bokadev.sparky_social_media.data.remote.dto.ApiErrorDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.CommentRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
+import ltd.bokadev.sparky_social_media.data.remote.mapper.toComments
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toDto
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toPost
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toUserData
 import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
+import ltd.bokadev.sparky_social_media.domain.model.Comment
+import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
 import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
 import ltd.bokadev.sparky_social_media.domain.model.User
@@ -71,6 +76,15 @@ class SparkyRepositoryImpl @Inject constructor(
             sparkyService = sparkyService
         )
     }.flow
+
+    override suspend fun getPostComments(postId: String) = retrieveFlow {
+        sparkyService.getPostComments(postId)
+    }.mapResponse { toComments() }
+
+    override suspend fun addComment(commentRequest: CommentRequest) = retrieveFlow {
+        val commentRequestDto = commentRequest.toDto()
+        sparkyService.addComment(commentRequestDto)
+    }
 }
 
 

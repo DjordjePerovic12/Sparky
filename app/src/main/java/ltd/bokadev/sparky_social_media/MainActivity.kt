@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
@@ -177,6 +178,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .hideKeyboard(LocalFocusManager.current)
                                 .navigationBarsPadding()
+                                .background(SparkyTheme.colors.primaryColor)
                                 .height(80.dp)
                                 .clip(RoundedCornerShape(topEnd = 24.dp, topStart = 24.dp))
                         )

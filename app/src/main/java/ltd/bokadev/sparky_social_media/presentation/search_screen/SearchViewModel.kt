@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -15,11 +17,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.User
-import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import timber.log.Timber
@@ -86,7 +88,7 @@ class SearchViewModel @Inject constructor(
                 try {
                     val result = repository.searchProfiles(
                         searchQuery = searchQuery, pageCount = 20
-                    )
+                    ).cachedIn(viewModelScope)
                     result.collectLatest {
                         _users.value = it
                         state = state.copy(isLoading = false)
@@ -105,6 +107,16 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             repository.followUser(UserIdRequest(user.user.id))
                 .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+                    _users.update { currentPagingData ->
+                        currentPagingData.map { pagingItem ->
+                            if (pagingItem.user.id == user.user.id) {
+                                pagingItem.copy(isFollowing = true)
+                            } else {
+                                pagingItem
+                            }
+                        }
+                    }
+
                     _snackBarChannel.send("Successfully followed ${user.user.username} ")
                 }, onError = {
                     _snackBarChannel.send("Error following user")
@@ -116,6 +128,15 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             repository.unfollowUser(UserIdRequest(user.user.id))
                 .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+                    _users.update { currentPagingData ->
+                        currentPagingData.map { pagingItem ->
+                            if (pagingItem.user.id == user.user.id) {
+                                pagingItem.copy(isFollowing = false)
+                            } else {
+                                pagingItem
+                            }
+                        }
+                    }
                     _snackBarChannel.send("Successfully unfollowed ${user.user.username}")
                 }, onError = {
                     _snackBarChannel.send("Error unfollowing user")
