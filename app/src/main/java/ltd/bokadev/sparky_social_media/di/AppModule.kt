@@ -9,6 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ltd.bokadev.sparky_social_media.BuildConfig.BASE_URL
 import ltd.bokadev.sparky_social_media.data.AuthorizationInterceptor
+import ltd.bokadev.sparky_social_media.data.remote.TokenRefreshAuthenticator
 import ltd.bokadev.sparky_social_media.data.remote.dto.ApiErrorDto
 import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
 import okhttp3.OkHttpClient
@@ -24,10 +25,11 @@ object AppModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
-        interceptor: AuthorizationInterceptor
+        interceptor: AuthorizationInterceptor, authenticator: TokenRefreshAuthenticator
     ): OkHttpClient {
         val okHttpClient =
             OkHttpClient.Builder().retryOnConnectionFailure(false).addInterceptor(interceptor)
+                .authenticator(authenticator)
         okHttpClient.addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })

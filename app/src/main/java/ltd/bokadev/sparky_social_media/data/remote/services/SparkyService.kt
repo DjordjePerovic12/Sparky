@@ -1,5 +1,7 @@
 package ltd.bokadev.sparky_social_media.data.remote.services
 
+import ltd.bokadev.sparky_social_media.data.remote.dto.AccessTokenRequestDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.AccessTokenResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.CommentRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.CommentResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.CreatePostRequestDto
@@ -12,6 +14,7 @@ import ltd.bokadev.sparky_social_media.data.remote.dto.UserDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserIdRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserResponseDto
 import ltd.bokadev.sparky_social_media.domain.model.Comment
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -61,4 +64,7 @@ interface SparkyService {
 
     @POST("unlike")
     suspend fun unlikePost(@Body postIdRequestDto: PostIdRequestDto): Response<Unit>
+
+    @POST("accessToken")
+    fun accessToken(@Body accessTokenRequestDto: AccessTokenRequestDto): Call<AccessTokenResponseDto>
 }
