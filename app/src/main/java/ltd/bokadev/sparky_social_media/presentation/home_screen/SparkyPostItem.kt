@@ -30,7 +30,9 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun SparkyPostItem(
-    post: Post, onCommentsClick: () -> Unit
+    post: Post,
+    onLikeClick: (Post) -> Unit,
+    onCommentsClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(30.dp), colors = CardColors(
@@ -105,6 +107,9 @@ fun SparkyPostItem(
                     modifier = Modifier
                         .height(25.dp)
                         .width(IntrinsicSize.Max)
+                        .clickable {
+                            onLikeClick(post)
+                        }
                         .border(
                             width = 1.dp,
                             color = SparkyTheme.colors.white.copy(0.7f),
@@ -127,7 +132,8 @@ fun SparkyPostItem(
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_like),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = if (post.isLiked) SparkyTheme.colors.red else SparkyTheme.colors.white
                         )
 
                         Text(

@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -24,11 +27,9 @@ import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.Comment
 import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
 import ltd.bokadev.sparky_social_media.domain.model.Post
-import ltd.bokadev.sparky_social_media.domain.model.PostRequest
-import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.domain.model.PostIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.DataStoreRepository
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
-import ltd.bokadev.sparky_social_media.presentation.login_screen.LoginState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,7 +65,7 @@ class HomeScreenViewModel @Inject constructor(
                 navigateToSearchScreen()
             }
 
-            is HomeScreenEvent.OnCommentsClicked -> {
+            is HomeScreenEvent.OnCommentsClick -> {
                 state = state.copy(selectedPostId = event.postId)
                 executeGetComments(event.postId)
             }
@@ -73,9 +74,17 @@ class HomeScreenViewModel @Inject constructor(
                 if (event.comment.length <= 280) state = state.copy(comment = event.comment)
             }
 
-            is HomeScreenEvent.OnAddCommentClicked -> {
+            is HomeScreenEvent.OnAddCommentClick -> {
                 state = state.copy(isLoading = true)
                 executeAddComment()
+            }
+
+            is HomeScreenEvent.OnLikeClick -> {
+                if (event.post.isLiked) executeUnlikePost(
+                    postId = event.post.id, likeCount = event.post.likeCount
+                ) else executeLikePost(
+                    postId = event.post.id, likeCount = event.post.likeCount
+                )
             }
 
         }
@@ -85,7 +94,7 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.getFeedPosts(
                 pageCount = 20
-            )
+            ).cachedIn(viewModelScope)
             response.collectLatest {
                 _posts.value = it
             }
@@ -123,6 +132,46 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
+
+    //Not sure about the likeCount part, but did it here for now just so I would get your opinion on it
+    private fun executeLikePost(postId: String, likeCount: Long) {
+        viewModelScope.launch {
+            repository.likePost(PostIdRequest(postId = postId))
+                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+                    _posts.update { currentPagingData ->
+                        currentPagingData.map { pagingItem ->
+                            if (pagingItem.id == postId) {
+                                pagingItem.copy(isLiked = true, likeCount = likeCount + 1)
+                            } else {
+                                pagingItem
+                            }
+                        }
+                    }
+                }, onError = {
+                    _snackBarChannel.send("Error liking post")
+                })
+        }
+    }
+
+    private fun executeUnlikePost(postId: String, likeCount: Long) {
+        viewModelScope.launch {
+            repository.unlikePost(PostIdRequest(postId = postId))
+                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+                    _posts.update { currentPagingData ->
+                        currentPagingData.map { pagingItem ->
+                            if (pagingItem.id == postId) {
+                                pagingItem.copy(isLiked = false, likeCount = likeCount - 1)
+                            } else {
+                                pagingItem
+                            }
+                        }
+                    }
+                }, onError = {
+                    _snackBarChannel.send("Error unliking post")
+                })
+        }
+    }
+
     //Function that fetches data to get updated comments in the bottomSheet, and commentCount on post item
     //Also triggers a loader so it look smooth
     private fun triggerRefresh() {
@@ -147,9 +196,10 @@ class HomeScreenViewModel @Inject constructor(
 sealed class HomeScreenEvent {
     data class OnCreatePostClick(val content: String) : HomeScreenEvent()
     data object OnSearchClick : HomeScreenEvent()
-    data class OnCommentsClicked(val postId: String) : HomeScreenEvent()
+    data class OnCommentsClick(val postId: String) : HomeScreenEvent()
     data class OnCommentChanged(val comment: String) : HomeScreenEvent()
-    data object OnAddCommentClicked : HomeScreenEvent()
+    data object OnAddCommentClick : HomeScreenEvent()
+    data class OnLikeClick(val post: Post) : HomeScreenEvent()
 }
 
 data class HomeScreenState(

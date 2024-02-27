@@ -5,6 +5,7 @@ import ltd.bokadev.sparky_social_media.data.remote.dto.CommentResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.CreatePostRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginResponseDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.PostIdRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.PostResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserDto
@@ -54,4 +55,10 @@ interface SparkyService {
 
     @POST("comment")
     suspend fun addComment(@Body commentRequestDto: CommentRequestDto): Response<Any>
+
+    @POST("like")
+    suspend fun likePost(@Body postIdRequestDto: PostIdRequestDto): Response<Unit>
+
+    @POST("unlike")
+    suspend fun unlikePost(@Body postIdRequestDto: PostIdRequestDto): Response<Unit>
 }
