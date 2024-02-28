@@ -13,4 +13,5 @@ object Constants {
     const val PASSWORD_CONTAIN_NUMBER = "At least one number (0-9)"
     const val PASSWORD_CONTAIN_LOWERCASE = "Contains lowercase characters"
     const val PASSWORD_CONTAIN_UPPERCASE = "Contains uppercase characters"
+    const val MAX_POST_LENGTH = 280
 }

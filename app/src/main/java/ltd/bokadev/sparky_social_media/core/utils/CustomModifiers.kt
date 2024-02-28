@@ -28,11 +28,38 @@ object CustomModifiers {
         )
     }
 
+    val searchFieldColors: @Composable () -> TextFieldColors = {
+        OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            unfocusedContainerColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            cursorColor = SparkyTheme.colors.white,
+            focusedBorderColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            unfocusedBorderColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            focusedTextColor = SparkyTheme.colors.white,
+            disabledBorderColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            disabledTextColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+        )
+    }
+
+    val addCommentTextFieldColor: @Composable () -> TextFieldColors = {
+        OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            unfocusedContainerColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            cursorColor = SparkyTheme.colors.white,
+            focusedBorderColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            unfocusedBorderColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            focusedTextColor = SparkyTheme.colors.white,
+            disabledBorderColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+            disabledTextColor = SparkyTheme.colors.white.copy(alpha = 0.1f),
+        )
+    }
+
+
     val snackBarHost: @Composable () -> Unit = {
         SnackbarHost(hostState = SnackbarHostState()) { snackBarData ->
             Snackbar(
                 snackbarData = snackBarData,
-                containerColor = SparkyTheme.colors.black,
+                containerColor = SparkyTheme.colors.yellow,
                 contentColor = SparkyTheme.colors.white,
                 actionColor = SparkyTheme.colors.white
             )

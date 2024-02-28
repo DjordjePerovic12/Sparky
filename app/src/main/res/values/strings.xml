@@ -18,4 +18,18 @@
     <string name="username">Username</string>
     <string name="from_3_and_20_characters">From 3 and 20 characters</string>
     <string name="must_be_a_valid_email">Must be a valid email</string>
+    <string name="create_new_post">Create new post</string>
+    <string name="message">Message</string>
+    <string name="enter_your_message_here">Enter your message here</string>
+    <string name="create_post">Create post</string>
+    <string name="search">Search</string>
+    <string name="member_since">Member since %1$s</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="comments">Comments</string>
+    <string name="add_comment">Add comment...</string>
+    <string name="there_are_no_comments_yet_write_the_first_one">There are no comments yet. Write the first one!</string>
+    <string name="your_posts">Your Posts</string>
+    <string name="confirm">Confirm</string>
+    <string name="close">Close</string>
 </resources>

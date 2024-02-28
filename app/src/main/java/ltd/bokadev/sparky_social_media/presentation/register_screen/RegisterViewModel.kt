@@ -109,8 +109,8 @@ class RegisterViewModel @Inject constructor(
                 )
             ).collectLatestNoAuthCheck(
                 onSuccess = {
-                    _snackBarChannel.send("Successfully registered! Please log in!")
                     navigateToLogin()
+                    _snackBarChannel.send("Successfully registered! Please log in!")
                 },
                 onError = {
                     _snackBarChannel.send("Error registering!")

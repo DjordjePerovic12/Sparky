@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun PrimaryButton(
@@ -28,6 +30,7 @@ fun PrimaryButton(
     borderColor: Color,
     textColor: Color,
     textStyle: TextStyle,
+    shouldShowCircularProgressIndicator: Boolean = false,
     onClick: () -> Unit
 ) {
     Button(
@@ -47,12 +50,17 @@ fun PrimaryButton(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            Text(
+            if (!shouldShowCircularProgressIndicator) Text(
                 text = text,
                 modifier = Modifier.align(Alignment.Center),
                 style = textStyle,
                 color = textColor,
                 maxLines = 2
+            )
+            else CircularProgressIndicator(
+                color = SparkyTheme.colors.primaryColor, modifier = Modifier.align(
+                    Alignment.Center
+                )
             )
         }
     }
