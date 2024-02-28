@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SparkyAppTheme {
                 val appState = rememberAppState()
-                var bottomBarState by remember { (mutableStateOf(false)) }
+                var shouldShowBottomNavigation by remember { (mutableStateOf(false)) }
                 val navBackStackEntry by appState.navController.currentBackStackEntryAsState()
                 val scope = rememberCoroutineScope()
 
@@ -94,15 +94,19 @@ class MainActivity : ComponentActivity() {
 
                 when (navBackStackEntry?.destination?.route) {
                     Screen.HomeScreen.route -> {
-                        bottomBarState = true
+                        shouldShowBottomNavigation = true
                     }
 
                     Screen.SearchScreen.route -> {
-                        bottomBarState = true
+                        shouldShowBottomNavigation = true
+                    }
+
+                    Screen.ProfileScreen.route -> {
+                        shouldShowBottomNavigation = true
                     }
 
                     else -> {
-                        bottomBarState = false
+                        shouldShowBottomNavigation = false
                     }
                 }
 
@@ -135,7 +139,7 @@ class MainActivity : ComponentActivity() {
                     sheetBackgroundColor = SparkyTheme.colors.primaryColor
                 ) {
                     Scaffold(snackbarHost = CustomModifiers.snackBarHost, floatingActionButton = {
-                        if (bottomBarState) FloatingActionButton(
+                        if (shouldShowBottomNavigation) FloatingActionButton(
                             onClick = {
                                 scope.launch {
                                     bottomSheetState.show()
@@ -162,7 +166,7 @@ class MainActivity : ComponentActivity() {
                                     icon = R.drawable.ic_home
                                 ), BottomNavItem(
                                     name = "Profile",
-                                    route = Screen.LoginScreen.route,
+                                    route = Screen.ProfileScreen.route,
                                     icon = R.drawable.ic_person
                                 )
                             ),
@@ -174,7 +178,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             },
-                            bottomBarState = bottomBarState,
+                            bottomBarState = shouldShowBottomNavigation,
                             modifier = Modifier
                                 .hideKeyboard(LocalFocusManager.current)
                                 .navigationBarsPadding()

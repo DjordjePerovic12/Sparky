@@ -202,6 +202,5 @@ fun SparkyTopBar(
             visualTransformation = VisualTransformation.None,
             bringIntoViewRequester = BringIntoViewRequester()
         )
-
     }
 }

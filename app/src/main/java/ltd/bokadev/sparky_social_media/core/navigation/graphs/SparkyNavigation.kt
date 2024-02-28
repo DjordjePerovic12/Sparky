@@ -9,6 +9,7 @@ import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.ROOT
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.SPLASH
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.homeScreenComposable
+import ltd.bokadev.sparky_social_media.core.navigation.destinations.profileScreenComposable
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.searchScreenComposable
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import timber.log.Timber
@@ -32,6 +33,7 @@ fun SparkyNavigation(
         authNavGraph(navController = navController, showSnackBar = showSnackBar)
         homeScreenComposable(navController = navController, showSnackBar = showSnackBar)
         searchScreenComposable(navController = navController, showSnackBar = showSnackBar)
+        profileScreenComposable(navController = navController, showSnackBar = showSnackBar)
     }
 }
 
