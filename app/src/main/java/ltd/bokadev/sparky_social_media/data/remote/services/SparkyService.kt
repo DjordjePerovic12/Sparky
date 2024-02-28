@@ -67,4 +67,7 @@ interface SparkyService {
 
     @POST("accessToken")
     fun accessToken(@Body accessTokenRequestDto: AccessTokenRequestDto): Call<AccessTokenResponseDto>
+
+    @GET("profile")
+    suspend fun getProfileDetails(@Query("userId") userId: String?): Response<UserResponseDto>
 }

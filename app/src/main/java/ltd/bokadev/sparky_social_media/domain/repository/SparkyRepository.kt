@@ -15,6 +15,7 @@ import ltd.bokadev.sparky_social_media.domain.model.PostIdRequest
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserData
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 
 interface SparkyRepository {
@@ -32,4 +33,7 @@ interface SparkyRepository {
     suspend fun addComment(commentRequest: CommentRequest): Flow<Resource<Any>>
     suspend fun likePost(postIdRequest: PostIdRequest): Flow<Resource<Unit>>
     suspend fun unlikePost(postIdRequest: PostIdRequest): Flow<Resource<Unit>>
+    //You already pointed out you don't agree with the flow here
+    //Will research how to refactor
+    suspend fun getProfileDetails(userId: String?): Flow<Resource<User>>
 }
