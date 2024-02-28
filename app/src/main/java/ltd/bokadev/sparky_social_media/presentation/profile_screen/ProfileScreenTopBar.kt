@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -37,6 +38,7 @@ import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
 import ltd.bokadev.sparky_social_media.core.utils.TopBarStyle
 import ltd.bokadev.sparky_social_media.core.utils.formatToTwelveHourMonthNameDateTime
+import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.presentation.search_screen.SparkySearchBar
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
@@ -45,7 +47,10 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 //because it already is too big
 //Also because this one is more complex then the other ones
 @Composable
-fun ProfileScreenTopBar() {
+fun ProfileScreenTopBar(
+    user: User,
+    isLoadingUserData: Boolean
+) {
     //Using static data everywhere because this PR was all about UI
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -58,6 +63,17 @@ fun ProfileScreenTopBar() {
             .padding(horizontal = 20.dp)
             .padding(top = 15.dp)
     ) {
+        if (isLoadingUserData) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(SparkyTheme.colors.primaryColor)
+            ) {
+                CircularProgressIndicator (color = SparkyTheme.colors.yellow)
+            }
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -110,20 +126,22 @@ fun ProfileScreenTopBar() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(15.dp),
             ) {
-                LocalUserImageItem(username = "Djordje Perovic", imageUrl = null)
+                LocalUserImageItem(
+                    username = user.user.username, imageUrl = user.user.profilePictureUrl
+                )
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Text(
-                        text = "Valentino",
+                        text = user.user.username,
                         color = SparkyTheme.colors.white,
                         style = SparkyTheme.typography.poppinsRegular16,
                         textAlign = TextAlign.Start
                     )
                     Text(
-                        text = "Member since 12.04.2024.",
+                        text = stringResource(id = R.string.member_since, user.user.registeredAt),
                         color = SparkyTheme.colors.white,
                         style = SparkyTheme.typography.poppinsRegular12,
                         textAlign = TextAlign.Start
@@ -152,7 +170,7 @@ fun ProfileScreenTopBar() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            ProfileDataCountItem(count = 290.toString(), countedData = "Posts")
+            ProfileDataCountItem(count = user.user.postCount.toString(), countedData = "Posts")
             Divider(
                 color = SparkyTheme.colors.white.copy(0.1f),
                 modifier = Modifier
@@ -160,7 +178,9 @@ fun ProfileScreenTopBar() {
                     .width(1.dp)
                     .height(20.dp)
             )
-            ProfileDataCountItem(count = 2.1.toString(), countedData = "Followers")
+            ProfileDataCountItem(
+                count = user.user.followerCount.toString(), countedData = "Followers"
+            )
             Divider(
                 color = SparkyTheme.colors.white.copy(0.1f),
                 modifier = Modifier
@@ -168,7 +188,9 @@ fun ProfileScreenTopBar() {
                     .width(1.dp)
                     .height(20.dp)
             )
-            ProfileDataCountItem(count = 2459.toString(), countedData = "Following")
+            ProfileDataCountItem(
+                count = user.user.followingCount.toString(), countedData = "Following"
+            )
 
         }
 

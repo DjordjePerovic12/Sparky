@@ -17,6 +17,7 @@ import ltd.bokadev.sparky_social_media.data.remote.mapper.toAccessToken
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toComments
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toDto
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toPost
+import ltd.bokadev.sparky_social_media.data.remote.mapper.toUser
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toUserData
 import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
 import ltd.bokadev.sparky_social_media.domain.model.AccessToken
@@ -100,7 +101,9 @@ class SparkyRepositoryImpl @Inject constructor(
         sparkyService.unlikePost(postIdRequestDto = postIdRequestDto)
     }
 
-
+    override suspend fun getProfileDetails(userId: String?) = retrieveFlow {
+        sparkyService.getProfileDetails(userId)
+    }.mapResponse { toUser() }
 }
 
 

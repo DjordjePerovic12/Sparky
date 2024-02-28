@@ -21,20 +21,17 @@ fun UserDto.toUserDetails(): UserDetails {
     )
 }
 
+fun UserResponseDto.toUser(): User {
+    return User(
+        user = this.user.toUserDetails(),
+        isFollowing = this.isFollowing ?: false
+    )
+}
+
 fun List<UserResponseDto>.toUsers(): List<User> {
     return this.map { userDto ->
-//        UserDetails(
-//            id = userDto.user?.id.toNonNull(),
-//            username = userDto.user?.username.toNonNull(),
-//            profilePictureUrl = userDto.user?.profilePictureUrl,
-//            registeredAt = formatTime(userDto.user?.registeredAt.toNonNull()).formattedTime.toNonNull(),
-//            postCount = userDto.user?.postCount.toNonNull(),
-//            followerCount = userDto.user?.followerCount.toNonNull(),
-//            followingCount = userDto.user?.followingCount.toNonNull(),
-//            isFollowing = userDto.user?.isFollowing ?:false
-//        )
         User(
-            user = userDto.user?.toUserDetails() ?: mockUserDetails,
+            user = userDto.user.toUserDetails(),
             isFollowing = userDto.isFollowing ?: false
         )
     }

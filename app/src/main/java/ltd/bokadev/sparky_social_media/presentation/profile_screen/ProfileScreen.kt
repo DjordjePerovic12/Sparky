@@ -16,7 +16,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ltd.bokadev.sparky_social_media.core.utils.Mocks.mockUserDetails
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
+import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -24,11 +26,11 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 fun ProfileScreen(
     viewModel: ProfileViewModel
 ) {
+    val state = viewModel.state
 
-    //Using static data everywhere because this PR was all about UI
     var selectedTab by remember { mutableIntStateOf(0) }
     Scaffold(topBar = {
-        ProfileScreenTopBar()
+        state.user?.let { ProfileScreenTopBar(user = it, isLoadingUserData = state.isLoadingUserData) }
     }) { innerPadding ->
         LazyColumn(
             modifier = Modifier

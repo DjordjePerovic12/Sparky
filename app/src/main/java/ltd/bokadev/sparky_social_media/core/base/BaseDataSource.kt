@@ -66,5 +66,18 @@ open class BaseDataSource constructor(
         }
 
     }
+
+    fun <T : Any, E : Any> Resource<T>.mapResponse(mapperCallback: T.() -> E) = when (this) {
+        is Resource.Success -> Resource.Success(
+            data = this.data?.mapperCallback(), statusCode = this.statusCode
+        )
+
+        is Resource.Error -> Resource.Error(
+            message = this.message, statusCode = this.statusCode
+        )
+
+        else -> Resource.Loading()
+    }
 }
+
 
