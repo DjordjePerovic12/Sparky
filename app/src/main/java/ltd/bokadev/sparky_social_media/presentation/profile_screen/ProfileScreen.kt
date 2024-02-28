@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ltd.bokadev.sparky_social_media.core.components.LogoutAlertDialog
 import ltd.bokadev.sparky_social_media.core.utils.Mocks.mockUserDetails
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.domain.model.User
@@ -28,9 +29,21 @@ fun ProfileScreen(
 ) {
     val state = viewModel.state
 
-    var selectedTab by remember { mutableIntStateOf(0) }
+    LogoutAlertDialog(headerText = "LOG OUT",
+        messageText = "Are you sure you want to logout?",
+        shouldShow = state.shouldShowDialog,
+        onDismissRequest = { viewModel.onEvent(ProfileEvent.OnCloseClick) }) {
+        viewModel.onEvent(ProfileEvent.OnConfirmClick)
+    }
+
     Scaffold(topBar = {
-        state.user?.let { ProfileScreenTopBar(user = it, isLoadingUserData = state.isLoadingUserData) }
+        state.user?.let {
+            ProfileScreenTopBar(
+                user = it, isLoadingUserData = state.isLoadingUserData
+            ) {
+                viewModel.onEvent(ProfileEvent.OnLogoutClick)
+            }
+        }
     }) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -49,10 +62,10 @@ fun ProfileScreen(
                 ) {
                     items(PostFilters.entries.size) {
                         UserPostsTabItem(
-                            isSelected = selectedTab == PostFilters.entries[it].id,
+                            isSelected = state.selectedFilter == PostFilters.entries[it].id,
                             filter = PostFilters.entries[it]
                         ) { filter ->
-                            selectedTab = filter.id
+                            viewModel.onEvent(ProfileEvent.OnPostFilterClick(filter.id))
                         }
                     }
                 }

@@ -6,11 +6,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
+import ltd.bokadev.sparky_social_media.core.navigation.Routes.AUTH
+import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.repository.DataStoreRepository
@@ -20,7 +25,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val navigator: Navigator, private val repository: SparkyRepository
+    private val navigator: Navigator,
+    private val dataStoreRepository: DataStoreRepository,
+    private val repository: SparkyRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(ProfileState())
@@ -29,6 +36,27 @@ class ProfileViewModel @Inject constructor(
 
     private val _snackBarChannel = Channel<String>()
     val snackBarChannel = _snackBarChannel.receiveAsFlow()
+
+    fun onEvent(event: ProfileEvent) {
+        when (event) {
+            is ProfileEvent.OnLogoutClick -> {
+                state = state.copy(shouldShowDialog = true)
+            }
+
+            is ProfileEvent.OnConfirmClick -> {
+                executeLogout()
+            }
+
+            is ProfileEvent.OnCloseClick -> {
+                state = state.copy(shouldShowDialog = false)
+            }
+
+            is ProfileEvent.OnPostFilterClick -> {
+                state = state.copy(selectedFilter = event.selectedFilterId)
+            }
+
+        }
+    }
 
     init {
         executeGetUser()
@@ -50,14 +78,44 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun executeLogout() {
+        viewModelScope.launch {
+            repository.logout().collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+                clearDatastore()
+                navigateToHomeScreen()
+            }, onError = {
+                _snackBarChannel.send("Error logging out")
+            })
+        }
+    }
+
+    private fun navigateToHomeScreen() {
+        viewModelScope.launch {
+            navigator.popUpTo(
+                route = Screen.LoginScreen.route, staticRoute = AUTH, inclusive = true
+            )
+        }
+    }
+
+    private fun clearDatastore() = runBlocking {
+        withContext(Dispatchers.IO) {
+            dataStoreRepository.clearDatastore()
+        }
+    }
+
 
 }
 
 sealed class ProfileEvent {
-
+    data object OnLogoutClick : ProfileEvent()
+    data object OnConfirmClick : ProfileEvent()
+    data object OnCloseClick : ProfileEvent()
+    data class OnPostFilterClick(val selectedFilterId: Int) : ProfileEvent()
 }
 
 
 data class ProfileState(
-    val user: User? = null, val isLoadingUserData: Boolean = false
+    val user: User? = null, val isLoadingUserData: Boolean = false,
+    val shouldShowDialog: Boolean = false,
+    val selectedFilter: Int = 0
 )

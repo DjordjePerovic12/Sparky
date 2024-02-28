@@ -67,7 +67,11 @@ class DataStoreImpl @Inject constructor(@ApplicationContext val context: Context
 
     override suspend fun clearDatastore() {
         context.datastore.edit {
-
+            it.remove(USERNAME)
+            it.remove(USER_ID)
+            it.remove(REFRESH_TOKEN)
+            it.remove(EXPIRATION)
+            it.remove(ACCESS_TOKEN)
         }
     }
 }
