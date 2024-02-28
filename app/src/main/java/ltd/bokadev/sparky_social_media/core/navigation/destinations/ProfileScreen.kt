@@ -22,7 +22,7 @@ fun NavGraphBuilder.profileScreenComposable(
         }) { navBackStackEntry ->
         val profileViewModel = hiltViewModel<ProfileViewModel>()
         ProfileScreen(
-            viewModel = profileViewModel
+            viewModel = profileViewModel, showSnackBar = showSnackBar
         )
     }
 }

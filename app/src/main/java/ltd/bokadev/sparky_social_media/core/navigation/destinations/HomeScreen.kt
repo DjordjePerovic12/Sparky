@@ -28,6 +28,6 @@ fun NavGraphBuilder.homeScreenComposable(
             navController.getBackStackEntry(Routes.ROOT)
         }
         val homeViewModel = hiltViewModel<HomeScreenViewModel>()
-        HomeScreen(viewModel = homeViewModel)
+        HomeScreen(viewModel = homeViewModel, showSnackBar = showSnackBar)
     }
 }

@@ -26,6 +26,7 @@ import ltd.bokadev.sparky_social_media.core.components.UserDataTextField
 import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
+import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

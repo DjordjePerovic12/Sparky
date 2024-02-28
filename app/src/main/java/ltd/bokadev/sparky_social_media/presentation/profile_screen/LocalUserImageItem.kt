@@ -1,6 +1,7 @@
 package ltd.bokadev.sparky_social_media.presentation.profile_screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.utils.getInitials
+import ltd.bokadev.sparky_social_media.core.utils.noRippleClickable
 import ltd.bokadev.sparky_social_media.presentation.home_screen.UserImageItem
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
@@ -28,10 +30,15 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 fun LocalUserImageItem(
     username: String,
     cameraIconSize: Dp = 30.dp,
-    imageUrl: String? = null
+    imageUrl: String? = null,
+    onChangeProfilePictureClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier.size(50.dp), contentAlignment = Alignment.BottomEnd
+        modifier = Modifier
+            .size(50.dp)
+            .noRippleClickable {
+                onChangeProfilePictureClick()
+            }, contentAlignment = Alignment.BottomEnd
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             //Will refactor this when I refactor the image item in general
@@ -61,7 +68,10 @@ fun LocalUserImageItem(
                 )
             }
         }
-        Box(contentAlignment = Alignment.BottomEnd) {
+        Box(contentAlignment = Alignment.BottomEnd,
+            modifier = Modifier.noRippleClickable {
+                onChangeProfilePictureClick()
+            }) {
             Box(
                 modifier = Modifier
                     .size(cameraIconSize)
