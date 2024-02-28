@@ -70,4 +70,7 @@ interface SparkyService {
 
     @GET("profile")
     suspend fun getProfileDetails(@Query("userId") userId: String?): Response<UserResponseDto>
+
+    @GET("logout")
+    suspend fun logout(): Response<Unit>
 }

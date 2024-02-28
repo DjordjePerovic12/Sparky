@@ -38,7 +38,7 @@ class SplashScreenViewModel @Inject constructor(
     private fun navigateToWelcomeScreen() {
         viewModelScope.launch {
             navigator.popUpTo(
-                route = Screen.WelcomeScreen.route, staticRoute = AUTH, inclusive = true
+                route = Screen.LoginScreen.route, staticRoute = AUTH, inclusive = true
             )
         }
     }

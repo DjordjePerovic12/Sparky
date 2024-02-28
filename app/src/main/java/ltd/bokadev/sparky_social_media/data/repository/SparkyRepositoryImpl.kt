@@ -104,6 +104,10 @@ class SparkyRepositoryImpl @Inject constructor(
     override suspend fun getProfileDetails(userId: String?) = retrieveFlow {
         sparkyService.getProfileDetails(userId)
     }.mapResponse { toUser() }
+
+    override suspend fun logout() = retrieveFlow {
+        sparkyService.logout()
+    }
 }
 
 

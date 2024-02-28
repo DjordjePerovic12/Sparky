@@ -49,7 +49,8 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 @Composable
 fun ProfileScreenTopBar(
     user: User,
-    isLoadingUserData: Boolean
+    isLoadingUserData: Boolean,
+    onLogoutClick: () -> Unit
 ) {
     //Using static data everywhere because this PR was all about UI
     Column(
@@ -71,7 +72,7 @@ fun ProfileScreenTopBar(
                     .fillMaxWidth()
                     .background(SparkyTheme.colors.primaryColor)
             ) {
-                CircularProgressIndicator (color = SparkyTheme.colors.yellow)
+                CircularProgressIndicator(color = SparkyTheme.colors.yellow)
             }
         }
         Row(
@@ -153,6 +154,9 @@ fun ProfileScreenTopBar(
                     .clip(RoundedCornerShape(10.dp))
                     .size(40.dp)
                     .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
+                    .clickable {
+                        onLogoutClick()
+                    }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_logout),

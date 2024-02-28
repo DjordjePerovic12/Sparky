@@ -33,7 +33,9 @@ interface SparkyRepository {
     suspend fun addComment(commentRequest: CommentRequest): Flow<Resource<Any>>
     suspend fun likePost(postIdRequest: PostIdRequest): Flow<Resource<Unit>>
     suspend fun unlikePost(postIdRequest: PostIdRequest): Flow<Resource<Unit>>
+
     //You already pointed out you don't agree with the flow here
     //Will research how to refactor
     suspend fun getProfileDetails(userId: String?): Flow<Resource<User>>
+    suspend fun logout(): Flow<Resource<Unit>>
 }
