@@ -14,11 +14,16 @@ import ltd.bokadev.sparky_social_media.data.remote.dto.UserDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserIdRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.UserResponseDto
 import ltd.bokadev.sparky_social_media.domain.model.Comment
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface SparkyService {
@@ -73,4 +78,10 @@ interface SparkyService {
 
     @GET("logout")
     suspend fun logout(): Response<Unit>
+
+    @Multipart
+    @PUT("profilePicture")
+    suspend fun changeProfilePicture(
+        @Part profilePicture: MultipartBody.Part
+    ): Response<UserDto>
 }

@@ -1,5 +1,6 @@
 package ltd.bokadev.sparky_social_media.core.utils
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -12,6 +13,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 object CustomModifiers {
@@ -55,16 +57,19 @@ object CustomModifiers {
     }
 
 
-    val snackBarHost: @Composable () -> Unit = {
-        SnackbarHost(hostState = SnackbarHostState()) { snackBarData ->
+    val snackBarHost: @Composable SnackbarHostState.() -> Unit = {
+        SnackbarHost(hostState = this) { snackBarData ->
             Snackbar(
                 snackbarData = snackBarData,
                 containerColor = SparkyTheme.colors.yellow,
-                contentColor = SparkyTheme.colors.white,
-                actionColor = SparkyTheme.colors.white
+                contentColor = SparkyTheme.colors.primaryColor,
+                actionColor = SparkyTheme.colors.primaryColor,
+                shape = RoundedCornerShape(12.dp)
             )
         }
     }
+
+
     val textKeyboardNext: @Composable () -> KeyboardOptions = {
         KeyboardOptions(
             keyboardType = KeyboardType.Text, imeAction = ImeAction.Next

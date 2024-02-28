@@ -39,6 +39,7 @@ import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
 import ltd.bokadev.sparky_social_media.core.utils.TopBarStyle
 import ltd.bokadev.sparky_social_media.core.utils.formatToTwelveHourMonthNameDateTime
 import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.presentation.search_screen.SparkySearchBar
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
@@ -48,8 +49,9 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 //Also because this one is more complex then the other ones
 @Composable
 fun ProfileScreenTopBar(
-    user: User,
+    user: UserDetails,
     isLoadingUserData: Boolean,
+    onChangeProfilePictureClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     //Using static data everywhere because this PR was all about UI
@@ -128,21 +130,23 @@ fun ProfileScreenTopBar(
                 horizontalArrangement = Arrangement.spacedBy(15.dp),
             ) {
                 LocalUserImageItem(
-                    username = user.user.username, imageUrl = user.user.profilePictureUrl
-                )
+                    username = user.username, imageUrl = user.profilePictureUrl
+                ) {
+                    onChangeProfilePictureClick()
+                }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Text(
-                        text = user.user.username,
+                        text = user.username,
                         color = SparkyTheme.colors.white,
                         style = SparkyTheme.typography.poppinsRegular16,
                         textAlign = TextAlign.Start
                     )
                     Text(
-                        text = stringResource(id = R.string.member_since, user.user.registeredAt),
+                        text = stringResource(id = R.string.member_since, user.registeredAt),
                         color = SparkyTheme.colors.white,
                         style = SparkyTheme.typography.poppinsRegular12,
                         textAlign = TextAlign.Start
@@ -174,7 +178,7 @@ fun ProfileScreenTopBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            ProfileDataCountItem(count = user.user.postCount.toString(), countedData = "Posts")
+            ProfileDataCountItem(count = user.postCount.toString(), countedData = "Posts")
             Divider(
                 color = SparkyTheme.colors.white.copy(0.1f),
                 modifier = Modifier
@@ -183,7 +187,7 @@ fun ProfileScreenTopBar(
                     .height(20.dp)
             )
             ProfileDataCountItem(
-                count = user.user.followerCount.toString(), countedData = "Followers"
+                count = user.followerCount.toString(), countedData = "Followers"
             )
             Divider(
                 color = SparkyTheme.colors.white.copy(0.1f),
@@ -193,7 +197,7 @@ fun ProfileScreenTopBar(
                     .height(20.dp)
             )
             ProfileDataCountItem(
-                count = user.user.followingCount.toString(), countedData = "Following"
+                count = user.followingCount.toString(), countedData = "Following"
             )
 
         }

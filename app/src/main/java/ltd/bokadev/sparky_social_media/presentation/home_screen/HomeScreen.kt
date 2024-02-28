@@ -22,13 +22,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
 import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
+import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.presentation.home_screen.comments_bottom_sheet.CommentsBottomSheet
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel
+    viewModel: HomeScreenViewModel,
+    showSnackBar: (message: String) -> Unit,
 ) {
     val state = viewModel.state
     val posts = viewModel.posts.collectAsLazyPagingItems()
@@ -36,6 +38,11 @@ fun HomeScreen(
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true
     )
+
+    viewModel.snackBarChannel.observeWithLifecycle { message ->
+        showSnackBar(message)
+    }
+
 
     ModalBottomSheetLayout(sheetState = bottomSheetState,
         modifier = Modifier.background(SparkyTheme.colors.primaryColor),

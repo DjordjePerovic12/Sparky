@@ -1,5 +1,10 @@
 package ltd.bokadev.sparky_social_media.presentation.profile_screen
 
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,19 +20,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.core.components.LogoutAlertDialog
 import ltd.bokadev.sparky_social_media.core.utils.Mocks.mockUserDetails
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
+import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.domain.utils.getImage
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel
+    viewModel: ProfileViewModel,
+    showSnackBar: (message: String) -> Unit
 ) {
     val state = viewModel.state
+    val context = LocalContext.current
+
+
+    val pickMedia = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let {
+            val image = getImage(it, context = context)
+            viewModel.onEvent(ProfileEvent.ImageSelected(image))
+        }
+    }
+
+    viewModel.snackBarChannel.observeWithLifecycle { message ->
+        showSnackBar(message)
+    }
 
     LogoutAlertDialog(headerText = "LOG OUT",
         messageText = "Are you sure you want to logout?",
@@ -36,11 +60,16 @@ fun ProfileScreen(
         viewModel.onEvent(ProfileEvent.OnConfirmClick)
     }
 
+    //IMO UX was lame without some kind of confirmation of the photo you selected
+    //so I added this
+
     Scaffold(topBar = {
         state.user?.let {
-            ProfileScreenTopBar(
-                user = it, isLoadingUserData = state.isLoadingUserData
-            ) {
+            ProfileScreenTopBar(user = it,
+                isLoadingUserData = state.isLoadingUserData,
+                onChangeProfilePictureClick = {
+                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }) {
                 viewModel.onEvent(ProfileEvent.OnLogoutClick)
             }
         }

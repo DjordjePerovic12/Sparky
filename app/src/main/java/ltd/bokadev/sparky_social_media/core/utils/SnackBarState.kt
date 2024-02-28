@@ -1,10 +1,8 @@
 package ltd.bokadev.sparky_social_media.core.utils
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -15,7 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SnackBarState constructor(
-    val scaffoldState: ScaffoldState,
+    val scaffoldState: SnackbarHostState,
     val scope: CoroutineScope,
     val navController: NavHostController
 ) {
@@ -31,20 +29,16 @@ class SnackBarState constructor(
     ) {
         if (snackBarJob == null) {
             snackBarJob = scope.launch {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Long,
-                    actionLabel = "OK"
+                scaffoldState.showSnackbar(
+                    message = message, duration = SnackbarDuration.Long, actionLabel = "OK"
                 )
                 cancelActiveJob()
             }
         } else {
             cancelActiveJob()
             snackBarJob = scope.launch {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Long,
-                    actionLabel = "OK"
+                scaffoldState.showSnackbar(
+                    message = message, duration = SnackbarDuration.Long, actionLabel = "OK"
                 )
                 cancelActiveJob()
             }
@@ -62,17 +56,13 @@ class SnackBarState constructor(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun rememberAppState(
-    scaffoldState: ScaffoldState = rememberScaffoldState(
-        snackbarHostState = remember {
-            SnackbarHostState()
-        }
-    ),
+    scaffoldState: SnackbarHostState = remember {
+        SnackbarHostState()
+    },
     navController: NavHostController = rememberNavController(),
     scope: CoroutineScope = rememberCoroutineScope()
 ) = remember(scaffoldState, navController, scope) {
     SnackBarState(
-        scaffoldState = scaffoldState,
-        navController = navController,
-        scope = scope
+        scaffoldState = scaffoldState, scope = scope, navController = navController
     )
 }

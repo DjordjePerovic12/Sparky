@@ -22,11 +22,13 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,6 +60,7 @@ import ltd.bokadev.sparky_social_media.presentation.MainViewModel
 import ltd.bokadev.sparky_social_media.presentation.home_screen.CreatePostBottomSheet
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyAppTheme
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -138,7 +141,9 @@ class MainActivity : ComponentActivity() {
                     scrimColor = SparkyTheme.colors.primaryColor.copy(alpha = .5f),
                     sheetBackgroundColor = SparkyTheme.colors.primaryColor
                 ) {
-                    Scaffold(snackbarHost = CustomModifiers.snackBarHost, floatingActionButton = {
+                    Scaffold(snackbarHost = {
+                        CustomModifiers.snackBarHost(appState.scaffoldState)
+                    }, floatingActionButton = {
                         if (shouldShowBottomNavigation) FloatingActionButton(
                             onClick = {
                                 scope.launch {

@@ -1,5 +1,6 @@
 package ltd.bokadev.sparky_social_media.presentation.profile_screen
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,9 +19,12 @@ import ltd.bokadev.sparky_social_media.core.navigation.Routes.AUTH
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.repository.DataStoreRepository
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
+import ltd.bokadev.sparky_social_media.domain.utils.getImage
 import ltd.bokadev.sparky_social_media.presentation.search_screen.SearchState
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,6 +59,9 @@ class ProfileViewModel @Inject constructor(
                 state = state.copy(selectedFilter = event.selectedFilterId)
             }
 
+            is ProfileEvent.ImageSelected -> {
+                event.image?.let { executeChangeProfilePicture(it) }
+            }
         }
     }
 
@@ -69,7 +76,7 @@ class ProfileViewModel @Inject constructor(
             repository.getProfileDetails(null)
                 .collectLatestWithAuthCheck(navigator = navigator, onSuccess = { result ->
                     result.data.let { user ->
-                        state = state.copy(user = user, isLoadingUserData = false)
+                        state = state.copy(user = user?.user, isLoadingUserData = false)
                     }
                 }, onError = {
                     state = state.copy(isLoadingUserData = false)
@@ -103,6 +110,21 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun executeChangeProfilePicture(profilePicture: MultipartBody.Part) {
+        viewModelScope.launch {
+            repository.changeProfilePicture(
+                profilePicture = profilePicture
+            ).collectLatestWithAuthCheck(navigator = navigator, onSuccess = { result ->
+                result.data.let {
+                    state = state.copy(user = it)
+                }
+                _snackBarChannel.send("Successfully updated profile picture")
+            }, onError = {
+                _snackBarChannel.send(it.message.toString())
+            })
+        }
+    }
+
 
 }
 
@@ -111,11 +133,14 @@ sealed class ProfileEvent {
     data object OnConfirmClick : ProfileEvent()
     data object OnCloseClick : ProfileEvent()
     data class OnPostFilterClick(val selectedFilterId: Int) : ProfileEvent()
+    data class ImageSelected(val image: MultipartBody.Part?) : ProfileEvent()
 }
 
 
 data class ProfileState(
-    val user: User? = null, val isLoadingUserData: Boolean = false,
+    val user: UserDetails? = null,
+    val isLoadingUserData: Boolean = false,
     val shouldShowDialog: Boolean = false,
-    val selectedFilter: Int = 0
+    val selectedFilter: Int = 0,
+    val selectedImage: Uri? = null
 )

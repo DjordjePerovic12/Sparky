@@ -17,6 +17,8 @@ import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserData
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
+import okhttp3.MultipartBody
+import retrofit2.http.Multipart
 
 interface SparkyRepository {
     suspend fun register(registrationRequestDto: RegistrationRequestDto): Flow<Resource<Unit>>
@@ -38,4 +40,5 @@ interface SparkyRepository {
     //Will research how to refactor
     suspend fun getProfileDetails(userId: String?): Flow<Resource<User>>
     suspend fun logout(): Flow<Resource<Unit>>
+    suspend fun changeProfilePicture(profilePicture: MultipartBody.Part): Flow<Resource<UserDetails>>
 }

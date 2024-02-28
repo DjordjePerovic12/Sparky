@@ -19,6 +19,7 @@ import ltd.bokadev.sparky_social_media.data.remote.mapper.toDto
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toPost
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toUser
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toUserData
+import ltd.bokadev.sparky_social_media.data.remote.mapper.toUserDetails
 import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
 import ltd.bokadev.sparky_social_media.domain.model.AccessToken
 import ltd.bokadev.sparky_social_media.domain.model.AccessTokenRequest
@@ -28,8 +29,10 @@ import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.PostIdRequest
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
 import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
+import okhttp3.MultipartBody
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -108,6 +111,10 @@ class SparkyRepositoryImpl @Inject constructor(
     override suspend fun logout() = retrieveFlow {
         sparkyService.logout()
     }
+
+    override suspend fun changeProfilePicture(profilePicture: MultipartBody.Part) = retrieveFlow {
+        sparkyService.changeProfilePicture(profilePicture = profilePicture)
+    }.mapResponse { toUserDetails() }
 }
 
 
