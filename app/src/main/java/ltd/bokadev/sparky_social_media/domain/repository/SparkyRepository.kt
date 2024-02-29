@@ -40,5 +40,5 @@ interface SparkyRepository {
     //Will research how to refactor
     suspend fun getProfileDetails(userId: String?): Flow<Resource<User>>
     suspend fun logout(): Flow<Resource<Unit>>
-    suspend fun changeProfilePicture(profilePicture: MultipartBody.Part): Flow<Resource<UserDetails>>
+    suspend fun changeProfilePicture(profilePicture: MultipartBody.Part): Resource<UserDetails>
 }
