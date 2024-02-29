@@ -112,9 +112,10 @@ class SparkyRepositoryImpl @Inject constructor(
         sparkyService.logout()
     }
 
-    override suspend fun changeProfilePicture(profilePicture: MultipartBody.Part) = retrieveFlow {
-        sparkyService.changeProfilePicture(profilePicture = profilePicture)
-    }.mapResponse { toUserDetails() }
+    override suspend fun changeProfilePicture(profilePicture: MultipartBody.Part) =
+        retrieveResponse {
+            sparkyService.changeProfilePicture(profilePicture = profilePicture)
+        }.mapResponse { toUserDetails() }
 }
 
 

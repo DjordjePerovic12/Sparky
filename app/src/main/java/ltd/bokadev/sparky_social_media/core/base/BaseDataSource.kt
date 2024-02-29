@@ -52,6 +52,35 @@ open class BaseDataSource constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    protected suspend fun <T> retrieveResponse(
+        call: suspend () -> Response<T>
+    ) = try {
+        Resource.Loading(null)
+        val response = call()
+        if (response.isSuccessful) {
+            val body = response.body()
+            Resource.Success(data = body, statusCode = response.code())
+        } else {
+            val errorBody = response.errorBody()?.string()
+            val errorMessage = errorAdapter.fromJson(errorBody.toNonNull())?.message
+            if (response.code() == 401) {
+                Resource.Error(message = UNAUTHORIZED)
+            } else {
+                Resource.Error(message = errorMessage, statusCode = response.code())
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        if (e is IOException) {
+            Timber.e("Bad response: ${e.message}")
+            Resource.Error(message = CHECK_CONNECTION)
+        } else {
+            Timber.e("Bad response: ${e.message}")
+            Resource.Error(message = NETWORK_PROBLEM)
+        }
+    }
+
+
     fun <T : Any, E : Any> Flow<Resource<T>>.mapResponse(mapperCallback: T.() -> E) = this.map {
         when (it) {
             is Resource.Success -> Resource.Success(
@@ -64,8 +93,20 @@ open class BaseDataSource constructor(
 
             else -> Resource.Loading()
         }
-
     }
+
+    fun <T : Any, E : Any> Resource<T>.mapResponse(mapperCallback: T.() -> E) =
+        when (this) {
+            is Resource.Success -> Resource.Success(
+                data = this.data?.mapperCallback(), statusCode = this.statusCode
+            )
+
+            is Resource.Error -> Resource.Error(
+                message = this.message, statusCode = this.statusCode
+            )
+
+            else -> Resource.Loading()
+        }
 }
 
 

@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.AUTH
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
+import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
@@ -25,6 +26,7 @@ import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import ltd.bokadev.sparky_social_media.domain.utils.getImage
 import ltd.bokadev.sparky_social_media.presentation.search_screen.SearchState
 import okhttp3.MultipartBody
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -112,16 +114,27 @@ class ProfileViewModel @Inject constructor(
 
     private fun executeChangeProfilePicture(profilePicture: MultipartBody.Part) {
         viewModelScope.launch {
-            repository.changeProfilePicture(
-                profilePicture = profilePicture
-            ).collectLatestWithAuthCheck(navigator = navigator, onSuccess = { result ->
-                result.data.let {
-                    state = state.copy(user = it)
+            when (val result = repository.changeProfilePicture(profilePicture)) {
+                is Resource.Success -> {
+                    Timber.e("RESULT DATA ${result.data}")
+                    result.data.let {
+                        Timber.e("RESULT LET")
+                        state = state.copy(user = it)
+                    }
+                    _snackBarChannel.send("Successfully updated profile picture")
                 }
-                _snackBarChannel.send("Successfully updated profile picture")
-            }, onError = {
-                _snackBarChannel.send(it.message.toString())
-            })
+
+                is Resource.Error -> {
+                    _snackBarChannel.send(result.message.toString())
+                }
+
+                is Resource.Loading -> {
+                    _snackBarChannel.send("LOADING")
+                    Timber.e("LOADING STATE ")
+                }
+
+                else -> {}
+            }
         }
     }
 

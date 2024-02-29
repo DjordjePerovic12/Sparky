@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,7 @@ import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.utils.getImage
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
+import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,6 +64,9 @@ fun ProfileScreen(
 
     //IMO UX was lame without some kind of confirmation of the photo you selected
     //so I added this
+    LaunchedEffect(key1 = state.user) {
+        Timber.e("Image url ${state.user?.profilePictureUrl}")
+    }
 
     Scaffold(topBar = {
         state.user?.let {
