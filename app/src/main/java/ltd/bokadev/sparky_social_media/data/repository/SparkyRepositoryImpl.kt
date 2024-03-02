@@ -3,11 +3,15 @@ package ltd.bokadev.sparky_social_media.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.squareup.moshi.JsonAdapter
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.singleOrNull
 import ltd.bokadev.sparky_social_media.core.base.BaseDataSource
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.data.paging_source.PostsPagingSource
+import ltd.bokadev.sparky_social_media.data.paging_source.ProfilePostsPagingSource
 import ltd.bokadev.sparky_social_media.data.paging_source.UsersPagingSource
 import ltd.bokadev.sparky_social_media.data.remote.dto.ApiErrorDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.CommentRequestDto
@@ -116,6 +120,30 @@ class SparkyRepositoryImpl @Inject constructor(
         retrieveResponse {
             sparkyService.changeProfilePicture(profilePicture = profilePicture)
         }.mapResponse { toUserDetails() }
+
+    override suspend fun getProfilePosts(
+        userId: String?,
+        pageCount: Int
+    ): List<Post> {
+      return  Pager(
+            PagingConfig(
+                pageSize = pageCount, prefetchDistance = 1, enablePlaceholders = false
+            )
+        ) {
+            ProfilePostsPagingSource(
+                sparkyService = sparkyService,
+                userId = userId
+            )
+        }.flow.map { currentData ->
+            val posts: MutableList<Post> = mutableListOf()
+            currentData.map {
+                posts.add(it)
+            }
+             posts
+        }
+            .singleOrNull() ?: emptyList()
+    }
+
 }
 
 

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +30,7 @@ import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.utils.getImage
+import ltd.bokadev.sparky_social_media.presentation.home_screen.SparkyPostItem
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 import timber.log.Timber
 
@@ -40,6 +42,7 @@ fun ProfileScreen(
 ) {
     val state = viewModel.state
     val context = LocalContext.current
+
 
 
     val pickMedia = rememberLauncherForActivityResult(
@@ -66,6 +69,7 @@ fun ProfileScreen(
     //so I added this
     LaunchedEffect(key1 = state.user) {
         Timber.e("Image url ${state.user?.profilePictureUrl}")
+        Timber.e("POSTS ${state.userPosts}")
     }
 
     Scaffold(topBar = {
@@ -104,6 +108,12 @@ fun ProfileScreen(
                     }
                 }
             }
+            if (state.selectedFilter == PostFilters.YOUR_POSTS.id)
+                items(state.userPosts) { post ->
+                    SparkyPostItem(post = post, onLikeClick = {}) {
+
+                    }
+                }
         }
     }
 

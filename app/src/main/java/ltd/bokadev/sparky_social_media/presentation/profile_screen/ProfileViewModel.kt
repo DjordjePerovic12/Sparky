@@ -19,6 +19,7 @@ import ltd.bokadev.sparky_social_media.core.navigation.Routes.AUTH
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
+import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.repository.DataStoreRepository
@@ -42,6 +43,10 @@ class ProfileViewModel @Inject constructor(
 
     private val _snackBarChannel = Channel<String>()
     val snackBarChannel = _snackBarChannel.receiveAsFlow()
+
+    init {
+        executeGetProfilePosts()
+    }
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
@@ -138,6 +143,15 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun executeGetProfilePosts() {
+        viewModelScope.launch {
+            val result = repository.getProfilePosts(null, pageCount = 20)
+            result.let {
+                state = state.copy(userPosts = it)
+            }
+        }
+    }
+
 
 }
 
@@ -155,5 +169,6 @@ data class ProfileState(
     val isLoadingUserData: Boolean = false,
     val shouldShowDialog: Boolean = false,
     val selectedFilter: Int = 0,
-    val selectedImage: Uri? = null
+    val selectedImage: Uri? = null,
+    val userPosts: List<Post> = emptyList()
 )
