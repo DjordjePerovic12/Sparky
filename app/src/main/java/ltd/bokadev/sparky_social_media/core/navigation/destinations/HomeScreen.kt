@@ -23,10 +23,7 @@ fun NavGraphBuilder.homeScreenComposable(
         enterTransition = { fadeIn(animationSpec = tween(Constants.ANIMATION_DURATION)) },
         exitTransition = {
             fadeOut(animationSpec = tween(Constants.ANIMATION_DURATION))
-        }) { navBackStackEntry ->
-        val parentEntry = remember(navBackStackEntry) {
-            navController.getBackStackEntry(Routes.ROOT)
-        }
+        }) {
         val homeViewModel = hiltViewModel<HomeScreenViewModel>()
         HomeScreen(viewModel = homeViewModel, showSnackBar = showSnackBar)
     }

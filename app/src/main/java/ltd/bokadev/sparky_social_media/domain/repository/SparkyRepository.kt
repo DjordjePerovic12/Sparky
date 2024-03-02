@@ -21,24 +21,21 @@ import okhttp3.MultipartBody
 import retrofit2.http.Multipart
 
 interface SparkyRepository {
-    suspend fun register(registrationRequestDto: RegistrationRequestDto): Flow<Resource<Unit>>
-    suspend fun login(loginRequestDto: LoginRequestDto): Flow<Resource<UserData>>
-    suspend fun createPost(postRequest: PostRequest): Flow<Resource<Post>>
+    suspend fun register(registrationRequestDto: RegistrationRequestDto): Resource<Unit>
+    suspend fun login(loginRequestDto: LoginRequestDto): Resource<UserData>
+    suspend fun createPost(postRequest: PostRequest): Resource<Post>
     suspend fun searchProfiles(
         searchQuery: String, pageCount: Int
     ): Flow<PagingData<User>>
 
-    suspend fun followUser(userIdRequest: UserIdRequest): Flow<Resource<Unit>>
-    suspend fun unfollowUser(userIdRequest: UserIdRequest): Flow<Resource<Unit>>
+    suspend fun followUser(userIdRequest: UserIdRequest): Resource<Unit>
+    suspend fun unfollowUser(userIdRequest: UserIdRequest): Resource<Unit>
     suspend fun getFeedPosts(pageCount: Int): Flow<PagingData<Post>>
-    suspend fun getPostComments(postId: String): Flow<Resource<List<Comment>>>
-    suspend fun addComment(commentRequest: CommentRequest): Flow<Resource<Any>>
-    suspend fun likePost(postIdRequest: PostIdRequest): Flow<Resource<Unit>>
-    suspend fun unlikePost(postIdRequest: PostIdRequest): Flow<Resource<Unit>>
-
-    //You already pointed out you don't agree with the flow here
-    //Will research how to refactor
-    suspend fun getProfileDetails(userId: String?): Flow<Resource<User>>
-    suspend fun logout(): Flow<Resource<Unit>>
+    suspend fun getPostComments(postId: String): Resource<List<Comment>>
+    suspend fun addComment(commentRequest: CommentRequest): Resource<Any>
+    suspend fun likePost(postIdRequest: PostIdRequest): Resource<Unit>
+    suspend fun unlikePost(postIdRequest: PostIdRequest): Resource<Unit>
+    suspend fun getProfileDetails(userId: String?): Resource<User>
+    suspend fun logout(): Resource<Unit>
     suspend fun changeProfilePicture(profilePicture: MultipartBody.Part): Resource<UserDetails>
 }

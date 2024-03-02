@@ -23,11 +23,8 @@ fun NavGraphBuilder.welcomeScreenComposable(
             fadeOut(
                 animationSpec = tween(ANIMATION_DURATION)
             )
-        }) { navBackStackEntry ->
-        val parentEntry = remember(navBackStackEntry) {
-            navController.getBackStackEntry(Routes.AUTH)
-        }
-        val welcomeViewModel = hiltViewModel<WelcomeScreenViewModel>(parentEntry)
+        }) {
+        val welcomeViewModel = hiltViewModel<WelcomeScreenViewModel>()
         WelcomeScreen(
             viewModel = welcomeViewModel
         )

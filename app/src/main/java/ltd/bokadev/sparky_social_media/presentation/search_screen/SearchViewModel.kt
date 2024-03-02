@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
+import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
@@ -105,8 +106,8 @@ class SearchViewModel @Inject constructor(
 
     private fun executeFollowUser(user: User) {
         viewModelScope.launch {
-            repository.followUser(UserIdRequest(user.user.id))
-                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+            when (repository.followUser(UserIdRequest(user.user.id))) {
+                is Resource.Success -> {
                     _users.update { currentPagingData ->
                         currentPagingData.map { pagingItem ->
                             if (pagingItem.user.id == user.user.id) {
@@ -118,16 +119,22 @@ class SearchViewModel @Inject constructor(
                     }
 
                     _snackBarChannel.send("Successfully followed ${user.user.username} ")
-                }, onError = {
+                }
+
+                is Resource.Error -> {
                     _snackBarChannel.send("Error following user")
-                })
+                }
+
+
+                else -> {}
+            }
         }
     }
 
     private fun executeUnfollowUser(user: User) {
         viewModelScope.launch {
-            repository.unfollowUser(UserIdRequest(user.user.id))
-                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+            when (repository.unfollowUser(UserIdRequest(user.user.id))) {
+                is Resource.Success -> {
                     _users.update { currentPagingData ->
                         currentPagingData.map { pagingItem ->
                             if (pagingItem.user.id == user.user.id) {
@@ -137,10 +144,17 @@ class SearchViewModel @Inject constructor(
                             }
                         }
                     }
-                    _snackBarChannel.send("Successfully unfollowed ${user.user.username}")
-                }, onError = {
+
+                    _snackBarChannel.send("Successfully unfollowed ${user.user.username} ")
+                }
+
+                is Resource.Error -> {
                     _snackBarChannel.send("Error unfollowing user")
-                })
+                }
+
+
+                else -> {}
+            }
         }
     }
 }

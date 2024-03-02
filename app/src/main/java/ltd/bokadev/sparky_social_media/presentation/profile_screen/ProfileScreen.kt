@@ -1,7 +1,5 @@
 package ltd.bokadev.sparky_social_media.presentation.profile_screen
 
-import android.content.Context
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,28 +13,21 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.core.components.LogoutAlertDialog
-import ltd.bokadev.sparky_social_media.core.utils.Mocks.mockUserDetails
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
-import ltd.bokadev.sparky_social_media.domain.model.User
-import ltd.bokadev.sparky_social_media.domain.utils.getImage
+import ltd.bokadev.sparky_social_media.data.utils.getImage
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel,
-    showSnackBar: (message: String) -> Unit
+    viewModel: ProfileViewModel, showSnackBar: (message: String) -> Unit
 ) {
     val state = viewModel.state
     val context = LocalContext.current

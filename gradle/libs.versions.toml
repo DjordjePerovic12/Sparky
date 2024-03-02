@@ -28,6 +28,7 @@ androidx-lifecycle-runtime-ktx = "2.7.0"
 androidx-datastore-preferences = "1.0.0"
 androidx-compose-ui = "1.6.1"
 kotlinx-version = "1.0.0"
+splash-screen = "1.0.1"
 
 gms-location = "21.1.0"
 
@@ -67,6 +68,7 @@ signalr = { module = "com.microsoft.signalr:signalr", version.ref = "signalr" }
 
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose-ui" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
+core-splash-screen = { module = "androidx.core:core-splashscreen", version.ref = "splash-screen" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation-compose" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }

@@ -23,6 +23,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
+import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.Comment
 import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
@@ -103,32 +104,42 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun executeGetComments(postId: String) {
         viewModelScope.launch {
-            repository.getPostComments(postId)
-                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = { result ->
+            when (val result = repository.getPostComments(postId)) {
+                is Resource.Success -> {
                     result.data.let { comments ->
                         state = state.copy(comments = comments, isRefreshing = false)
                     }
-                }, onError = {
+                }
+
+                is Resource.Error -> {
                     _snackBarChannel.send("Error fetching comments")
-                })
+                }
+
+                else -> {}
+            }
         }
     }
 
     private fun executeAddComment() {
         viewModelScope.launch {
-            repository.addComment(
+            val result = repository.addComment(
                 CommentRequest(
                     postId = state.selectedPostId, content = state.comment
                 )
-            ).collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
-                state = state.copy(isLoading = false, comment = String())
-                triggerRefresh()
-            }, onError = {
-                state = state.copy(isLoading = false)
-                _snackBarChannel.send("Error posting comment")
-            }
-
             )
+            when (result) {
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false, comment = String())
+                    triggerRefresh()
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    _snackBarChannel.send("Error posting comment")
+                }
+
+                else -> {}
+            }
         }
     }
 
@@ -136,8 +147,8 @@ class HomeScreenViewModel @Inject constructor(
     //Not sure about the likeCount part, but did it here for now just so I would get your opinion on it
     private fun executeLikePost(postId: String, likeCount: Long) {
         viewModelScope.launch {
-            repository.likePost(PostIdRequest(postId = postId))
-                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+            when (repository.likePost(PostIdRequest(postId = postId))) {
+                is Resource.Success -> {
                     _posts.update { currentPagingData ->
                         currentPagingData.map { pagingItem ->
                             if (pagingItem.id == postId) {
@@ -147,16 +158,21 @@ class HomeScreenViewModel @Inject constructor(
                             }
                         }
                     }
-                }, onError = {
+                }
+
+                is Resource.Error -> {
                     _snackBarChannel.send("Error liking post")
-                })
+                }
+
+                else -> {}
+            }
         }
     }
 
     private fun executeUnlikePost(postId: String, likeCount: Long) {
         viewModelScope.launch {
-            repository.unlikePost(PostIdRequest(postId = postId))
-                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
+            when (repository.unlikePost(PostIdRequest(postId = postId))) {
+                is Resource.Success -> {
                     _posts.update { currentPagingData ->
                         currentPagingData.map { pagingItem ->
                             if (pagingItem.id == postId) {
@@ -166,9 +182,14 @@ class HomeScreenViewModel @Inject constructor(
                             }
                         }
                     }
-                }, onError = {
+                }
+
+                is Resource.Error -> {
                     _snackBarChannel.send("Error unliking post")
-                })
+                }
+
+                else -> {}
+            }
         }
     }
 

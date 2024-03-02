@@ -18,13 +18,9 @@ import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.AUTH
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.Resource
-import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
-import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.repository.DataStoreRepository
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
-import ltd.bokadev.sparky_social_media.domain.utils.getImage
-import ltd.bokadev.sparky_social_media.presentation.search_screen.SearchState
 import okhttp3.MultipartBody
 import timber.log.Timber
 import javax.inject.Inject
@@ -75,26 +71,37 @@ class ProfileViewModel @Inject constructor(
     private fun executeGetUser() {
         viewModelScope.launch {
             state = state.copy(isLoadingUserData = true)
-            repository.getProfileDetails(null)
-                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = { result ->
+            when (val result = repository.getProfileDetails(null)) {
+                is Resource.Success -> {
                     result.data.let { user ->
                         state = state.copy(user = user?.user, isLoadingUserData = false)
                     }
-                }, onError = {
+                }
+
+                is Resource.Error -> {
                     state = state.copy(isLoadingUserData = false)
                     _snackBarChannel.send("Error fetching user data")
-                })
+                }
+
+                else -> {}
+            }
         }
     }
 
     private fun executeLogout() {
         viewModelScope.launch {
-            repository.logout().collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
-                clearDatastore()
-                navigateToHomeScreen()
-            }, onError = {
-                _snackBarChannel.send("Error logging out")
-            })
+            when (repository.logout()) {
+                is Resource.Success -> {
+                    clearDatastore()
+                    navigateToHomeScreen()
+                }
+
+                is Resource.Error -> {
+                    _snackBarChannel.send("Error logging out")
+                }
+
+                else -> {}
+            }
         }
     }
 

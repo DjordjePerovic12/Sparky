@@ -74,50 +74,9 @@ inline fun <reified T> Flow<T>.observeWithLifecycle(
 
 private val LocalContextStringProvider = staticCompositionLocalOf<String?> { null }
 
-@Composable
-fun Int.getStringLength(): Int {
-    val context = LocalContext.current
-    // Retrieve the string value from the resource ID
-    val stringValue = context.getString(this)
-    // Provide the string value via CompositionLocal
-    CompositionLocalProvider(LocalContextStringProvider provides stringValue) {
-        // Return the length of the string
-        stringValue.length
-    }
-    return stringValue.length
-}
-
-
-fun String.isValidEmail(): Boolean {
-    val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\$")
-    return matches(emailRegex)
-}
 
 fun String.isToken() = this != NO_INFO
 
-fun String.isValidPassword(): PasswordValidationResult {
-    val hasNineCharacters = this.length >= 9
-    Timber.e("PASSWORD HAS9 $hasNineCharacters")
-    val containsLowerCase = any { it.isLowerCase() }
-    Timber.e("PASSWORD LOW $containsLowerCase")
-    val containsUpperCase = any { it.isUpperCase() }
-    Timber.e("PASSWORD upp $containsUpperCase")
-    val containsDigit = any { it.isDigit() }
-    Timber.e("PASSWORD dig $containsDigit")
-
-
-    return PasswordValidationResult(
-        hasNineCharacters = hasNineCharacters,
-        containsDigit = containsDigit,
-        containsLowercase = containsLowerCase,
-        containsUppercase = containsUpperCase
-    )
-}
-
-
-fun String.isValidUsername(): Boolean {
-    return length in 3..20
-}
 
 suspend inline fun <T> Flow<Resource<T>>.collectLatestNoAuthCheck(
     crossinline onSuccess: suspend (Resource<T>) -> Unit,

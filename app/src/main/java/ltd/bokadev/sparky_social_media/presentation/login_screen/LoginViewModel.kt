@@ -16,6 +16,7 @@ import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.ROOT
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.Mocks.mockUserData
+import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestNoAuthCheck
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.domain.model.UserData
@@ -79,13 +80,20 @@ class LoginViewModel @Inject constructor(
 
     private fun executeLogin() {
         viewModelScope.launch {
-            repository.login(LoginRequestDto(email = state.email, password = state.password))
-                .collectLatestNoAuthCheck(onSuccess = { result ->
+            val result =
+                repository.login(LoginRequestDto(email = state.email, password = state.password))
+            when (result) {
+                is Resource.Success -> {
                     saveData(result.data ?: mockUserData)
                     navigateToHomeScreen()
-                }, onError = { result ->
+                }
+
+                is Resource.Error -> {
                     _snackBarChannel.send(result.message ?: "Error login in user.")
-                })
+                }
+
+                else -> {}
+            }
         }
     }
 

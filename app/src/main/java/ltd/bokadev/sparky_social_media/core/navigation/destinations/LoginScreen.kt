@@ -21,11 +21,8 @@ fun NavGraphBuilder.loginScreenComposable(
         enterTransition = { fadeIn(animationSpec = tween(ANIMATION_DURATION)) },
         exitTransition = {
             fadeOut(animationSpec = tween(ANIMATION_DURATION))
-        }) { navBackStackEntry ->
-        val parentEntry = remember(navBackStackEntry) {
-            navController.getBackStackEntry(Routes.AUTH)
-        }
-        val loginViewModel = hiltViewModel<LoginViewModel>(parentEntry)
+        }) {
+        val loginViewModel = hiltViewModel<LoginViewModel>()
         LoginScreen(
             viewModel = loginViewModel,
             showSnackBar = showSnackBar

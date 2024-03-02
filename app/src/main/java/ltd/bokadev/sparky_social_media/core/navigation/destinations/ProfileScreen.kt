@@ -19,7 +19,7 @@ fun NavGraphBuilder.profileScreenComposable(
         enterTransition = { fadeIn(animationSpec = tween(Constants.ANIMATION_DURATION)) },
         exitTransition = {
             fadeOut(animationSpec = tween(Constants.ANIMATION_DURATION))
-        }) { navBackStackEntry ->
+        }) {
         val profileViewModel = hiltViewModel<ProfileViewModel>()
         ProfileScreen(
             viewModel = profileViewModel, showSnackBar = showSnackBar

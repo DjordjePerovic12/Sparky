@@ -3,7 +3,7 @@ package ltd.bokadev.sparky_social_media.core.validation
 import dagger.hilt.android.scopes.ViewModelScoped
 import ltd.bokadev.sparky_social_media.core.utils.Constants.EMAIL_INVALID
 import ltd.bokadev.sparky_social_media.core.utils.Constants.EMPTY_FIELD
-import ltd.bokadev.sparky_social_media.core.utils.isValidEmail
+import ltd.bokadev.sparky_social_media.domain.utils.isValidEmail
 
 @ViewModelScoped
 class ValidateEmail {

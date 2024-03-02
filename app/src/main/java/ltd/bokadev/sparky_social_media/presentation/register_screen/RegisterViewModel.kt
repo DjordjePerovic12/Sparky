@@ -7,20 +7,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
-import ltd.bokadev.sparky_social_media.core.utils.collectLatestNoAuthCheck
-import ltd.bokadev.sparky_social_media.core.utils.isValidEmail
-import ltd.bokadev.sparky_social_media.core.utils.isValidPassword
-import ltd.bokadev.sparky_social_media.core.utils.isValidUsername
+import ltd.bokadev.sparky_social_media.core.utils.Resource
+import ltd.bokadev.sparky_social_media.domain.utils.isValidEmail
+import ltd.bokadev.sparky_social_media.domain.utils.isValidUsername
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import ltd.bokadev.sparky_social_media.domain.use_case.EmailUseCase
 import ltd.bokadev.sparky_social_media.domain.use_case.PasswordUseCase
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -103,19 +100,23 @@ class RegisterViewModel @Inject constructor(
 
     private fun executeRegister() {
         viewModelScope.launch {
-            sparkyRepository.register(
+            val result = sparkyRepository.register(
                 RegistrationRequestDto(
                     username = state.username, password = state.password, email = state.email
                 )
-            ).collectLatestNoAuthCheck(
-                onSuccess = {
+            )
+            when (result) {
+                is Resource.Success -> {
                     _snackBarChannel.send("Successfully registered! Please log in!")
                     navigateToLogin()
-                },
-                onError = {
+                }
+
+                is Resource.Error -> {
                     _snackBarChannel.send("Error registering!")
                 }
-            )
+
+                else -> {}
+            }
         }
     }
 
