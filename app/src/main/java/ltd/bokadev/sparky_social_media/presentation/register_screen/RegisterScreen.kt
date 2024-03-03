@@ -43,7 +43,7 @@ import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_LOW
 import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_NUMBER
 import ltd.bokadev.sparky_social_media.core.utils.Constants.PASSWORD_CONTAIN_UPPERCASE
 import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
-import ltd.bokadev.sparky_social_media.core.utils.isValidUsername
+import ltd.bokadev.sparky_social_media.domain.utils.isValidUsername
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
