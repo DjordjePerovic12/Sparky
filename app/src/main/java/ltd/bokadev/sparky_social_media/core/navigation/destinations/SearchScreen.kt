@@ -23,10 +23,7 @@ fun NavGraphBuilder.searchScreenComposable(
         enterTransition = { fadeIn(animationSpec = tween(Constants.ANIMATION_DURATION)) },
         exitTransition = {
             fadeOut(animationSpec = tween(Constants.ANIMATION_DURATION))
-        }) { navBackStackEntry ->
-        val parentEntry = remember(navBackStackEntry) {
-            navController.getBackStackEntry(Routes.ROOT)
-        }
+        }) {
         val searchViewModel = hiltViewModel<SearchViewModel>()
         SearchScreen(viewModel = searchViewModel, showSnackBar = showSnackBar)
     }

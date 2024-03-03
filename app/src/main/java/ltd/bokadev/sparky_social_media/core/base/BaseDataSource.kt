@@ -1,6 +1,7 @@
 package ltd.bokadev.sparky_social_media.core.base
 
 import com.squareup.moshi.JsonAdapter
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -41,6 +42,9 @@ open class BaseDataSource constructor(
                 }
             }
         } catch (e: Exception) {
+            if (e is CancellationException) {
+                throw e
+            }
             e.printStackTrace()
             if (e is IOException) {
                 Timber.e("Bad response: ${e.message}")
@@ -70,6 +74,9 @@ open class BaseDataSource constructor(
             }
         }
     } catch (e: Exception) {
+        if (e is CancellationException) {
+            throw e
+        }
         e.printStackTrace()
         if (e is IOException) {
             Timber.e("Bad response: ${e.message}")

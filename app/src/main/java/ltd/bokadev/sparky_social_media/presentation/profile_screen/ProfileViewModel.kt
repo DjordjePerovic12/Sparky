@@ -1,15 +1,20 @@
 package ltd.bokadev.sparky_social_media.presentation.profile_screen
 
 import android.net.Uri
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -24,8 +29,6 @@ import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.repository.DataStoreRepository
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
-import ltd.bokadev.sparky_social_media.domain.utils.getImage
-import ltd.bokadev.sparky_social_media.presentation.search_screen.SearchState
 import okhttp3.MultipartBody
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,10 +46,6 @@ class ProfileViewModel @Inject constructor(
 
     private val _snackBarChannel = Channel<String>()
     val snackBarChannel = _snackBarChannel.receiveAsFlow()
-
-    init {
-        executeGetProfilePosts()
-    }
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
@@ -74,32 +73,44 @@ class ProfileViewModel @Inject constructor(
 
     init {
         executeGetUser()
+        executeGetProfilePosts()
     }
 
 
     private fun executeGetUser() {
         viewModelScope.launch {
             state = state.copy(isLoadingUserData = true)
-            repository.getProfileDetails(null)
-                .collectLatestWithAuthCheck(navigator = navigator, onSuccess = { result ->
+            when (val result = repository.getProfileDetails(null)) {
+                is Resource.Success -> {
                     result.data.let { user ->
                         state = state.copy(user = user?.user, isLoadingUserData = false)
                     }
-                }, onError = {
+                }
+
+                is Resource.Error -> {
                     state = state.copy(isLoadingUserData = false)
                     _snackBarChannel.send("Error fetching user data")
-                })
+                }
+
+                else -> {}
+            }
         }
     }
 
     private fun executeLogout() {
         viewModelScope.launch {
-            repository.logout().collectLatestWithAuthCheck(navigator = navigator, onSuccess = {
-                clearDatastore()
-                navigateToHomeScreen()
-            }, onError = {
-                _snackBarChannel.send("Error logging out")
-            })
+            when (repository.logout()) {
+                is Resource.Success -> {
+                    clearDatastore()
+                    navigateToHomeScreen()
+                }
+
+                is Resource.Error -> {
+                    _snackBarChannel.send("Error logging out")
+                }
+
+                else -> {}
+            }
         }
     }
 
@@ -143,13 +154,12 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun executeGetProfilePosts() {
+    fun executeGetProfilePosts(): Flow<PagingData<Post>> {
+        var result: Flow<PagingData<Post>> = flowOf()
         viewModelScope.launch {
-            val result = repository.getProfilePosts(null, pageCount = 20)
-            result.let {
-                state = state.copy(userPosts = it)
-            }
+            result = repository.getProfilePosts(null, pageCount = 20)
         }
+        return result
     }
 
 

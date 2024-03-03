@@ -37,23 +37,27 @@ import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import okhttp3.MultipartBody
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
+//Will refactor the ones including pagination in another PR, when I research it a bit better
 @Singleton
 class SparkyRepositoryImpl @Inject constructor(
     private val sparkyService: SparkyService, errorAdapter: JsonAdapter<ApiErrorDto>
 ) : SparkyRepository, BaseDataSource(errorAdapter) {
-    override suspend fun register(registrationRequestDto: RegistrationRequestDto) = retrieveFlow {
-        sparkyService.register(registrationRequestDto)
-    }
+    override suspend fun register(registrationRequestDto: RegistrationRequestDto) =
+        retrieveResponse {
+            sparkyService.register(registrationRequestDto)
+        }
 
-    override suspend fun login(loginRequestDto: LoginRequestDto) = retrieveFlow {
+    override suspend fun login(loginRequestDto: LoginRequestDto) = retrieveResponse {
         sparkyService.login(loginRequestDto)
     }.mapResponse { toUserData() }
 
 
-    override suspend fun createPost(postRequest: PostRequest) = retrieveFlow {
+    override suspend fun createPost(postRequest: PostRequest) = retrieveResponse {
         val postRequestDto = postRequest.toDto()
         sparkyService.createPost(postRequestDto)
     }.mapResponse { toPost() }
@@ -69,12 +73,12 @@ class SparkyRepositoryImpl @Inject constructor(
         UsersPagingSource(searchQuery = searchQuery, sparkyService = sparkyService)
     }.flow
 
-    override suspend fun followUser(userIdRequest: UserIdRequest) = retrieveFlow {
+    override suspend fun followUser(userIdRequest: UserIdRequest) = retrieveResponse {
         val userIdRequestDto = userIdRequest.toDto()
         sparkyService.followUser(userIdRequestDto)
     }
 
-    override suspend fun unfollowUser(userIdRequest: UserIdRequest) = retrieveFlow {
+    override suspend fun unfollowUser(userIdRequest: UserIdRequest) = retrieveResponse {
         val userIdRequestDto = userIdRequest.toDto()
         sparkyService.unfollowUser(userIdRequestDto)
     }
@@ -89,30 +93,30 @@ class SparkyRepositoryImpl @Inject constructor(
         )
     }.flow
 
-    override suspend fun getPostComments(postId: String) = retrieveFlow {
+    override suspend fun getPostComments(postId: String) = retrieveResponse {
         sparkyService.getPostComments(postId)
     }.mapResponse { toComments() }
 
-    override suspend fun addComment(commentRequest: CommentRequest) = retrieveFlow {
+    override suspend fun addComment(commentRequest: CommentRequest) = retrieveResponse {
         val commentRequestDto = commentRequest.toDto()
         sparkyService.addComment(commentRequestDto)
     }
 
-    override suspend fun likePost(postIdRequest: PostIdRequest) = retrieveFlow {
+    override suspend fun likePost(postIdRequest: PostIdRequest) = retrieveResponse {
         val postIdRequestDto = postIdRequest.toDto()
         sparkyService.likePost(postIdRequestDto = postIdRequestDto)
     }
 
-    override suspend fun unlikePost(postIdRequest: PostIdRequest) = retrieveFlow {
+    override suspend fun unlikePost(postIdRequest: PostIdRequest) = retrieveResponse {
         val postIdRequestDto = postIdRequest.toDto()
         sparkyService.unlikePost(postIdRequestDto = postIdRequestDto)
     }
 
-    override suspend fun getProfileDetails(userId: String?) = retrieveFlow {
+    override suspend fun getProfileDetails(userId: String?) = retrieveResponse {
         sparkyService.getProfileDetails(userId)
     }.mapResponse { toUser() }
 
-    override suspend fun logout() = retrieveFlow {
+    override suspend fun logout() = retrieveResponse {
         sparkyService.logout()
     }
 
@@ -124,7 +128,7 @@ class SparkyRepositoryImpl @Inject constructor(
     override suspend fun getProfilePosts(
         userId: String?,
         pageCount: Int
-    ): List<Post> {
+    ): Flow<PagingData<Post>> {
       return  Pager(
             PagingConfig(
                 pageSize = pageCount, prefetchDistance = 1, enablePlaceholders = false
@@ -134,14 +138,7 @@ class SparkyRepositoryImpl @Inject constructor(
                 sparkyService = sparkyService,
                 userId = userId
             )
-        }.flow.map { currentData ->
-            val posts: MutableList<Post> = mutableListOf()
-            currentData.map {
-                posts.add(it)
-            }
-             posts
-        }
-            .singleOrNull() ?: emptyList()
+        }.flow
     }
 
 }

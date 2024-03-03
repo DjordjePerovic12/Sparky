@@ -21,10 +21,7 @@ fun NavGraphBuilder.registerScreenComposable(
         enterTransition = { fadeIn(animationSpec = tween(ANIMATION_DURATION)) },
         exitTransition = {
             fadeOut(animationSpec = tween(ANIMATION_DURATION))
-        }) { navBackStackEntry ->
-        val parentEntry = remember(navBackStackEntry) {
-            navController.getBackStackEntry(Routes.AUTH)
-        }
+        }) {
         val registerViewModel = hiltViewModel<RegisterViewModel>()
         RegisterScreen(viewModel = registerViewModel, showSnackBar = showSnackBar)
     }

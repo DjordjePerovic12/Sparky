@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,7 +28,8 @@ fun UserPostsTabItem(
 ) {
     Card(
         modifier = Modifier
-            .size(width = 175.dp, height = 55.dp)
+            .size(width = 175.dp, height = 70.dp)
+            .padding(vertical = 8.dp)
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(100.dp),

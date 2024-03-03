@@ -139,6 +139,7 @@ dependencies {
     implementation(libs.calendar.compose)
     ksp(libs.room.compiler)
     implementation(libs.signalr)
+    implementation(libs.core.splash.screen)
 //    implementation(libs.java.websocket)
 
     coreLibraryDesugaring(libs.android.tools.desugar)

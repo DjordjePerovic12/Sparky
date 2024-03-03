@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import ltd.bokadev.sparky_social_media.data.remote.mapper.toPosts
 import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
 import ltd.bokadev.sparky_social_media.domain.model.Post
+import timber.log.Timber
 
 class ProfilePostsPagingSource(
     private val sparkyService: SparkyService,
@@ -22,6 +23,7 @@ class ProfilePostsPagingSource(
                 userId = userId, page = currentPage, pageCount = 20
             )
             val posts = response.body()
+            Timber.e("PAGING SOURCE POSTS $posts")
 
             LoadResult.Page(
                 data = posts?.toPosts() ?: emptyList(),
@@ -29,6 +31,7 @@ class ProfilePostsPagingSource(
                 nextKey = if (posts.isNullOrEmpty()) null else currentPage + 1
             )
         } catch (e: Exception) {
+            Timber.e("PAGING SOURCE ERROR")
             LoadResult.Error(e)
         }
     }

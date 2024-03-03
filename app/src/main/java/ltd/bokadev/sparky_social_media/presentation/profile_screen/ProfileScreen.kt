@@ -1,7 +1,5 @@
 package ltd.bokadev.sparky_social_media.presentation.profile_screen
 
-import android.content.Context
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,19 +15,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import ltd.bokadev.sparky_social_media.core.components.LogoutAlertDialog
-import ltd.bokadev.sparky_social_media.core.utils.Mocks.mockUserDetails
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
-import ltd.bokadev.sparky_social_media.domain.model.User
-import ltd.bokadev.sparky_social_media.domain.utils.getImage
+import ltd.bokadev.sparky_social_media.data.utils.getImage
 import ltd.bokadev.sparky_social_media.presentation.home_screen.SparkyPostItem
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 import timber.log.Timber
@@ -37,12 +32,10 @@ import timber.log.Timber
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel,
-    showSnackBar: (message: String) -> Unit
+    viewModel: ProfileViewModel, showSnackBar: (message: String) -> Unit
 ) {
     val state = viewModel.state
     val context = LocalContext.current
-
 
 
     val pickMedia = rememberLauncherForActivityResult(
@@ -53,6 +46,9 @@ fun ProfileScreen(
             viewModel.onEvent(ProfileEvent.ImageSelected(image))
         }
     }
+
+    val userPosts = viewModel.executeGetProfilePosts().collectAsLazyPagingItems()
+
 
     viewModel.snackBarChannel.observeWithLifecycle { message ->
         showSnackBar(message)
@@ -65,8 +61,6 @@ fun ProfileScreen(
         viewModel.onEvent(ProfileEvent.OnConfirmClick)
     }
 
-    //IMO UX was lame without some kind of confirmation of the photo you selected
-    //so I added this
     LaunchedEffect(key1 = state.user) {
         Timber.e("Image url ${state.user?.profilePictureUrl}")
         Timber.e("POSTS ${state.userPosts}")
@@ -88,13 +82,14 @@ fun ProfileScreen(
                 .padding(top = innerPadding.calculateTopPadding())
                 .padding(horizontal = 20.dp)
                 .padding(top = 15.dp)
-                .background(SparkyTheme.colors.white)
+                .background(SparkyTheme.colors.white),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            //Using static data everywhere because this PR was all about UI
-            //Also wanted to know if this PostFilters enum approach is ok
             stickyHeader {
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(SparkyTheme.colors.white),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -108,12 +103,14 @@ fun ProfileScreen(
                     }
                 }
             }
-            if (state.selectedFilter == PostFilters.YOUR_POSTS.id)
-                items(state.userPosts) { post ->
+            if (state.selectedFilter == PostFilters.YOUR_POSTS.id) items(userPosts.itemCount) { index ->
+                val post = userPosts[index]
+                if (post != null) {
                     SparkyPostItem(post = post, onLikeClick = {}) {
 
                     }
                 }
+            }
         }
     }
 

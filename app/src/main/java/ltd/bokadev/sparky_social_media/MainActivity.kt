@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +75,12 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.isCheckingSessionFinished.value
+            }
+
+        }
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(
                 Color.Transparent.toArgb(),
@@ -195,6 +202,7 @@ class MainActivity : ComponentActivity() {
                         SparkyNavigation(navController = appState.navController,
                             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
                             navigator = navigator,
+                            isLoggedIn = viewModel.isLoggedIn(),
                             showSnackBar = { message ->
                                 appState.showSnackBar(message)
                             })
