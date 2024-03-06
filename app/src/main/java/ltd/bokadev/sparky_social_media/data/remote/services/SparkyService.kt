@@ -84,4 +84,18 @@ interface SparkyService {
     suspend fun changeProfilePicture(
         @Part profilePicture: MultipartBody.Part
     ): Response<UserDto>
+
+    @GET("profilePosts")
+    suspend fun getProfilePosts(
+        @Query("userId") userId: String?,
+        @Query("page") page: Int,
+        @Query("pageCount") pageCount: Int
+    ): Response<List<PostResponseDto>>
+
+    @GET("likedPosts")
+    suspend fun getLikedPosts(
+        @Query("userId") userId: String?,
+        @Query("page") page: Int,
+        @Query("pageCount") pageCount: Int
+    ): Response<List<PostResponseDto>>
 }
