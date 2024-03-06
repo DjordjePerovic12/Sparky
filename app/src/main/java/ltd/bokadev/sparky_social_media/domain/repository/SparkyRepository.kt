@@ -40,6 +40,12 @@ interface SparkyRepository {
     suspend fun changeProfilePicture(profilePicture: MultipartBody.Part): Resource<UserDetails>
     suspend fun getProfilePosts(
         userId: String?,
-        pageCount: Int
+        pageCount: Int,
+        isLiked: Boolean?
+    ): Flow<PagingData<Post>>
+    suspend fun getLikedPosts(
+        userId: String?,
+        pageCount: Int,
+        isLiked: Boolean?
     ): Flow<PagingData<Post>>
 }

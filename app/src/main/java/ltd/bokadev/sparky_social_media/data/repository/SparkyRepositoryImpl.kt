@@ -127,20 +127,39 @@ class SparkyRepositoryImpl @Inject constructor(
 
     override suspend fun getProfilePosts(
         userId: String?,
-        pageCount: Int
+        pageCount: Int,
+        isLiked: Boolean?
     ): Flow<PagingData<Post>> {
-      return  Pager(
+        return Pager(
             PagingConfig(
                 pageSize = pageCount, prefetchDistance = 1, enablePlaceholders = false
             )
         ) {
             ProfilePostsPagingSource(
                 sparkyService = sparkyService,
-                userId = userId
+                userId = userId,
+                isLiked = isLiked
             )
         }.flow
     }
 
+    override suspend fun getLikedPosts(
+        userId: String?,
+        pageCount: Int,
+        isLiked: Boolean?
+    ): Flow<PagingData<Post>> {
+        return Pager(
+            PagingConfig(
+                pageSize = pageCount, prefetchDistance = 1, enablePlaceholders = false
+            )
+        ) {
+            ProfilePostsPagingSource(
+                sparkyService = sparkyService,
+                userId = userId,
+                isLiked = isLiked
+            )
+        }.flow
+    }
 }
 
 

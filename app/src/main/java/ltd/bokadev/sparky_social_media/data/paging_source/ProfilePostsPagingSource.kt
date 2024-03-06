@@ -9,7 +9,8 @@ import timber.log.Timber
 
 class ProfilePostsPagingSource(
     private val sparkyService: SparkyService,
-    private val userId: String?
+    private val userId: String?,
+    private val isLiked: Boolean?
 ) : PagingSource<Int, Post>() {
 
     override fun getRefreshKey(state: PagingState<Int, Post>): Int? {
@@ -19,9 +20,9 @@ class ProfilePostsPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Post> {
         return try {
             val currentPage = params.key ?: 0
-            val response = sparkyService.getProfilePosts(
+            val response = if (isLiked == false) sparkyService.getProfilePosts(
                 userId = userId, page = currentPage, pageCount = 20
-            )
+            ) else sparkyService.getLikedPosts(userId = userId, page = currentPage, pageCount = 20)
             val posts = response.body()
             Timber.e("PAGING SOURCE POSTS $posts")
 

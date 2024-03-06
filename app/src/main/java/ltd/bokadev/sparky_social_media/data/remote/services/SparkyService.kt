@@ -91,4 +91,11 @@ interface SparkyService {
         @Query("page") page: Int,
         @Query("pageCount") pageCount: Int
     ): Response<List<PostResponseDto>>
+
+    @GET("likedPosts")
+    suspend fun getLikedPosts(
+        @Query("userId") userId: String?,
+        @Query("page") page: Int,
+        @Query("pageCount") pageCount: Int
+    ): Response<List<PostResponseDto>>
 }
