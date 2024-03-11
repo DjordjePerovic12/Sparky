@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.singleOrNull
 import ltd.bokadev.sparky_social_media.core.base.BaseDataSource
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.Resource
+import ltd.bokadev.sparky_social_media.data.paging_source.NotificationsPagingSource
 import ltd.bokadev.sparky_social_media.data.paging_source.PostsPagingSource
 import ltd.bokadev.sparky_social_media.data.paging_source.ProfilePostsPagingSource
 import ltd.bokadev.sparky_social_media.data.paging_source.UsersPagingSource
@@ -30,6 +31,8 @@ import ltd.bokadev.sparky_social_media.domain.model.AccessToken
 import ltd.bokadev.sparky_social_media.domain.model.AccessTokenRequest
 import ltd.bokadev.sparky_social_media.domain.model.Comment
 import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
+import ltd.bokadev.sparky_social_media.domain.model.NotificationWrapper
+import ltd.bokadev.sparky_social_media.domain.model.Notifications
 import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.PostIdRequest
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
@@ -150,6 +153,20 @@ class SparkyRepositoryImpl @Inject constructor(
         ) {
             ProfilePostsPagingSource(
                 sparkyService = sparkyService, userId = userId, postsFilter = postsFilter
+            )
+        }.flow
+    }
+
+    override fun getNotifications(
+        pageCount: Int
+    ): Flow<PagingData<NotificationWrapper>> {
+        return Pager(
+            PagingConfig(
+                pageSize = pageCount, prefetchDistance = 1, enablePlaceholders = false
+            )
+        ) {
+            NotificationsPagingSource(
+                sparkyService = sparkyService
             )
         }.flow
     }

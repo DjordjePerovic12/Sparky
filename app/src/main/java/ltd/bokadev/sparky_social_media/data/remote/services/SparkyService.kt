@@ -7,6 +7,7 @@ import ltd.bokadev.sparky_social_media.data.remote.dto.CommentResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.CreatePostRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginResponseDto
+import ltd.bokadev.sparky_social_media.data.remote.dto.NotificationsResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.PostIdRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.PostResponseDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
@@ -98,4 +99,10 @@ interface SparkyService {
         @Query("page") page: Int,
         @Query("pageCount") pageCount: Int
     ): Response<List<PostResponseDto>>
+
+    @GET("notifications")
+    suspend fun getNotifications(
+        @Query("page") page: Int,
+        @Query("pageCount") pageCount: Int
+    ): Response<NotificationsResponseDto>
 }

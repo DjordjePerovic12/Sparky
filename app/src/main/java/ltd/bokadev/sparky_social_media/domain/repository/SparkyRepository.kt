@@ -11,6 +11,8 @@ import ltd.bokadev.sparky_social_media.domain.model.AccessToken
 import ltd.bokadev.sparky_social_media.domain.model.AccessTokenRequest
 import ltd.bokadev.sparky_social_media.domain.model.Comment
 import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
+import ltd.bokadev.sparky_social_media.domain.model.NotificationWrapper
+import ltd.bokadev.sparky_social_media.domain.model.Notifications
 import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.PostIdRequest
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
@@ -50,4 +52,8 @@ interface SparkyRepository {
         pageCount: Int,
         postsFilter: PostFilters
     ): Flow<PagingData<Post>>
+
+    fun getNotifications(
+        pageCount: Int
+    ): Flow<PagingData<NotificationWrapper>>
 }

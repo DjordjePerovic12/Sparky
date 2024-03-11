@@ -72,7 +72,10 @@ fun HomeScreen(
             topBar = {
                 SparkyTopBar(style = "Home", onSearchClick = {
                     homeViewModel.onEvent(HomeScreenEvent.OnSearchClick)
-                })
+                },
+                    onNotificationsClick = {
+                        homeViewModel.onEvent(HomeScreenEvent.OnNotificationsClick)
+                    })
             },
         ) { innerPadding ->
             LazyColumn(

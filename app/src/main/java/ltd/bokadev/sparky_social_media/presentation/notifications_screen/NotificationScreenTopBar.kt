@@ -77,5 +77,5 @@ fun NotificationScreenTopBar(
 @Preview
 @Composable
 fun TopBarPreview() {
-    NotificationScreenTopBar()
+    NotificationScreenTopBar({})
 }

@@ -34,4 +34,7 @@
     <string name="close">Close</string>
     <string name="file_name">image%1$s.jpg</string>
     <string name="notifications">Notifications</string>
+    <string name="follows_you_now">" follows you now."</string>
+    <string name="commented_on_your_post">" commented on your post: "</string>
+    <string name="liked_your_post">" Liked your post"</string>
 </resources>

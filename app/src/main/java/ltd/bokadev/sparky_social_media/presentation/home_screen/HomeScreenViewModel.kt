@@ -71,6 +71,9 @@ class HomeScreenViewModel @Inject constructor(
                 )
             }
 
+            is HomeScreenEvent.OnNotificationsClick -> {
+                navigateToNotificationsScreen()
+            }
         }
     }
 
@@ -139,6 +142,12 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
+    private fun navigateToNotificationsScreen() {
+        viewModelScope.launch {
+            navigator.navigateTo(Screen.NotificationsScreen.route)
+        }
+    }
+
     fun getUserData() = runBlocking {
         withContext(Dispatchers.IO) {
             dataStoreRepository.getUser().first()
@@ -150,6 +159,7 @@ sealed class HomeScreenEvent {
     data class OnCreatePostClick(val content: String) : HomeScreenEvent()
     data object OnSearchClick : HomeScreenEvent()
     data class OnLikeClick(val post: Post) : HomeScreenEvent()
+    data object OnNotificationsClick : HomeScreenEvent()
 }
 
 data class HomeScreenState(

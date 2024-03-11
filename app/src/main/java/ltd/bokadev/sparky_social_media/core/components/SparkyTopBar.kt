@@ -41,6 +41,7 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 fun SparkyTopBar(
     style: String = "Default",
     searchQuery: String? = null,
+    onNotificationsClick: () -> Unit,
     onCrossClick: (() -> Unit)? = null,
     onSearchChange: ((String) -> Unit)? = null,
     onSearchClick: (() -> Unit)? = null
@@ -99,12 +100,13 @@ fun SparkyTopBar(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(10.dp))
-                                .size(40.dp)
-                                .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
-                        ) {
+                        Box(modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .size(40.dp)
+                            .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
+                            .clickable {
+                                onNotificationsClick()
+                            }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_notification),
                                 contentDescription = null,
