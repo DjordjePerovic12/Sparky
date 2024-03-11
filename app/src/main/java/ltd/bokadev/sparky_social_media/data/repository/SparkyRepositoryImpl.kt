@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import ltd.bokadev.sparky_social_media.core.base.BaseDataSource
+import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.data.paging_source.PostsPagingSource
 import ltd.bokadev.sparky_social_media.data.paging_source.ProfilePostsPagingSource
@@ -125,10 +126,8 @@ class SparkyRepositoryImpl @Inject constructor(
             sparkyService.changeProfilePicture(profilePicture = profilePicture)
         }.mapResponse { toUserDetails() }
 
-    override suspend fun getProfilePosts(
-        userId: String?,
-        pageCount: Int,
-        isLiked: Boolean?
+    override fun getProfilePosts(
+        userId: String?, pageCount: Int, postsFilter: PostFilters
     ): Flow<PagingData<Post>> {
         return Pager(
             PagingConfig(
@@ -136,17 +135,13 @@ class SparkyRepositoryImpl @Inject constructor(
             )
         ) {
             ProfilePostsPagingSource(
-                sparkyService = sparkyService,
-                userId = userId,
-                isLiked = isLiked
+                sparkyService = sparkyService, userId = userId, postsFilter = postsFilter
             )
         }.flow
     }
 
-    override suspend fun getLikedPosts(
-        userId: String?,
-        pageCount: Int,
-        isLiked: Boolean?
+    override fun getLikedPosts(
+        userId: String?, pageCount: Int, postsFilter: PostFilters
     ): Flow<PagingData<Post>> {
         return Pager(
             PagingConfig(
@@ -154,9 +149,7 @@ class SparkyRepositoryImpl @Inject constructor(
             )
         ) {
             ProfilePostsPagingSource(
-                sparkyService = sparkyService,
-                userId = userId,
-                isLiked = isLiked
+                sparkyService = sparkyService, userId = userId, postsFilter = postsFilter
             )
         }.flow
     }
