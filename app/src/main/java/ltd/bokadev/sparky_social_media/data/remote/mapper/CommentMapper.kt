@@ -15,3 +15,12 @@ fun List<CommentResponseDto>.toComments() : List<Comment> {
         )
     }
 }
+
+fun CommentResponseDto.toComment() : Comment {
+    return Comment(
+        id = this.id.toNonNull(),
+        content = this.content.toNonNull(),
+        createdAt = this.createdAt.toNonNull(),
+        author = this.author?.toUserDetails() ?: mockUserDetails
+    )
+}

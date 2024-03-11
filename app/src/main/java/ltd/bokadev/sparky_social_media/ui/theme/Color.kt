@@ -14,6 +14,7 @@ val LightGray = Color(0xFF3B3A42)
 val UserDataTextField = Color(0xFFF9FAFB)
 val BottomNavigationUnselected = Color(0xFF676D75)
 val Red = Color(0xFFBB3D3D)
+val NotificationHourColor = Color(0xFFAAAAAA)
 
 @Immutable
 data class SparkyColors(
@@ -26,7 +27,8 @@ data class SparkyColors(
     val userDataTextField: Color,
     val bottomNavigationUnselected: Color,
     val lightGray: Color,
-    val red: Color
+    val red: Color,
+    val notificationHourColor: Color
 )
 
 val LocalSparkyColors = staticCompositionLocalOf {
@@ -40,7 +42,8 @@ val LocalSparkyColors = staticCompositionLocalOf {
         userDataTextField = Color.Unspecified,
         bottomNavigationUnselected = Color.Unspecified,
         lightGray = Color.Unspecified,
-        red = Color.Unspecified
+        red = Color.Unspecified,
+        notificationHourColor = Color.Unspecified
     )
 }
 
@@ -54,5 +57,6 @@ val sparkyColors = SparkyColors(
     userDataTextField = UserDataTextField,
     bottomNavigationUnselected = BottomNavigationUnselected,
     lightGray = LightGray,
-    red = Red
+    red = Red,
+    notificationHourColor = NotificationHourColor
 )

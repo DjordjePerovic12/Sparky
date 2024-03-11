@@ -43,7 +43,7 @@ fun LoginScreen(
         showSnackBar(message)
     }
 
-    Scaffold(topBar = { SparkyTopBar() }, bottomBar = {
+    Scaffold(topBar = { SparkyTopBar(onNotificationsClick = {}) }, bottomBar = {
         LoginBottomBar {
             viewModel.onEvent(LoginEvent.OnRegisterClick)
         }

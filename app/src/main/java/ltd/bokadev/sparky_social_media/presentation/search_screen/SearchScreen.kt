@@ -38,7 +38,8 @@ fun SearchScreen(
             onCrossClick = { viewModel.onEvent(SearchEvent.OnCrossClick) },
             onSearchChange = {
                 viewModel.onEvent(SearchEvent.OnSearchQueryChange(it))
-            })
+            },
+            onNotificationsClick = {})
     }) { innerPadding ->
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 15.dp, vertical = 15.dp),

@@ -21,14 +21,19 @@ class ProfilePostsPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Post> {
         return try {
             val currentPage = params.key ?: 0
-            val response =
-                if (postsFilter == PostFilters.YOUR_POSTS) sparkyService.getProfilePosts(
-                    userId = userId, page = currentPage, pageCount = 20
-                ) else sparkyService.getLikedPosts(
-                    userId = userId,
-                    page = currentPage,
-                    pageCount = 20
-                )
+            val response = when (postsFilter) {
+                PostFilters.YOUR_POSTS -> {
+                    sparkyService.getProfilePosts(
+                        userId = userId, page = currentPage, pageCount = 20
+                    )
+                }
+
+                PostFilters.LIKED_POSTS -> {
+                    sparkyService.getLikedPosts(
+                        userId = userId, page = currentPage, pageCount = 20
+                    )
+                }
+            }
             val posts = response.body()
             Timber.e("PAGING SOURCE POSTS $posts")
 

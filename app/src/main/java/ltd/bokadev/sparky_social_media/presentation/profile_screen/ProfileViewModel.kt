@@ -205,9 +205,6 @@ sealed class ProfileEvent {
     data object OnCloseClick : ProfileEvent()
     data class OnPostFilterClick(val selectedFilter: PostFilters) : ProfileEvent()
     data class ImageSelected(val image: MultipartBody.Part?) : ProfileEvent()
-    data class OnCommentsClick(val postId: String) : ProfileEvent()
-    data class OnCommentChanged(val comment: String) : ProfileEvent()
-    data object OnAddCommentClick : ProfileEvent()
 }
 
 

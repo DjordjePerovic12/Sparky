@@ -62,7 +62,7 @@ fun RegisterScreen(
     }
 
 
-    Scaffold(topBar = { SparkyTopBar() }, bottomBar = {
+    Scaffold(topBar = { SparkyTopBar(onNotificationsClick = {}) }, bottomBar = {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
