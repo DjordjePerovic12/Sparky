@@ -24,22 +24,30 @@ import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
 import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.presentation.home_screen.comments_bottom_sheet.CommentsBottomSheet
+import ltd.bokadev.sparky_social_media.presentation.shared_view_models.CommentEvent
+import ltd.bokadev.sparky_social_media.presentation.shared_view_models.CommentsViewModel
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel,
+    homeViewModel: HomeScreenViewModel,
+    commentsViewModel: CommentsViewModel,
     showSnackBar: (message: String) -> Unit,
 ) {
-    val state = viewModel.state
-    val posts = viewModel.posts.collectAsLazyPagingItems()
+    val homeScreenState = homeViewModel.state
+    val commentState = commentsViewModel.state
+    val posts = homeViewModel.posts.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true
     )
 
-    viewModel.snackBarChannel.observeWithLifecycle { message ->
+    homeViewModel.snackBarChannel.observeWithLifecycle { message ->
+        showSnackBar(message)
+    }
+
+    commentsViewModel.snackBarChannel.observeWithLifecycle { message ->
         showSnackBar(message)
     }
 
@@ -47,23 +55,23 @@ fun HomeScreen(
     ModalBottomSheetLayout(sheetState = bottomSheetState,
         modifier = Modifier.background(SparkyTheme.colors.primaryColor),
         sheetContent = {
-            CommentsBottomSheet(comments = state.comments ?: emptyList(),
-                username = viewModel.getUserData().username,
+            CommentsBottomSheet(comments = commentState.comments ?: emptyList(),
+                username = homeViewModel.getUserData().username,
                 imageUrl = null,
-                isLoading = state.isLoading,
-                isRefreshing = state.isRefreshing,
-                comment = state.comment,
+                isLoading = commentState.isLoading,
+                isRefreshing = commentState.isRefreshing,
+                comment = commentState.comment,
                 onAddCommentClick = {
-                    viewModel.onEvent(HomeScreenEvent.OnAddCommentClick)
+                    commentsViewModel.onEvent(CommentEvent.OnAddCommentClick)
                 },
                 onCommentChange = {
-                    viewModel.onEvent(HomeScreenEvent.OnCommentChanged(it))
+                    commentsViewModel.onEvent(CommentEvent.OnCommentChanged(it))
                 })
         }) {
         Scaffold(
             topBar = {
                 SparkyTopBar(style = "Home", onSearchClick = {
-                    viewModel.onEvent(HomeScreenEvent.OnSearchClick)
+                    homeViewModel.onEvent(HomeScreenEvent.OnSearchClick)
                 })
             },
         ) { innerPadding ->
@@ -77,7 +85,7 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(horizontal = 20.dp)
             ) {
-                if (state.isRefreshing) {
+                if (commentState.isRefreshing) {
                     item {
                         CircularProgressIndicator(color = SparkyTheme.colors.primaryColor)
                     }
@@ -86,12 +94,12 @@ fun HomeScreen(
                     if (post != null) {
                         //Will update the post item to match design after all functionalities are implemented
                         SparkyPostItem(post = post, onLikeClick = {
-                            viewModel.onEvent(HomeScreenEvent.OnLikeClick(it))
+                            homeViewModel.onEvent(HomeScreenEvent.OnLikeClick(it))
                         }, onCommentsClick = {
                             scope.launch {
                                 bottomSheetState.show()
                             }
-                            viewModel.onEvent(HomeScreenEvent.OnCommentsClick(post.id))
+                            commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
                         })
                     }
                 }
