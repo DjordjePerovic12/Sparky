@@ -37,6 +37,8 @@ class SearchViewModel @Inject constructor(
         private set
 
     private var searchJob: Job? = null
+    private var followJob: Job? = null
+    private var unfollowJob: Job? = null
 
     private val _snackBarChannel = Channel<String>()
     val snackBarChannel = _snackBarChannel.receiveAsFlow()
@@ -105,7 +107,9 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun executeFollowUser(user: User) {
-        viewModelScope.launch {
+        followJob?.cancel()
+        followJob = viewModelScope.launch {
+            delay(500)
             when (repository.followUser(UserIdRequest(user.user.id))) {
                 is Resource.Success -> {
                     _users.update { currentPagingData ->
@@ -132,7 +136,9 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun executeUnfollowUser(user: User) {
-        viewModelScope.launch {
+        unfollowJob?.cancel()
+        unfollowJob = viewModelScope.launch {
+            delay(500)
             when (repository.unfollowUser(UserIdRequest(user.user.id))) {
                 is Resource.Success -> {
                     _users.update { currentPagingData ->

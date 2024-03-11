@@ -24,8 +24,6 @@ import kotlinx.coroutines.withContext
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.Resource
-import ltd.bokadev.sparky_social_media.domain.model.Comment
-import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
 import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.PostIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.DataStoreRepository
@@ -65,20 +63,6 @@ class HomeScreenViewModel @Inject constructor(
                 navigateToSearchScreen()
             }
 
-            is HomeScreenEvent.OnCommentsClick -> {
-                state = state.copy(selectedPostId = event.postId)
-                executeGetComments(event.postId)
-            }
-
-            is HomeScreenEvent.OnCommentChanged -> {
-                if (event.comment.length <= 280) state = state.copy(comment = event.comment)
-            }
-
-            is HomeScreenEvent.OnAddCommentClick -> {
-                state = state.copy(isLoading = true)
-                executeAddComment()
-            }
-
             is HomeScreenEvent.OnLikeClick -> {
                 if (event.post.isLiked) executeUnlikePost(
                     postId = event.post.id, likeCount = event.post.likeCount
@@ -98,52 +82,9 @@ class HomeScreenViewModel @Inject constructor(
             response.collectLatest {
                 _posts.value = it
             }
-        }.invokeOnCompletion { state = state.copy(isRefreshing = false) }
-    }
-
-    private fun executeGetComments(postId: String) {
-        viewModelScope.launch {
-            when (val result = repository.getPostComments(postId)) {
-                is Resource.Success -> {
-                    result.data.let { comments ->
-                        state = state.copy(comments = comments, isRefreshing = false)
-                    }
-                }
-
-                is Resource.Error -> {
-                    _snackBarChannel.send("Error fetching comments")
-                }
-
-                else -> {}
-            }
         }
     }
 
-    private fun executeAddComment() {
-        viewModelScope.launch {
-            val result = repository.addComment(
-                CommentRequest(
-                    postId = state.selectedPostId, content = state.comment
-                )
-            )
-            when (result) {
-                is Resource.Success -> {
-                    state = state.copy(isLoading = false, comment = String())
-                    triggerRefresh()
-                }
-
-                is Resource.Error -> {
-                    state = state.copy(isLoading = false)
-                    _snackBarChannel.send("Error posting comment")
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-
-    //Not sure about the likeCount part, but did it here for now just so I would get your opinion on it
     private fun executeLikePost(postId: String, likeCount: Long) {
         viewModelScope.launch {
             when (repository.likePost(PostIdRequest(postId = postId))) {
@@ -192,14 +133,6 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    //Function that fetches data to get updated comments in the bottomSheet, and commentCount on post item
-    //Also triggers a loader so it look smooth
-    private fun triggerRefresh() {
-        state = state.copy(isRefreshing = true)
-        executeGetComments(state.selectedPostId)
-        executeGetFeedPosts()
-    }
-
     private fun navigateToSearchScreen() {
         viewModelScope.launch {
             navigator.navigateTo(Screen.SearchScreen.route)
@@ -216,17 +149,9 @@ class HomeScreenViewModel @Inject constructor(
 sealed class HomeScreenEvent {
     data class OnCreatePostClick(val content: String) : HomeScreenEvent()
     data object OnSearchClick : HomeScreenEvent()
-    data class OnCommentsClick(val postId: String) : HomeScreenEvent()
-    data class OnCommentChanged(val comment: String) : HomeScreenEvent()
-    data object OnAddCommentClick : HomeScreenEvent()
     data class OnLikeClick(val post: Post) : HomeScreenEvent()
 }
 
 data class HomeScreenState(
     val postContent: String = String(),
-    val comments: List<Comment>? = emptyList(),
-    val comment: String = String(),
-    val isLoading: Boolean = false,
-    val selectedPostId: String = String(),
-    val isRefreshing: Boolean = false
 )

@@ -2,6 +2,7 @@ package ltd.bokadev.sparky_social_media.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.data.remote.dto.CommentRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
@@ -38,14 +39,15 @@ interface SparkyRepository {
     suspend fun getProfileDetails(userId: String?): Resource<User>
     suspend fun logout(): Resource<Unit>
     suspend fun changeProfilePicture(profilePicture: MultipartBody.Part): Resource<UserDetails>
-    suspend fun getProfilePosts(
+    fun getProfilePosts(
         userId: String?,
         pageCount: Int,
-        isLiked: Boolean?
+        postsFilter: PostFilters
     ): Flow<PagingData<Post>>
-    suspend fun getLikedPosts(
+
+    fun getLikedPosts(
         userId: String?,
         pageCount: Int,
-        isLiked: Boolean?
+        postsFilter: PostFilters
     ): Flow<PagingData<Post>>
 }
