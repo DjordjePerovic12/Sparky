@@ -54,6 +54,6 @@ fun List<LikeNotificationDto>.toLikeNotifications(): List<NotificationWrapper> {
 }
 
 
-fun NotificationsResponseDto.toNotificationCreatedAt(): List<NotificationWrapper> {
+fun NotificationsResponseDto.toNotificationWrapper(): List<NotificationWrapper> {
     return this.follows.toFollow() + this.comments.toCommentNotification() + this.likes.toLikeNotifications()
 }
