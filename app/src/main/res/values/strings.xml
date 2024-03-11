@@ -33,4 +33,5 @@
     <string name="confirm">Confirm</string>
     <string name="close">Close</string>
     <string name="file_name">image%1$s.jpg</string>
+    <string name="notifications">Notifications</string>
 </resources>

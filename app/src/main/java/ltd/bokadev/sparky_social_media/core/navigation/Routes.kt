@@ -9,4 +9,5 @@ object Routes {
     const val HOME_SCREEN = "home_screen"
     const val SEARCH_SCREEN = "search_screen"
     const val PROFILE_SCREEN = "profile_screen"
+    const val NOTIFICATIONS_SCREEN = "notifications_screen"
 }

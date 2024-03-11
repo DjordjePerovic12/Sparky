@@ -2,6 +2,7 @@ package ltd.bokadev.sparky_social_media.core.navigation
 
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.HOME_SCREEN
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.LOGIN_SCREEN
+import ltd.bokadev.sparky_social_media.core.navigation.Routes.NOTIFICATIONS_SCREEN
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.PROFILE_SCREEN
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.REGISTER_SCREEN
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.SEARCH_SCREEN
@@ -14,4 +15,5 @@ sealed class Screen(val route: String) {
     data object HomeScreen : Screen(HOME_SCREEN)
     data object SearchScreen : Screen(SEARCH_SCREEN)
     data object ProfileScreen : Screen(PROFILE_SCREEN)
+    data object NotificationsScreen : Screen(NOTIFICATIONS_SCREEN)
 }

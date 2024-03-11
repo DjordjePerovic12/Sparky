@@ -10,6 +10,7 @@ import ltd.bokadev.sparky_social_media.core.navigation.Routes.AUTH
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.HOME_SCREEN
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.ROOT
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.homeScreenComposable
+import ltd.bokadev.sparky_social_media.core.navigation.destinations.notificationsScreenComposable
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.profileScreenComposable
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.searchScreenComposable
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
@@ -19,7 +20,8 @@ import timber.log.Timber
 fun SparkyNavigation(
     navController: NavHostController,
     isLoggedIn: Boolean,
-    navigator: Navigator, showSnackBar: (message: String) -> Unit,
+    navigator: Navigator,
+    showSnackBar: (message: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     navigator.navigationFlow.observeWithLifecycle { navType ->
@@ -38,6 +40,7 @@ fun SparkyNavigation(
         homeScreenComposable(navController = navController, showSnackBar = showSnackBar)
         searchScreenComposable(navController = navController, showSnackBar = showSnackBar)
         profileScreenComposable(navController = navController, showSnackBar = showSnackBar)
+        notificationsScreenComposable(navController = navController, showSnackBar = showSnackBar)
     }
 }
 
