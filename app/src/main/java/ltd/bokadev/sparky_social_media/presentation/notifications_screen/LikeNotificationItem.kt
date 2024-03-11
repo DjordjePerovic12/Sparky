@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.domain.model.Like
-import ltd.bokadev.sparky_social_media.domain.model.LikeNotification
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.presentation.home_screen.UserImageItem
 import ltd.bokadev.sparky_social_media.presentation.utils.formatToHHMM

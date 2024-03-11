@@ -6,7 +6,6 @@ import ltd.bokadev.sparky_social_media.data.remote.mapper.toNotificationWrapper
 import ltd.bokadev.sparky_social_media.data.remote.services.SparkyService
 import ltd.bokadev.sparky_social_media.domain.model.NotificationWrapper
 
-
 class NotificationsPagingSource(
     private val sparkyService: SparkyService
 ) : PagingSource<Int, NotificationWrapper>() {

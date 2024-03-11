@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.domain.model.Comment
-import ltd.bokadev.sparky_social_media.domain.model.CommentNotification
 import ltd.bokadev.sparky_social_media.presentation.home_screen.UserImageItem
 import ltd.bokadev.sparky_social_media.presentation.utils.formatToHHMM
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
