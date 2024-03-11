@@ -4,15 +4,11 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.Resource
-import ltd.bokadev.sparky_social_media.data.remote.dto.CommentRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.LoginRequestDto
 import ltd.bokadev.sparky_social_media.data.remote.dto.RegistrationRequestDto
-import ltd.bokadev.sparky_social_media.domain.model.AccessToken
-import ltd.bokadev.sparky_social_media.domain.model.AccessTokenRequest
 import ltd.bokadev.sparky_social_media.domain.model.Comment
 import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
 import ltd.bokadev.sparky_social_media.domain.model.NotificationWrapper
-import ltd.bokadev.sparky_social_media.domain.model.Notifications
 import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.PostIdRequest
 import ltd.bokadev.sparky_social_media.domain.model.PostRequest
@@ -21,7 +17,6 @@ import ltd.bokadev.sparky_social_media.domain.model.UserData
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 import okhttp3.MultipartBody
-import retrofit2.http.Multipart
 
 interface SparkyRepository {
     suspend fun register(registrationRequestDto: RegistrationRequestDto): Resource<Unit>

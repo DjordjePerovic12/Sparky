@@ -6,7 +6,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.domain.model.NotificationWrapper
-import ltd.bokadev.sparky_social_media.domain.model.Notifications
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import javax.inject.Inject
 
