@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.components.LogoutAlertDialog
@@ -35,6 +36,7 @@ import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.ProfileScreenType
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.data.utils.getImage
+import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.presentation.home_screen.SparkyPostItem
 import ltd.bokadev.sparky_social_media.presentation.home_screen.comments_bottom_sheet.CommentsBottomSheet
 import ltd.bokadev.sparky_social_media.presentation.shared_view_models.CommentEvent
@@ -72,22 +74,21 @@ fun ProfileScreen(
             profileViewModel.onEvent(ProfileEvent.ImageSelected(image))
         }
     }
+    val posts = when (profileState.selectedFilter) {
+        PostFilters.YOUR_POSTS -> {
+            profileViewModel.executeGetProfilePosts().collectAsLazyPagingItems()
+        }
 
-    val userPosts = profileViewModel.executeGetProfilePosts().collectAsLazyPagingItems()
-    val likedPosts = profileViewModel.executeGetLikedPosts().collectAsLazyPagingItems()
-
-
-    profileViewModel.snackBarChannel.observeWithLifecycle { message ->
-        showSnackBar(message)
+        PostFilters.LIKED_POSTS -> {
+            profileViewModel.executeGetLikedPosts().collectAsLazyPagingItems()
+        }
     }
+        profileViewModel.snackBarChannel.observeWithLifecycle { message ->
+            showSnackBar(message)
+        }
 
     commentsViewModel.snackBarChannel.observeWithLifecycle { message ->
         showSnackBar(message)
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        profileViewModel.executeGetUser()
-        profileViewModel.executeGetProfilePosts()
     }
 
     LogoutAlertDialog(headerText = "LOG OUT",
@@ -168,32 +169,29 @@ fun ProfileScreen(
                         )
                     }
                 }
-                if (profileState.selectedFilter == PostFilters.YOUR_POSTS) items(userPosts.itemCount) { index ->
-                    val post = userPosts[index]
+                items(posts.itemCount) { index ->
+                    val post = posts[index]
                     if (post != null) {
-                        SparkyPostItem(post = post, onLikeClick = {}, onCommentsClick = {
-                            scope.launch {
-                                bottomSheetState.show()
-                            }
-                            commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
-                        },
+                        SparkyPostItem(
+                            post = post,
+                            onLikeClick = {},
+                            onCommentsClick = {
+                                scope.launch {
+                                    bottomSheetState.show()
+                                }
+                                commentsViewModel.onEvent(
+                                    CommentEvent.OnCommentsClick(
+                                        post.id
+                                    )
+                                )
+                            },
                             onUserImageClick = {
-                                commentsViewModel.onEvent(CommentEvent.OnUserImageClick(post.author))
+                                commentsViewModel.onEvent(
+                                    CommentEvent.OnUserImageClick(
+                                        post.author
+                                    )
+                                )
                             })
-                    }
-                }
-                else items(likedPosts.itemCount) { index ->
-                    val post = likedPosts[index]
-                    if (post != null) {
-                        SparkyPostItem(post = post, onLikeClick = {},
-                            onUserImageClick = {
-                                commentsViewModel.onEvent(CommentEvent.OnUserImageClick(post.author))
-                            }) {
-                            scope.launch {
-                                bottomSheetState.show()
-                            }
-                            commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
-                        }
                     }
                 }
             }

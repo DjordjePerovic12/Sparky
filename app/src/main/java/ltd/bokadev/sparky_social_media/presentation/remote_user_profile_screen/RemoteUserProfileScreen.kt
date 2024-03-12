@@ -66,6 +66,16 @@ fun RemoteUserProfileScreen(
         refreshThreshold = 60.dp
     )
 
+    val posts = when (profileState.selectedFilter) {
+        PostFilters.YOUR_POSTS -> {
+            profileViewModel.executeGetProfilePosts().collectAsLazyPagingItems()
+        }
+
+        PostFilters.LIKED_POSTS -> {
+            profileViewModel.executeGetLikedPosts().collectAsLazyPagingItems()
+        }
+    }
+
     profileViewModel.snackBarChannel.observeWithLifecycle { message ->
         showSnackBar(message)
     }
@@ -110,8 +120,7 @@ fun RemoteUserProfileScreen(
                     onFollowClick = {
                         profileViewModel.onEvent(ProfileEvent.OnFollowUnfollowClick(it))
                     },
-                    onLogoutClick = {}
-                )
+                    onLogoutClick = {})
             }
         }) { innerPadding ->
             LazyColumn(
@@ -154,32 +163,25 @@ fun RemoteUserProfileScreen(
                         )
                     }
                 }
-                if (profileState.selectedFilter == PostFilters.YOUR_POSTS) items(userPosts.itemCount) { index ->
+                items(userPosts.itemCount) { index ->
                     val post = userPosts[index]
                     if (post != null) {
                         SparkyPostItem(post = post, onLikeClick = {}, onCommentsClick = {
                             scope.launch {
                                 bottomSheetState.show()
                             }
-                            commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
-                        },
-                            onUserImageClick = {
-                                commentsViewModel.onEvent(CommentEvent.OnUserImageClick(post.author))
-                            })
-                    }
-                }
-                else items(likedPosts.itemCount) { index ->
-                    val post = likedPosts[index]
-                    if (post != null) {
-                        SparkyPostItem(post = post, onLikeClick = {},
-                            onUserImageClick = {
-                                commentsViewModel.onEvent(CommentEvent.OnUserImageClick(post.author))
-                            }) {
-                            scope.launch {
-                                bottomSheetState.show()
-                            }
-                            commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
-                        }
+                            commentsViewModel.onEvent(
+                                CommentEvent.OnCommentsClick(
+                                    post.id
+                                )
+                            )
+                        }, onUserImageClick = {
+                            commentsViewModel.onEvent(
+                                CommentEvent.OnUserImageClick(
+                                    post.author
+                                )
+                            )
+                        })
                     }
                 }
             }
