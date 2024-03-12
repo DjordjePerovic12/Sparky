@@ -20,8 +20,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
+import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
+import ltd.bokadev.sparky_social_media.core.utils.encodeArgument
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
@@ -77,6 +79,11 @@ class SearchViewModel @Inject constructor(
                     if (event.user.isFollowing) executeUnfollowUser(event.user)
                     else executeFollowUser(event.user)
                 }
+            }
+
+            is SearchEvent.OnUserImageClick -> {
+                Timber.e("USER ID ON CLICK IS ${event.user.user.id}")
+                navigateToRemoteUserScreen(event.user.user.id.encodeArgument())
             }
         }
     }
@@ -163,10 +170,17 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
+    private fun navigateToRemoteUserScreen(userId: String) {
+        viewModelScope.launch {
+            navigator.navigateTo(Screen.RemoteUserProfileScreen.passUserId(userId))
+        }
+    }
 }
 
 sealed class SearchEvent {
     data class OnSearchQueryChange(val searchQuery: String) : SearchEvent()
+    data class OnUserImageClick(val user: User) : SearchEvent()
     data object OnFetchingUsersError : SearchEvent()
     data object OnCrossClick : SearchEvent()
     data object TriggerLoader : SearchEvent()

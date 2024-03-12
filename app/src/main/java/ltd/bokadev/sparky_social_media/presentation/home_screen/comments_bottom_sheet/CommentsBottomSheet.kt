@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.domain.model.Comment
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
@@ -30,6 +31,7 @@ fun CommentsBottomSheet(
     isRefreshing: Boolean,
     imageUrl: String? = null,
     comment: String,
+    onUserImageClick: (UserDetails) -> Unit,
     onAddCommentClick: () -> Unit,
     onCommentChange: (String) -> Unit
 ) {
@@ -80,7 +82,7 @@ fun CommentsBottomSheet(
                 }
             } else {
                 items(comments) { comment ->
-                    CommentItem(comment = comment)
+                    CommentItem(comment = comment, onUserImageClick = {onUserImageClick(it)})
                 }
             }
         }

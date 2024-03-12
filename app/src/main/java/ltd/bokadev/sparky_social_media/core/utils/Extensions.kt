@@ -33,6 +33,7 @@ import ltd.bokadev.sparky_social_media.core.utils.Constants.NO_INFO
 import ltd.bokadev.sparky_social_media.core.validation.PasswordValidationResult
 import okhttp3.Request
 import timber.log.Timber
+import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -181,3 +182,7 @@ fun String.formatToTwelveHourMonthNameDateTime(): String {
         ""
     }
 }
+
+fun String.encodeArgument(): String = URLEncoder.encode(
+    this, Charsets.UTF_8.name()
+).replace('+', ' ')

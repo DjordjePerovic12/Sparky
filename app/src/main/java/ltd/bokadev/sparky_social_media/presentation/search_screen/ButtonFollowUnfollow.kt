@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,22 +20,63 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
+import ltd.bokadev.sparky_social_media.core.utils.FollowUnfollowButtonStyle
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
-fun ButtonFollowUnfollow(isFollowing: Boolean, onClick: () -> Unit) {
-    val width = if (isFollowing) 75.dp else 65.dp
+fun ButtonFollowUnfollow(
+    isFollowing: Boolean, style: FollowUnfollowButtonStyle, onClick: () -> Unit
+) {
+    val sizeModifier = when (style) {
+        FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
+            if (isFollowing) Modifier.size(
+                width = 75.dp, height = 35.dp
+            ) else Modifier.size(width = 65.dp, height = 35.dp)
+        }
+
+        FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN -> {
+            Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+        }
+    }
     val buttonLabel =
         if (isFollowing) stringResource(id = R.string.unfollow) else stringResource(id = R.string.follow)
-    val buttonColor = if (isFollowing) SparkyTheme.colors.white else SparkyTheme.colors.yellow
-    val buttonBorderColor = if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.yellow
-    val buttonLabelColor =
-        if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.primaryColor
+    val buttonColor = when (style) {
+        FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
+            if (isFollowing) SparkyTheme.colors.white else SparkyTheme.colors.yellow
+        }
+
+        FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN -> {
+            if (isFollowing) Color.Transparent else SparkyTheme.colors.yellow
+        }
+    }
+    val buttonBorderColor = when (style) {
+        FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
+            if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.yellow
+        }
+
+        FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN -> {
+            if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.yellow
+        }
+    }
+
+    val buttonLabelColor = when (style) {
+        FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
+            if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.primaryColor
+        }
+
+        FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN -> {
+            if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.primaryColor
+        }
+    }
+
     Button(
-        modifier = Modifier.size(width = width, height = 35.dp),
+        modifier = sizeModifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor
         ),

@@ -10,5 +10,10 @@ fun NotificationsScreen(
     showSnackBar: (message: String) -> Unit
 ) {
     val notifications = viewModel.executeGetNotifications().collectAsLazyPagingItems()
-    NotificationsScreenContent(notifications = notifications)
+    NotificationsScreenContent(notifications = notifications,
+        onBackClick = {
+            viewModel.onEvent(NotificationsScreenEvent.OnBackClick)
+        }, onUserImageClick = {
+            viewModel.onEvent(NotificationsScreenEvent.OnUserImageClick(it))
+        })
 }

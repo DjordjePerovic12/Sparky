@@ -1,5 +1,6 @@
 package ltd.bokadev.sparky_social_media.presentation.notifications_screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,8 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 @Composable
 fun LikeNotificationItem(
     user: UserDetails,
-    like: Like
+    like: Like,
+    onUserImageClick: (UserDetails) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -40,7 +42,10 @@ fun LikeNotificationItem(
     ) {
         UserImageItem(
             userFullName = user.username,
-            imageUrl = user.profilePictureUrl
+            imageUrl = user.profilePictureUrl,
+            modifier = Modifier.clickable {
+                onUserImageClick(user)
+            }
         )
 
         Column(

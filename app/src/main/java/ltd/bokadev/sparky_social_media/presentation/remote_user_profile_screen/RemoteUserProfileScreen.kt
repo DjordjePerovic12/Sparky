@@ -17,6 +17,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,6 +32,8 @@ import ltd.bokadev.sparky_social_media.core.utils.PostFilters
 import ltd.bokadev.sparky_social_media.core.utils.ProfileScreenType
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.data.utils.getImage
+import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.presentation.home_screen.SparkyPostItem
 import ltd.bokadev.sparky_social_media.presentation.home_screen.comments_bottom_sheet.CommentsBottomSheet
 import ltd.bokadev.sparky_social_media.presentation.profile_screen.ProfileEvent
@@ -44,6 +47,7 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun RemoteUserProfileScreen(
+    userId: String,
     profileViewModel: ProfileViewModel,
     commentsViewModel: CommentsViewModel,
     showSnackBar: (message: String) -> Unit
@@ -62,17 +66,20 @@ fun RemoteUserProfileScreen(
         refreshThreshold = 60.dp
     )
 
-
-    val userPosts = profileViewModel.executeGetProfilePosts().collectAsLazyPagingItems()
-    val likedPosts = profileViewModel.executeGetLikedPosts().collectAsLazyPagingItems()
-
-
     profileViewModel.snackBarChannel.observeWithLifecycle { message ->
         showSnackBar(message)
     }
 
     commentsViewModel.snackBarChannel.observeWithLifecycle { message ->
         showSnackBar(message)
+    }
+
+    val userPosts = profileViewModel.executeGetProfilePosts(userId).collectAsLazyPagingItems()
+    val likedPosts = profileViewModel.executeGetLikedPosts(userId).collectAsLazyPagingItems()
+
+
+    LaunchedEffect(key1 = userId) {
+        profileViewModel.executeGetUser(userId)
     }
 
     ModalBottomSheetLayout(sheetState = bottomSheetState,
@@ -87,6 +94,9 @@ fun RemoteUserProfileScreen(
                 onAddCommentClick = {
                     commentsViewModel.onEvent(CommentEvent.OnAddCommentClick)
                 },
+                onUserImageClick = {
+                    commentsViewModel.onEvent(CommentEvent.OnUserImageClick(it))
+                },
                 onCommentChange = {
                     commentsViewModel.onEvent(CommentEvent.OnCommentChanged(it))
                 })
@@ -97,6 +107,9 @@ fun RemoteUserProfileScreen(
                     isLoadingUserData = profileState.isLoadingUserData,
                     type = ProfileScreenType.REMOTE_USER,
                     onChangeProfilePictureClick = {},
+                    onFollowClick = {
+                        profileViewModel.onEvent(ProfileEvent.OnFollowUnfollowClick(it))
+                    },
                     onLogoutClick = {}
                 )
             }
@@ -149,13 +162,19 @@ fun RemoteUserProfileScreen(
                                 bottomSheetState.show()
                             }
                             commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
-                        })
+                        },
+                            onUserImageClick = {
+                                commentsViewModel.onEvent(CommentEvent.OnUserImageClick(post.author))
+                            })
                     }
                 }
                 else items(likedPosts.itemCount) { index ->
                     val post = likedPosts[index]
                     if (post != null) {
-                        SparkyPostItem(post = post, onLikeClick = {}) {
+                        SparkyPostItem(post = post, onLikeClick = {},
+                            onUserImageClick = {
+                                commentsViewModel.onEvent(CommentEvent.OnUserImageClick(post.author))
+                            }) {
                             scope.launch {
                                 bottomSheetState.show()
                             }

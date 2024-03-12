@@ -36,9 +36,11 @@ import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
 import ltd.bokadev.sparky_social_media.domain.model.Post
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
+import ltd.bokadev.sparky_social_media.domain.model.UserIdRequest
 import ltd.bokadev.sparky_social_media.domain.repository.DataStoreRepository
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import ltd.bokadev.sparky_social_media.presentation.home_screen.HomeScreenEvent
+import ltd.bokadev.sparky_social_media.presentation.search_screen.SearchEvent
 import ltd.bokadev.sparky_social_media.ui.theme.sparkyColors
 import okhttp3.MultipartBody
 import timber.log.Timber
@@ -85,31 +87,63 @@ class ProfileViewModel @Inject constructor(
                 event.image?.let { executeChangeProfilePicture(it) }
             }
 
+            is ProfileEvent.OnFollowUnfollowClick -> {
+                viewModelScope.launch {
+                    if (event.user.isFollowing) executeUnfollowUser(event.user)
+                    else executeFollowUser(event.user)
+                }
+            }
+
             else -> {}
         }
     }
 
-    init {
-        executeGetUser()
-        executeGetProfilePosts()
+    private fun executeFollowUser(user: User) {
+        viewModelScope.launch {
+            when (repository.followUser(UserIdRequest(userId = user.user.id))) {
+                is Resource.Success -> {
+                    state = state.copy(user = state.user?.copy(isFollowing = true))
+                    Timber.e("State ${user.isFollowing}")
+                    _snackBarChannel.send("Successfully followed ${user.user.username}")
+                }
+
+                is Resource.Error -> {
+                    _snackBarChannel.send("Error following user.")
+                }
+
+                else -> {}
+            }
+        }
     }
 
-    fun refresh() {
+    private fun executeUnfollowUser(user: User) {
         viewModelScope.launch {
-            _isRefreshing.emit(true)
-            executeGetProfilePosts()
-            _isRefreshing.emit(false)
+            when (repository.unfollowUser(UserIdRequest(userId = user.user.id))) {
+                is Resource.Success -> {
+                    state = state.copy(user = state.user?.copy(isFollowing = false))
+                    _snackBarChannel.send("Successfully unfollowed ${user.user.username}")
+                }
+
+                is Resource.Error -> {
+                    _snackBarChannel.send("Error unfollowing user.")
+                }
+
+                else -> {}
+            }
         }
     }
 
 
-    private fun executeGetUser() {
+    fun executeGetUser(userId: String? = null) {
         viewModelScope.launch {
             state = state.copy(isLoadingUserData = true)
-            when (val result = repository.getProfileDetails(null)) {
+            when (val result = repository.getProfileDetails(userId)) {
                 is Resource.Success -> {
                     result.data.let { user ->
-                        state = state.copy(user = user?.user, isLoadingUserData = false)
+                        state = state.copy(
+                            user = user,
+                            isLoadingUserData = false
+                        )
                     }
                 }
 
@@ -161,7 +195,9 @@ class ProfileViewModel @Inject constructor(
                     Timber.e("RESULT DATA ${result.data}")
                     result.data.let {
                         Timber.e("RESULT LET")
-                        state = state.copy(user = it)
+                        if (it != null) {
+                            state.user?.copy(user = it)
+                        }
                     }
                     _snackBarChannel.send("Successfully updated profile picture")
                 }
@@ -178,15 +214,15 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun executeGetProfilePosts(): Flow<PagingData<Post>> {
+    fun executeGetProfilePosts(userId: String? = null): Flow<PagingData<Post>> {
         return repository.getProfilePosts(
-            null, pageCount = 20, postsFilter = state.selectedFilter
+           userId =  userId, pageCount = 20, postsFilter = state.selectedFilter
         )
     }
 
-    fun executeGetLikedPosts(): Flow<PagingData<Post>> {
+    fun executeGetLikedPosts(userId: String? = null): Flow<PagingData<Post>> {
         return repository.getProfilePosts(
-            null, pageCount = 20, postsFilter = state.selectedFilter
+            userId = userId, pageCount = 20, postsFilter = state.selectedFilter
         )
     }
 
@@ -205,14 +241,16 @@ sealed class ProfileEvent {
     data object OnCloseClick : ProfileEvent()
     data class OnPostFilterClick(val selectedFilter: PostFilters) : ProfileEvent()
     data class ImageSelected(val image: MultipartBody.Part?) : ProfileEvent()
+    data class OnFollowUnfollowClick(val user: User) : ProfileEvent()
 }
 
 
 data class ProfileState(
-    val user: UserDetails? = null,
+    var user: User? = null,
     val isLoadingUserData: Boolean = false,
     val shouldShowDialog: Boolean = false,
     val selectedFilter: PostFilters = PostFilters.YOUR_POSTS,
     val selectedImage: Uri? = null,
+    val isFollowing: Boolean = false,
     val userPosts: List<Post> = emptyList()
 )

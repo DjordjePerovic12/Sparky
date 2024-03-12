@@ -13,16 +13,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
+import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.domain.model.Comment
 import ltd.bokadev.sparky_social_media.domain.model.CommentRequest
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.domain.repository.SparkyRepository
 import ltd.bokadev.sparky_social_media.presentation.home_screen.HomeScreenEvent
 import javax.inject.Inject
 
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
-    private val repository: SparkyRepository
+    private val repository: SparkyRepository,
+    private val navigator: Navigator,
 ) : ViewModel() {
 
     var state by mutableStateOf(CommentState())
@@ -50,6 +53,10 @@ class CommentsViewModel @Inject constructor(
             is CommentEvent.OnAddCommentClick -> {
                 state = state.copy(isLoading = true)
                 executeAddComment()
+            }
+
+            is CommentEvent.OnUserImageClick -> {
+                navigateToUserProfileScreen(event.user.id)
             }
         }
     }
@@ -102,12 +109,19 @@ class CommentsViewModel @Inject constructor(
             }
         }
     }
+
+    private fun navigateToUserProfileScreen(userId: String) {
+        viewModelScope.launch {
+            navigator.navigateTo(Screen.RemoteUserProfileScreen.passUserId(userId))
+        }
+    }
 }
 
 sealed class CommentEvent {
     data class OnCommentsClick(val postId: String) : CommentEvent()
     data class OnCommentChanged(val comment: String) : CommentEvent()
     data object OnAddCommentClick : CommentEvent()
+    data class OnUserImageClick(val user: UserDetails) : CommentEvent()
 }
 
 data class CommentState(
