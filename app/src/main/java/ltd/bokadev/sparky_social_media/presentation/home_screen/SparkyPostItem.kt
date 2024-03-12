@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
@@ -37,19 +39,22 @@ fun SparkyPostItem(
     onCommentsClick: () -> Unit
 ) {
     Card(
-        shape = RoundedCornerShape(30.dp), colors = CardColors(
+        colors = CardColors(
             containerColor = SparkyTheme.colors.primaryColor,
             contentColor = SparkyTheme.colors.white,
             disabledContainerColor = SparkyTheme.colors.primaryColor,
             disabledContentColor = SparkyTheme.colors.white
         ), modifier = Modifier
             .fillMaxWidth()
+            .clip(SpeechBubbleShape())
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
+                .offset(x = 30.dp, y = 10.dp)
+                .offset(x = (-20).dp, y = (-10).dp)
                 .padding(horizontal = 20.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))
