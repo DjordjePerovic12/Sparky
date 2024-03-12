@@ -1,5 +1,6 @@
 package ltd.bokadev.sparky_social_media.presentation.notifications_screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,12 +22,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.domain.model.FollowNotification
+import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.presentation.home_screen.UserImageItem
 import ltd.bokadev.sparky_social_media.presentation.utils.formatToHHMM
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
-fun FollowNotificationItem(notification: FollowNotification) {
+fun FollowNotificationItem(
+    notification: FollowNotification,
+    onUserImageClick: (UserDetails) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -36,7 +42,10 @@ fun FollowNotificationItem(notification: FollowNotification) {
     ) {
         UserImageItem(
             userFullName = notification.followingUser.username,
-            imageUrl = notification.followingUser.profilePictureUrl
+            imageUrl = notification.followingUser.profilePictureUrl,
+            modifier = Modifier.clickable {
+                onUserImageClick(notification.followingUser)
+            }
         )
 
         Column(

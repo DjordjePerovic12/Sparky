@@ -1,5 +1,6 @@
 package ltd.bokadev.sparky_social_media.presentation.search_screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ltd.bokadev.sparky_social_media.R
+import ltd.bokadev.sparky_social_media.core.utils.FollowUnfollowButtonStyle
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.presentation.home_screen.UserImageItem
@@ -21,7 +23,7 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun UserItem(
-    user: User, onFollowClick: (User) -> Unit = { }
+    user: User, onUserImageClick: (User) -> Unit, onFollowClick: (User) -> Unit = { }
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -32,7 +34,13 @@ fun UserItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            UserImageItem(userFullName = user.user.username, imageUrl = user.user.profilePictureUrl)
+            UserImageItem(
+                modifier = Modifier.clickable {
+                    onUserImageClick(user)
+                },
+                userFullName = user.user.username,
+                imageUrl = user.user.profilePictureUrl,
+            )
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.Start
@@ -49,7 +57,10 @@ fun UserItem(
                 )
             }
         }
-        ButtonFollowUnfollow(isFollowing = user.isFollowing) {
+        ButtonFollowUnfollow(
+            isFollowing = user.isFollowing,
+            style = FollowUnfollowButtonStyle.SEARCH_SCREEN
+        ) {
             onFollowClick(user)
         }
     }

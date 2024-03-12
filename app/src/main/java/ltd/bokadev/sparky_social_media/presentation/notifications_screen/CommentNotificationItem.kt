@@ -1,5 +1,6 @@
 package ltd.bokadev.sparky_social_media.presentation.notifications_screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,12 +22,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.domain.model.Comment
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.presentation.home_screen.UserImageItem
 import ltd.bokadev.sparky_social_media.presentation.utils.formatToHHMM
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
-fun CommentNotificationItem(comment: Comment) {
+fun CommentNotificationItem(
+    comment: Comment,
+    onUserImageClick: (UserDetails) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -36,7 +41,10 @@ fun CommentNotificationItem(comment: Comment) {
     ) {
         UserImageItem(
             userFullName = comment.author.username,
-            imageUrl = comment.author.profilePictureUrl
+            imageUrl = comment.author.profilePictureUrl,
+            modifier = Modifier.clickable {
+                onUserImageClick(comment.author)
+            }
         )
 
         Column(

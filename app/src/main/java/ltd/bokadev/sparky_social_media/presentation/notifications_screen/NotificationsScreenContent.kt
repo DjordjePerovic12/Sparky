@@ -13,12 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import ltd.bokadev.sparky_social_media.domain.model.NotificationWrapper
+import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.presentation.utils.formatDate
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun NotificationsScreenContent(
-    notifications: LazyPagingItems<NotificationWrapper>
+    notifications: LazyPagingItems<NotificationWrapper>,
+    onBackClick: () -> Unit,
+    onUserImageClick: (UserDetails) -> Unit,
 ) {
     val notificationsByDay = notifications.itemSnapshotList.sortedBy { it?.createAt }
         .groupBy { it?.createAt?.formatDate() }.entries.toList()
@@ -26,9 +30,7 @@ fun NotificationsScreenContent(
         verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Scaffold(topBar = {
-            NotificationScreenTopBar() {
-
-            }
+            NotificationScreenTopBar(onBackClick = { onBackClick() })
         }) { innerPadding ->
             LazyColumn(
                 contentPadding = innerPadding,
@@ -46,7 +48,10 @@ fun NotificationsScreenContent(
                     }
                     notifications.forEach { notification ->
                         if (notification != null) {
-                            NotificationItem(notifications = notification)
+                            NotificationItem(notifications = notification,
+                                onUserImageClick = {
+                                    onUserImageClick(it)
+                                })
                         }
                     }
                 }

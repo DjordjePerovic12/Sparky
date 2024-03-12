@@ -1,6 +1,7 @@
 package ltd.bokadev.sparky_social_media.presentation.home_screen.comments_bottom_sheet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,12 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.core.utils.formatToTwelveHourMonthNameDateTime
 import ltd.bokadev.sparky_social_media.domain.model.Comment
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.presentation.home_screen.UserImageItem
+import ltd.bokadev.sparky_social_media.presentation.notifications_screen.NotificationsScreenEvent
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun CommentItem(
-    comment: Comment
+    comment: Comment,
+    onUserImageClick: (UserDetails) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -31,13 +35,17 @@ fun CommentItem(
     ) {
 
         UserImageItem(
-            userFullName = comment.author.username, imageUrl = comment.author.profilePictureUrl
+            userFullName = comment.author.username, imageUrl = comment.author.profilePictureUrl,
+            modifier = Modifier.clickable {
+                onUserImageClick(comment.author)
+            }
         )
 
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.Start,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 10.dp)
         ) {
             Row(

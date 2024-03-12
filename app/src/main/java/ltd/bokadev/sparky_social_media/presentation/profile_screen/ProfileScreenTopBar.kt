@@ -24,22 +24,29 @@ import androidx.compose.material.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.utils.CustomModifiers
+import ltd.bokadev.sparky_social_media.core.utils.FollowUnfollowButtonStyle
+import ltd.bokadev.sparky_social_media.core.utils.ProfileScreenType
 import ltd.bokadev.sparky_social_media.core.utils.TopBarStyle
 import ltd.bokadev.sparky_social_media.core.utils.formatToTwelveHourMonthNameDateTime
+import ltd.bokadev.sparky_social_media.core.utils.getInitials
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
+import ltd.bokadev.sparky_social_media.presentation.search_screen.ButtonFollowUnfollow
 import ltd.bokadev.sparky_social_media.presentation.search_screen.SparkySearchBar
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
@@ -49,9 +56,11 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 //Also because this one is more complex then the other ones
 @Composable
 fun ProfileScreenTopBar(
-    user: UserDetails,
+    user: User,
+    type: ProfileScreenType,
     isLoadingUserData: Boolean,
     onChangeProfilePictureClick: () -> Unit,
+    onFollowClick: (User) -> Unit = {},
     onLogoutClick: () -> Unit
 ) {
     //Using static data everywhere because this PR was all about UI
@@ -129,46 +138,95 @@ fun ProfileScreenTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(15.dp),
             ) {
-                LocalUserImageItem(
-                    username = user.username, imageUrl = user.profilePictureUrl
-                ) {
-                    onChangeProfilePictureClick()
+                when (type) {
+                    ProfileScreenType.LOCAL_USER -> {
+                        LocalUserImageItem(
+                            username = user.user.username, imageUrl = user.user.profilePictureUrl
+                        ) {
+                            onChangeProfilePictureClick()
+                        }
+                    }
+
+                    ProfileScreenType.REMOTE_USER -> {
+                        Box(
+                            contentAlignment = Alignment.Center
+                        ) {
+                            //Will refactor this when I refactor the image item in general
+                            //Because the one I made earlier isn't appropriate for this component
+                            //And my focus at the moment is on functional parts of the app
+                            Box(
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(RoundedCornerShape(7.dp))
+                            ) {
+                                if (user.user.profilePictureUrl == null) {
+                                    Column(
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(SparkyTheme.colors.white)
+                                    ) {
+                                        Text(
+                                            text = user.user.username.getInitials(),
+                                            style = SparkyTheme.typography.poppinsSemiBold9,
+                                            color = SparkyTheme.colors.primaryColor
+                                        )
+                                    }
+                                } else {
+                                    AsyncImage(
+                                        model = user.user.profilePictureUrl,
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
+
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Text(
-                        text = user.username,
+                        text = user.user.username,
                         color = SparkyTheme.colors.white,
                         style = SparkyTheme.typography.poppinsRegular16,
                         textAlign = TextAlign.Start
                     )
                     Text(
-                        text = stringResource(id = R.string.member_since, user.registeredAt),
+                        text = stringResource(id = R.string.member_since, user.user.registeredAt),
                         color = SparkyTheme.colors.white,
                         style = SparkyTheme.typography.poppinsRegular12,
                         textAlign = TextAlign.Start
                     )
                 }
             }
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .size(40.dp)
-                    .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
-                    .clickable {
-                        onLogoutClick()
+            when (type) {
+                ProfileScreenType.LOCAL_USER -> {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .size(40.dp)
+                            .background(SparkyTheme.colors.white.copy(alpha = 0.1f))
+                            .clickable {
+                                onLogoutClick()
+                            }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_logout),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
                     }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_logout),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                }
+
+                ProfileScreenType.REMOTE_USER -> {}
             }
+
         }
         Spacer(
             modifier = Modifier.height(15.dp)
@@ -178,7 +236,7 @@ fun ProfileScreenTopBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            ProfileDataCountItem(count = user.postCount.toString(), countedData = "Posts")
+            ProfileDataCountItem(count = user.user.postCount.toString(), countedData = "Posts")
             Divider(
                 color = SparkyTheme.colors.white.copy(0.1f),
                 modifier = Modifier
@@ -187,7 +245,7 @@ fun ProfileScreenTopBar(
                     .height(20.dp)
             )
             ProfileDataCountItem(
-                count = user.followerCount.toString(), countedData = "Followers"
+                count = user.user.followerCount.toString(), countedData = "Followers"
             )
             Divider(
                 color = SparkyTheme.colors.white.copy(0.1f),
@@ -197,10 +255,26 @@ fun ProfileScreenTopBar(
                     .height(20.dp)
             )
             ProfileDataCountItem(
-                count = user.followingCount.toString(), countedData = "Following"
+                count = user.user.followingCount.toString(), countedData = "Following"
             )
 
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        when (type) {
+            ProfileScreenType.LOCAL_USER -> {}
+            ProfileScreenType.REMOTE_USER -> {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    ButtonFollowUnfollow(
+                        isFollowing = user.isFollowing,
+                        style = FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN
+                    ) {
+                        onFollowClick(user)
+                    }
+
+                }
+            }
+        }
     }
 }

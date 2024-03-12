@@ -64,6 +64,9 @@ fun HomeScreen(
                 onAddCommentClick = {
                     commentsViewModel.onEvent(CommentEvent.OnAddCommentClick)
                 },
+                onUserImageClick = {
+                                   commentsViewModel.onEvent(CommentEvent.OnUserImageClick(it))
+                },
                 onCommentChange = {
                     commentsViewModel.onEvent(CommentEvent.OnCommentChanged(it))
                 })
@@ -103,7 +106,10 @@ fun HomeScreen(
                                 bottomSheetState.show()
                             }
                             commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
-                        })
+                        },
+                            onUserImageClick = {
+                                homeViewModel.onEvent(HomeScreenEvent.OnUserImageClick(it))
+                            })
                     }
                 }
             }

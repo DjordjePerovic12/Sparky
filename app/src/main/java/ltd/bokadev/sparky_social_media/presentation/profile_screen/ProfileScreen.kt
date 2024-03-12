@@ -20,6 +20,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,6 +32,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.components.LogoutAlertDialog
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
+import ltd.bokadev.sparky_social_media.core.utils.ProfileScreenType
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.data.utils.getImage
 import ltd.bokadev.sparky_social_media.presentation.home_screen.SparkyPostItem
@@ -83,6 +85,11 @@ fun ProfileScreen(
         showSnackBar(message)
     }
 
+    LaunchedEffect(key1 = Unit) {
+        profileViewModel.executeGetUser()
+        profileViewModel.executeGetProfilePosts()
+    }
+
     LogoutAlertDialog(headerText = "LOG OUT",
         messageText = "Are you sure you want to logout?",
         shouldShow = profileState.shouldShowDialog,
@@ -102,6 +109,9 @@ fun ProfileScreen(
                 onAddCommentClick = {
                     commentsViewModel.onEvent(CommentEvent.OnAddCommentClick)
                 },
+                onUserImageClick = {
+                    commentsViewModel.onEvent(CommentEvent.OnUserImageClick(it))
+                },
                 onCommentChange = {
                     commentsViewModel.onEvent(CommentEvent.OnCommentChanged(it))
                 })
@@ -109,6 +119,7 @@ fun ProfileScreen(
         Scaffold(topBar = {
             profileState.user?.let {
                 ProfileScreenTopBar(user = it,
+                    type = ProfileScreenType.LOCAL_USER,
                     isLoadingUserData = profileState.isLoadingUserData,
                     onChangeProfilePictureClick = {
                         pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -165,13 +176,19 @@ fun ProfileScreen(
                                 bottomSheetState.show()
                             }
                             commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
-                        })
+                        },
+                            onUserImageClick = {
+                                commentsViewModel.onEvent(CommentEvent.OnUserImageClick(post.author))
+                            })
                     }
                 }
                 else items(likedPosts.itemCount) { index ->
                     val post = likedPosts[index]
                     if (post != null) {
-                        SparkyPostItem(post = post, onLikeClick = {}) {
+                        SparkyPostItem(post = post, onLikeClick = {},
+                            onUserImageClick = {
+                                commentsViewModel.onEvent(CommentEvent.OnUserImageClick(post.author))
+                            }) {
                             scope.launch {
                                 bottomSheetState.show()
                             }

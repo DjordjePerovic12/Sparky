@@ -21,12 +21,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import ltd.bokadev.sparky_social_media.core.utils.getInitials
+import ltd.bokadev.sparky_social_media.domain.model.User
+import ltd.bokadev.sparky_social_media.presentation.notifications_screen.NotificationsScreenEvent
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun UserImageItem(
+    modifier: Modifier = Modifier,
     imageUrl: String? = null, userFullName: String
-) {
+    ) {
 
     val frameSize = 35.dp
     val frameShape = RoundedCornerShape(7.dp)
@@ -44,15 +47,17 @@ fun UserImageItem(
         )
     )
     Box(
-        modifier = Modifier
-            .size(frameSize)
-            .offset(x = (-frameSize / 2))
-            .clip(frameShape)
-            .background(SparkyTheme.colors.yellow)
-            .drawWithContent {
-                this.drawContent()
-                drawRoundRect(color = color, style = stroke)
-            }, contentAlignment = Alignment.Center
+        modifier = modifier
+            .then(
+                Modifier
+                    .size(frameSize)
+                    .offset(x = (-frameSize / 2))
+                    .clip(frameShape)
+                    .background(SparkyTheme.colors.yellow)
+                    .drawWithContent {
+                        this.drawContent()
+                        drawRoundRect(color = color, style = stroke)
+                    }), contentAlignment = Alignment.Center
     ) {
         Box(modifier = Modifier
             .size(frameSize)

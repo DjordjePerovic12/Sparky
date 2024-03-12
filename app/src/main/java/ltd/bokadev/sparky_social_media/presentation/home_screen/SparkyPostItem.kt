@@ -26,12 +26,14 @@ import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.utils.formatToTwelveHourMonthNameDateTime
 import ltd.bokadev.sparky_social_media.domain.model.Post
+import ltd.bokadev.sparky_social_media.domain.model.UserDetails
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun SparkyPostItem(
     post: Post,
     onLikeClick: (Post) -> Unit,
+    onUserImageClick: (UserDetails) -> Unit,
     onCommentsClick: () -> Unit
 ) {
     Card(
@@ -64,7 +66,10 @@ fun SparkyPostItem(
                 ) {
                     UserImageItem(
                         userFullName = post.author.username,
-                        imageUrl = post.author.profilePictureUrl
+                        imageUrl = post.author.profilePictureUrl,
+                        modifier = Modifier.clickable {
+                            onUserImageClick(post.author)
+                        }
                     )
 
                     Text(

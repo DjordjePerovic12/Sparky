@@ -56,6 +56,9 @@ fun SearchScreen(
                         if (user != null) {
                             UserItem(
                                 user = user,
+                                onUserImageClick = {
+                                    viewModel.onEvent(SearchEvent.OnUserImageClick(it))
+                                },
                                 onFollowClick = {
                                     viewModel.onEvent(SearchEvent.OnFollowUnfollowClick(it))
                                 }
