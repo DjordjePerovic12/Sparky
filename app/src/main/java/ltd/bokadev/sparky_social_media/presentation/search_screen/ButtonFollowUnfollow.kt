@@ -25,80 +25,79 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.utils.FollowUnfollowButtonStyle
+import ltd.bokadev.sparky_social_media.presentation.FollowButtonStyle
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun ButtonFollowUnfollow(
     isFollowing: Boolean, style: FollowUnfollowButtonStyle, onClick: () -> Unit
 ) {
-    val sizeModifier = when (style) {
+
+    val buttonStyle = when (style) {
         FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
-            if (isFollowing) Modifier.size(
-                width = 75.dp, height = 35.dp
-            ) else Modifier.size(width = 65.dp, height = 35.dp)
+            if (isFollowing)
+                FollowButtonStyle(
+                    containerColor = SparkyTheme.colors.white,
+                    borderColor = SparkyTheme.colors.red,
+                    content = SparkyTheme.colors.red,
+                    sizeModifier = Modifier.size(
+                        width = 75.dp, height = 35.dp
+                    ),
+                    label = stringResource(id = R.string.unfollow)
+                )
+            else FollowButtonStyle(
+                containerColor = SparkyTheme.colors.yellow,
+                borderColor = SparkyTheme.colors.yellow,
+                content = SparkyTheme.colors.primaryColor,
+                sizeModifier = Modifier.size(width = 65.dp, height = 35.dp),
+                label = stringResource(id = R.string.follow)
+            )
         }
 
         FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN -> {
-            Modifier
-                .fillMaxWidth()
-                .height(40.dp)
-        }
-    }
-    val buttonLabel =
-        if (isFollowing) stringResource(id = R.string.unfollow) else stringResource(id = R.string.follow)
-    val buttonColor = when (style) {
-        FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
-            if (isFollowing) SparkyTheme.colors.white else SparkyTheme.colors.yellow
-        }
-
-        FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN -> {
-            if (isFollowing) Color.Transparent else SparkyTheme.colors.yellow
-        }
-    }
-    val buttonBorderColor = when (style) {
-        FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
-            if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.yellow
-        }
-
-        FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN -> {
-            if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.yellow
-        }
-    }
-
-    val buttonLabelColor = when (style) {
-        FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
-            if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.primaryColor
-        }
-
-        FollowUnfollowButtonStyle.REMOTE_USER_PROFILE_SCREEN -> {
-            if (isFollowing) SparkyTheme.colors.red else SparkyTheme.colors.primaryColor
+            if (isFollowing) FollowButtonStyle(
+                containerColor = Color.Transparent,
+                borderColor = SparkyTheme.colors.red,
+                content = SparkyTheme.colors.red,
+                sizeModifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                label = stringResource(id = R.string.unfollow)
+            ) else FollowButtonStyle(
+                containerColor = SparkyTheme.colors.yellow,
+                borderColor = SparkyTheme.colors.yellow,
+                content = SparkyTheme.colors.primaryColor,
+                sizeModifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                label = stringResource(id = R.string.follow)
+            )
         }
     }
 
     Button(
-        modifier = sizeModifier,
+        modifier = buttonStyle.sizeModifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = buttonColor
+            containerColor = buttonStyle.containerColor
         ),
         enabled = true,
         contentPadding = PaddingValues(),
         shape = RoundedCornerShape(11.dp),
-        border = BorderStroke(1.dp, buttonBorderColor),
+        border = BorderStroke(1.dp, buttonStyle.borderColor),
         onClick = onClick
     ) {
         Box(
             modifier = Modifier
-                .background(buttonColor)
+                .background(buttonStyle.containerColor)
                 .padding(vertical = 8.dp, horizontal = 12.dp)
                 .fillMaxSize()
         ) {
             Text(
-                text = buttonLabel,
+                text = buttonStyle.label,
                 modifier = Modifier.align(Alignment.Center),
                 style = SparkyTheme.typography.poppinsRegular12,
-                color = buttonLabelColor,
+                color = buttonStyle.content,
             )
-
         }
     }
 }

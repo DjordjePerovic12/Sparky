@@ -64,6 +64,10 @@ class ProfileViewModel @Inject constructor(
     val isRefreshing: StateFlow<Boolean>
         get() = _isRefreshing.asStateFlow()
 
+    init {
+       executeGetUser()
+       executeGetProfilePosts()
+    }
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
