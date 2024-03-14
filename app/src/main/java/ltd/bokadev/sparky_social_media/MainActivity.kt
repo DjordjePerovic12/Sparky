@@ -22,13 +22,11 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,7 +59,6 @@ import ltd.bokadev.sparky_social_media.presentation.MainViewModel
 import ltd.bokadev.sparky_social_media.presentation.home_screen.CreatePostBottomSheet
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyAppTheme
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -178,7 +175,7 @@ class MainActivity : ComponentActivity() {
                                     icon = R.drawable.ic_home
                                 ), BottomNavItem(
                                     name = "Profile",
-                                    route = Screen.ProfileScreen.route,
+                                    route = Screen.ProfileScreen.passUserId(null) ?: Screen.ProfileScreen.route,
                                     icon = R.drawable.ic_person
                                 )
                             ),

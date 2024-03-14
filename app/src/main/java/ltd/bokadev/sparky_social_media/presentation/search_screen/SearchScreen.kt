@@ -13,14 +13,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
+import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel, showSnackBar: (String) -> Unit
+    viewModel: SearchViewModel,
+    navController: NavController,
+    showSnackBar: (String) -> Unit
 ) {
     val state = viewModel.state
     val users = viewModel.users.collectAsLazyPagingItems()
@@ -57,7 +61,7 @@ fun SearchScreen(
                             UserItem(
                                 user = user,
                                 onUserImageClick = {
-                                    viewModel.onEvent(SearchEvent.OnUserImageClick(it))
+                                    navController.navigate(Screen.ProfileScreen.passUserId(it.user.id))
                                 },
                                 onFollowClick = {
                                     viewModel.onEvent(SearchEvent.OnFollowUnfollowClick(it))

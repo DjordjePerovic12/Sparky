@@ -33,6 +33,7 @@ fun ButtonFollowUnfollow(
     isFollowing: Boolean, style: FollowUnfollowButtonStyle, onClick: () -> Unit
 ) {
 
+    val buttonLabel = if(isFollowing) stringResource(id = R.string.unfollow) else stringResource(id = R.string.follow)
     val buttonStyle = when (style) {
         FollowUnfollowButtonStyle.SEARCH_SCREEN -> {
             if (isFollowing)
@@ -42,15 +43,13 @@ fun ButtonFollowUnfollow(
                     content = SparkyTheme.colors.red,
                     sizeModifier = Modifier.size(
                         width = 75.dp, height = 35.dp
-                    ),
-                    label = stringResource(id = R.string.unfollow)
+                    )
                 )
             else FollowButtonStyle(
                 containerColor = SparkyTheme.colors.yellow,
                 borderColor = SparkyTheme.colors.yellow,
                 content = SparkyTheme.colors.primaryColor,
-                sizeModifier = Modifier.size(width = 65.dp, height = 35.dp),
-                label = stringResource(id = R.string.follow)
+                sizeModifier = Modifier.size(width = 65.dp, height = 35.dp)
             )
         }
 
@@ -61,16 +60,14 @@ fun ButtonFollowUnfollow(
                 content = SparkyTheme.colors.red,
                 sizeModifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp),
-                label = stringResource(id = R.string.unfollow)
+                    .height(40.dp)
             ) else FollowButtonStyle(
                 containerColor = SparkyTheme.colors.yellow,
                 borderColor = SparkyTheme.colors.yellow,
                 content = SparkyTheme.colors.primaryColor,
                 sizeModifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp),
-                label = stringResource(id = R.string.follow)
+                    .height(40.dp)
             )
         }
     }
@@ -93,7 +90,7 @@ fun ButtonFollowUnfollow(
                 .fillMaxSize()
         ) {
             Text(
-                text = buttonStyle.label,
+                text = buttonLabel,
                 modifier = Modifier.align(Alignment.Center),
                 style = SparkyTheme.typography.poppinsRegular12,
                 color = buttonStyle.content,

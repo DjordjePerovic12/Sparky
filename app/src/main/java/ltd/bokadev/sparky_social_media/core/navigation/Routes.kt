@@ -10,7 +10,6 @@ object Routes {
     const val REGISTER_SCREEN = "register_screen"
     const val HOME_SCREEN = "home_screen"
     const val SEARCH_SCREEN = "search_screen"
-    const val PROFILE_SCREEN = "profile_screen"
-    const val REMOTE_USER_PROFILE_SCREEN = "remote_user_profile_screen/{$USER_ID_ARGUMENT_KEY}"
+    const val PROFILE_SCREEN = "profile_screen?$USER_ID_ARGUMENT_KEY={$USER_ID_ARGUMENT_KEY}"
     const val NOTIFICATIONS_SCREEN = "notifications_screen"
 }

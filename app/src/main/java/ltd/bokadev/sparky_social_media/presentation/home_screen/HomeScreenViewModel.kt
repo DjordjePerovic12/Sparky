@@ -77,9 +77,6 @@ class HomeScreenViewModel @Inject constructor(
                 navigateToNotificationsScreen()
             }
 
-            is HomeScreenEvent.OnUserImageClick -> {
-                navigateToUserProfileScreen(event.user.id)
-            }
         }
     }
 
@@ -154,12 +151,6 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun navigateToUserProfileScreen(userId: String) {
-        viewModelScope.launch {
-            navigator.navigateTo(Screen.RemoteUserProfileScreen.passUserId(userId))
-        }
-    }
-
     fun getUserData() = runBlocking {
         withContext(Dispatchers.IO) {
             dataStoreRepository.getUser().first()
@@ -172,7 +163,6 @@ sealed class HomeScreenEvent {
     data object OnSearchClick : HomeScreenEvent()
     data class OnLikeClick(val post: Post) : HomeScreenEvent()
     data object OnNotificationsClick : HomeScreenEvent()
-    data class OnUserImageClick(val user: UserDetails) : HomeScreenEvent()
 }
 
 data class HomeScreenState(

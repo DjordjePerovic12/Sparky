@@ -7,6 +7,5 @@ data class FollowButtonStyle(
     val containerColor: Color,
     val borderColor: Color,
     val content: Color,
-    val sizeModifier: Modifier,
-    val label: String
+    val sizeModifier: Modifier
 )

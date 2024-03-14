@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -28,7 +29,9 @@ import kotlinx.coroutines.withContext
 import ltd.bokadev.sparky_social_media.core.navigation.Navigator
 import ltd.bokadev.sparky_social_media.core.navigation.Routes.AUTH
 import ltd.bokadev.sparky_social_media.core.navigation.Screen
+import ltd.bokadev.sparky_social_media.core.navigation.destinations.USER_ID_ARGUMENT_KEY
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
+import ltd.bokadev.sparky_social_media.core.utils.ProfileScreenType
 import ltd.bokadev.sparky_social_media.core.utils.Resource
 import ltd.bokadev.sparky_social_media.core.utils.collectLatestWithAuthCheck
 import ltd.bokadev.sparky_social_media.domain.model.Comment
@@ -50,7 +53,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val navigator: Navigator,
     private val dataStoreRepository: DataStoreRepository,
-    private val repository: SparkyRepository
+    private val repository: SparkyRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     var state by mutableStateOf(ProfileState())
@@ -64,9 +68,15 @@ class ProfileViewModel @Inject constructor(
     val isRefreshing: StateFlow<Boolean>
         get() = _isRefreshing.asStateFlow()
 
+    val userId =
+        if (savedStateHandle.get<String>(USER_ID_ARGUMENT_KEY) == "") null else savedStateHandle.get<String>(USER_ID_ARGUMENT_KEY)
+
+
     init {
-       executeGetUser()
-       executeGetProfilePosts()
+        Timber.e("Profile User id $userId")
+        executeGetUser()
+        executeGetProfilePosts()
+        decideProfileScreenType()
     }
 
     fun onEvent(event: ProfileEvent) {
@@ -138,7 +148,7 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    fun executeGetUser(userId: String? = null) {
+    private fun executeGetUser() {
         viewModelScope.launch {
             state = state.copy(isLoadingUserData = true)
             when (val result = repository.getProfileDetails(userId)) {
@@ -218,13 +228,13 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun executeGetProfilePosts(userId: String? = null): Flow<PagingData<Post>> {
+    fun executeGetProfilePosts(): Flow<PagingData<Post>> {
         return repository.getProfilePosts(
-           userId =  userId, pageCount = 20, postsFilter = state.selectedFilter
+            userId = userId, pageCount = 20, postsFilter = state.selectedFilter
         )
     }
 
-    fun executeGetLikedPosts(userId: String? = null): Flow<PagingData<Post>> {
+    fun executeGetLikedPosts(): Flow<PagingData<Post>> {
         return repository.getProfilePosts(
             userId = userId, pageCount = 20, postsFilter = state.selectedFilter
         )
@@ -236,6 +246,17 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun decideProfileScreenType() {
+        state = when (userId) {
+            null -> {
+                state.copy(profileScreenType = ProfileScreenType.LOCAL_USER)
+            }
+
+            else -> {
+                state.copy(profileScreenType = ProfileScreenType.REMOTE_USER)
+            }
+        }
+    }
 
 }
 
@@ -256,5 +277,6 @@ data class ProfileState(
     val selectedFilter: PostFilters = PostFilters.YOUR_POSTS,
     val selectedImage: Uri? = null,
     val isFollowing: Boolean = false,
-    val userPosts: List<Post> = emptyList()
+    val userPosts: List<Post> = emptyList(),
+    val profileScreenType: ProfileScreenType = ProfileScreenType.LOCAL_USER
 )
