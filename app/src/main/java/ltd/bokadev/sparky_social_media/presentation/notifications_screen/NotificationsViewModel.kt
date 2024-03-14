@@ -21,10 +21,6 @@ class NotificationsViewModel @Inject constructor(
 
     fun onEvent(event: NotificationsScreenEvent) {
         when (event) {
-            is NotificationsScreenEvent.OnUserImageClick -> {
-                navigateToUserProfileScreen(event.user.id)
-            }
-
             is NotificationsScreenEvent.OnBackClick -> {
                 navigateBack()
             }
@@ -35,12 +31,6 @@ class NotificationsViewModel @Inject constructor(
         return repository.getNotifications(pageCount = 20)
     }
 
-    private fun navigateToUserProfileScreen(userId: String) {
-        viewModelScope.launch {
-            navigator.navigateTo(Screen.RemoteUserProfileScreen.passUserId(userId))
-        }
-    }
-
     private fun navigateBack() {
         viewModelScope.launch {
             navigator.popBackStack()
@@ -49,6 +39,5 @@ class NotificationsViewModel @Inject constructor(
 }
 
 sealed class NotificationsScreenEvent {
-    data class OnUserImageClick(val user: UserDetails) : NotificationsScreenEvent()
     data object OnBackClick : NotificationsScreenEvent()
 }

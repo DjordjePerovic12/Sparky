@@ -12,7 +12,6 @@ import ltd.bokadev.sparky_social_media.core.navigation.Routes.ROOT
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.homeScreenComposable
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.notificationsScreenComposable
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.profileScreenComposable
-import ltd.bokadev.sparky_social_media.core.navigation.destinations.remoteUserProfileScreenComposable
 import ltd.bokadev.sparky_social_media.core.navigation.destinations.searchScreenComposable
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import timber.log.Timber
@@ -42,10 +41,6 @@ fun SparkyNavigation(
         searchScreenComposable(navController = navController, showSnackBar = showSnackBar)
         profileScreenComposable(navController = navController, showSnackBar = showSnackBar)
         notificationsScreenComposable(navController = navController, showSnackBar = showSnackBar)
-        remoteUserProfileScreenComposable(
-            navController = navController,
-            showSnackBar = showSnackBar
-        )
     }
 }
 

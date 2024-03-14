@@ -80,11 +80,6 @@ class SearchViewModel @Inject constructor(
                     else executeFollowUser(event.user)
                 }
             }
-
-            is SearchEvent.OnUserImageClick -> {
-                Timber.e("USER ID ON CLICK IS ${event.user.user.id}")
-                navigateToRemoteUserScreen(event.user.user.id.encodeArgument())
-            }
         }
     }
 
@@ -170,17 +165,10 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
-
-    private fun navigateToRemoteUserScreen(userId: String) {
-        viewModelScope.launch {
-            navigator.navigateTo(Screen.RemoteUserProfileScreen.passUserId(userId))
-        }
-    }
 }
 
 sealed class SearchEvent {
     data class OnSearchQueryChange(val searchQuery: String) : SearchEvent()
-    data class OnUserImageClick(val user: User) : SearchEvent()
     data object OnFetchingUsersError : SearchEvent()
     data object OnCrossClick : SearchEvent()
     data object TriggerLoader : SearchEvent()

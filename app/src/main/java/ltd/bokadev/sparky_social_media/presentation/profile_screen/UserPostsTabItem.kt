@@ -16,14 +16,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.utils.PostFilters
+import ltd.bokadev.sparky_social_media.core.utils.ProfileScreenType
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 
 @Composable
 fun UserPostsTabItem(
     isSelected: Boolean,
     filter: PostFilters,
+    profileScreenType: ProfileScreenType,
     onClick: (PostFilters) -> Unit
 ) {
     Card(
@@ -52,7 +56,15 @@ fun UserPostsTabItem(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = filter.title,
+                text = when (profileScreenType) {
+                    ProfileScreenType.LOCAL_USER -> {
+                        filter.title
+                    }
+
+                    ProfileScreenType.REMOTE_USER -> {
+                        if (filter.id == 0) stringResource(R.string.posts) else filter.title
+                    }
+                },
                 color = SparkyTheme.colors.primaryColor,
                 style = if (isSelected) SparkyTheme.typography.poppinsMedium16 else SparkyTheme.typography.poppinsRegular16
             )

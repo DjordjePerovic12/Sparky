@@ -34,6 +34,7 @@ fun NavGraphBuilder.homeScreenComposable(
         HomeScreen(
             homeViewModel = homeViewModel,
             commentsViewModel = commentsViewModel,
+            navController = navController,
             showSnackBar = showSnackBar
         )
     }

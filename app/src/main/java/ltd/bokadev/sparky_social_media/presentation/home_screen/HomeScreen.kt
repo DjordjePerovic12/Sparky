@@ -18,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
 import ltd.bokadev.sparky_social_media.core.components.SparkyTopBar
+import ltd.bokadev.sparky_social_media.core.navigation.Screen
 import ltd.bokadev.sparky_social_media.core.utils.hideKeyboard
 import ltd.bokadev.sparky_social_media.core.utils.observeWithLifecycle
 import ltd.bokadev.sparky_social_media.presentation.home_screen.comments_bottom_sheet.CommentsBottomSheet
@@ -33,6 +35,7 @@ import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
 fun HomeScreen(
     homeViewModel: HomeScreenViewModel,
     commentsViewModel: CommentsViewModel,
+    navController: NavController,
     showSnackBar: (message: String) -> Unit,
 ) {
     val homeScreenState = homeViewModel.state
@@ -65,7 +68,7 @@ fun HomeScreen(
                     commentsViewModel.onEvent(CommentEvent.OnAddCommentClick)
                 },
                 onUserImageClick = {
-                                   commentsViewModel.onEvent(CommentEvent.OnUserImageClick(it))
+                    navController.navigate(Screen.ProfileScreen.passUserId(it.id))
                 },
                 onCommentChange = {
                     commentsViewModel.onEvent(CommentEvent.OnCommentChanged(it))
@@ -108,7 +111,7 @@ fun HomeScreen(
                             commentsViewModel.onEvent(CommentEvent.OnCommentsClick(post.id))
                         },
                             onUserImageClick = {
-                                homeViewModel.onEvent(HomeScreenEvent.OnUserImageClick(it))
+                                navController.navigate(Screen.ProfileScreen.passUserId(it.id))
                             })
                     }
                 }

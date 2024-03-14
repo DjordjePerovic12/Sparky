@@ -25,6 +25,9 @@ fun NavGraphBuilder.searchScreenComposable(
             fadeOut(animationSpec = tween(Constants.ANIMATION_DURATION))
         }) {
         val searchViewModel = hiltViewModel<SearchViewModel>()
-        SearchScreen(viewModel = searchViewModel, showSnackBar = showSnackBar)
+        SearchScreen(
+            viewModel = searchViewModel,
+            navController = navController, showSnackBar = showSnackBar
+        )
     }
 }

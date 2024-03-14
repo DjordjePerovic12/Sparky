@@ -54,10 +54,6 @@ class CommentsViewModel @Inject constructor(
                 state = state.copy(isLoading = true)
                 executeAddComment()
             }
-
-            is CommentEvent.OnUserImageClick -> {
-                navigateToUserProfileScreen(event.user.id)
-            }
         }
     }
 
@@ -109,19 +105,12 @@ class CommentsViewModel @Inject constructor(
             }
         }
     }
-
-    private fun navigateToUserProfileScreen(userId: String) {
-        viewModelScope.launch {
-            navigator.navigateTo(Screen.RemoteUserProfileScreen.passUserId(userId))
-        }
-    }
 }
 
 sealed class CommentEvent {
     data class OnCommentsClick(val postId: String) : CommentEvent()
     data class OnCommentChanged(val comment: String) : CommentEvent()
     data object OnAddCommentClick : CommentEvent()
-    data class OnUserImageClick(val user: UserDetails) : CommentEvent()
 }
 
 data class CommentState(

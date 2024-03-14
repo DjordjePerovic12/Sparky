@@ -25,6 +25,7 @@ fun NavGraphBuilder.notificationsScreenComposable(
         val notificationsViewModel = hiltViewModel<NotificationsViewModel>()
         NotificationsScreen(
             viewModel = notificationsViewModel,
+            navController = navController,
             showSnackBar = showSnackBar
         )
     }
