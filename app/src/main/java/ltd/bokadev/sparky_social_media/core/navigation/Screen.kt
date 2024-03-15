@@ -18,7 +18,7 @@ sealed class Screen(val route: String) {
     data object ProfileScreen : Screen(PROFILE_SCREEN) {
         fun passUserId(userId: String?) = this.route.replace(
             oldValue = "{$USER_ID_ARGUMENT_KEY}",
-            newValue = userId ?: ""
+            newValue = userId.toString()
         )
     }
 

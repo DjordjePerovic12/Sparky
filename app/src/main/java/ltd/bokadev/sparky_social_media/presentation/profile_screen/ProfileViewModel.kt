@@ -68,8 +68,7 @@ class ProfileViewModel @Inject constructor(
     val isRefreshing: StateFlow<Boolean>
         get() = _isRefreshing.asStateFlow()
 
-    val userId =
-        if (savedStateHandle.get<String>(USER_ID_ARGUMENT_KEY) == "") null else savedStateHandle.get<String>(USER_ID_ARGUMENT_KEY)
+    val userId = savedStateHandle.get<String>(USER_ID_ARGUMENT_KEY)
 
 
     init {
