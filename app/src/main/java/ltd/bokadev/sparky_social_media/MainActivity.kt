@@ -175,7 +175,7 @@ class MainActivity : ComponentActivity() {
                                     icon = R.drawable.ic_home
                                 ), BottomNavItem(
                                     name = "Profile",
-                                    route = Screen.ProfileScreen.passUserId(null) ?: Screen.ProfileScreen.route,
+                                    route = Screen.ProfileScreen.route,
                                     icon = R.drawable.ic_person
                                 )
                             ),
