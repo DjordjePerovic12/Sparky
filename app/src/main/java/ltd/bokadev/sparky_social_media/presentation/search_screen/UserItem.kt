@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import ltd.bokadev.sparky_social_media.R
 import ltd.bokadev.sparky_social_media.core.utils.FollowUnfollowButtonStyle
 import ltd.bokadev.sparky_social_media.domain.model.User
@@ -39,6 +40,7 @@ fun UserItem(
                     onUserImageClick(user)
                 },
                 userFullName = user.user.username,
+                frameSize = 30.dp,
                 imageUrl = user.user.profilePictureUrl,
             )
             Column(

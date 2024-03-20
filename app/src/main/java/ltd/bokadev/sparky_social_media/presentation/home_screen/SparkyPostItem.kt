@@ -72,6 +72,7 @@ fun SparkyPostItem(
                     UserImageItem(
                         userFullName = post.author.username,
                         imageUrl = post.author.profilePictureUrl,
+                        frameSize = 30.dp,
                         modifier = Modifier.clickable {
                             onUserImageClick(post.author)
                         }

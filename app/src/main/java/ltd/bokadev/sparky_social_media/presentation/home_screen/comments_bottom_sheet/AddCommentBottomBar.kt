@@ -60,29 +60,8 @@ fun AddCommentBottomBar(
         //Will refactor this when I refactor the image item in general
         //Because the one I made earlier isn't appropriate for this component
         //And my focus at the moment is on functional parts of the app
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(7.dp))
-        ) {
-            if (imageUrl == null) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(SparkyTheme.colors.white)
-                ) {
-                    Text(
-                        text = username.getInitials(),
-                        style = SparkyTheme.typography.poppinsSemiBold9,
-                        color = SparkyTheme.colors.primaryColor
-                    )
-                }
-            } else AsyncImage(
-                model = imageUrl, contentDescription = null, contentScale = ContentScale.Crop
-            )
-        }
+        UserImageItem(frameSize = 50.dp, userFullName = username, imageUrl = imageUrl)
+
         AddCommentTextField(bringIntoViewRequester = bringIntoViewRequester,
             keyboardOptions = CustomModifiers.textKeyboardNext(),
             scope = scope,

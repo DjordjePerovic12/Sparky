@@ -46,6 +46,7 @@ import ltd.bokadev.sparky_social_media.core.utils.formatToTwelveHourMonthNameDat
 import ltd.bokadev.sparky_social_media.core.utils.getInitials
 import ltd.bokadev.sparky_social_media.domain.model.User
 import ltd.bokadev.sparky_social_media.domain.model.UserDetails
+import ltd.bokadev.sparky_social_media.presentation.home_screen.UserImageItem
 import ltd.bokadev.sparky_social_media.presentation.search_screen.ButtonFollowUnfollow
 import ltd.bokadev.sparky_social_media.presentation.search_screen.SparkySearchBar
 import ltd.bokadev.sparky_social_media.ui.theme.SparkyTheme
@@ -151,36 +152,11 @@ fun ProfileScreenTopBar(
                         Box(
                             contentAlignment = Alignment.Center
                         ) {
-                            //Will refactor this when I refactor the image item in general
-                            //Because the one I made earlier isn't appropriate for this component
-                            //And my focus at the moment is on functional parts of the app
-                            Box(
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(RoundedCornerShape(7.dp))
-                            ) {
-                                if (user.user.profilePictureUrl == null) {
-                                    Column(
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .background(SparkyTheme.colors.white)
-                                    ) {
-                                        Text(
-                                            text = user.user.username.getInitials(),
-                                            style = SparkyTheme.typography.poppinsSemiBold9,
-                                            color = SparkyTheme.colors.primaryColor
-                                        )
-                                    }
-                                } else {
-                                    AsyncImage(
-                                        model = user.user.profilePictureUrl,
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop
-                                    )
-                                }
-                            }
+                            UserImageItem(
+                                frameSize = 50.dp,
+                                userFullName = user.user.username,
+                                imageUrl = user.user.profilePictureUrl
+                            )
                         }
                     }
                 }
