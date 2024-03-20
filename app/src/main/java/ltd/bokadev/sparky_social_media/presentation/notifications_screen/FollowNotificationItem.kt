@@ -43,6 +43,7 @@ fun FollowNotificationItem(
         UserImageItem(
             userFullName = notification.followingUser.username,
             imageUrl = notification.followingUser.profilePictureUrl,
+            frameSize = 30.dp,
             modifier = Modifier.clickable {
                 onUserImageClick(notification.followingUser)
             }

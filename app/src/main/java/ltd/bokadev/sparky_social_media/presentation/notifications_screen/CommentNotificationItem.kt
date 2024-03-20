@@ -42,6 +42,7 @@ fun CommentNotificationItem(
         UserImageItem(
             userFullName = comment.author.username,
             imageUrl = comment.author.profilePictureUrl,
+            frameSize = 30.dp,
             modifier = Modifier.clickable {
                 onUserImageClick(comment.author)
             }

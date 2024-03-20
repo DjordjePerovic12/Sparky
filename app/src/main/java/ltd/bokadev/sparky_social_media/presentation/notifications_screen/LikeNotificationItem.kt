@@ -43,6 +43,7 @@ fun LikeNotificationItem(
         UserImageItem(
             userFullName = user.username,
             imageUrl = user.profilePictureUrl,
+            frameSize = 30.dp,
             modifier = Modifier.clickable {
                 onUserImageClick(user)
             }
